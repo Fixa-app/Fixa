@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   ArrowRight,
   Calendar,
@@ -8,8 +7,10 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
+import { SiteHeader } from "@/components/site-header";
 
 export default function Home() {
   return (
@@ -24,42 +25,6 @@ export default function Home() {
       </main>
       <SiteFooter />
     </>
-  );
-}
-
-function SiteHeader() {
-  return (
-    <header className="border-b border-border">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
-          Fixa
-        </Link>
-        <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="hover:text-foreground">
-            Features
-          </a>
-          <a href="#workflow" className="hover:text-foreground">
-            How it works
-          </a>
-          <a href="#industries" className="hover:text-foreground">
-            Who it&apos;s for
-          </a>
-          <Link href="/plan" className="hover:text-foreground">
-            Plan
-          </Link>
-        </nav>
-        <div className="flex items-center gap-2">
-          <AuthDialog>
-            <Button variant="ghost" size="sm">
-              Sign in
-            </Button>
-          </AuthDialog>
-          <AuthDialog>
-            <Button size="sm">Start free trial</Button>
-          </AuthDialog>
-        </div>
-      </div>
-    </header>
   );
 }
 
