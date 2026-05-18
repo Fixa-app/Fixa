@@ -9,6 +9,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AuthDialog } from "@/components/auth-dialog";
 
 export default function Home() {
   return (
@@ -48,10 +49,14 @@ function SiteHeader() {
           </Link>
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm">
-            Sign in
-          </Button>
-          <Button size="sm">Start free trial</Button>
+          <AuthDialog>
+            <Button variant="ghost" size="sm">
+              Sign in
+            </Button>
+          </AuthDialog>
+          <AuthDialog>
+            <Button size="sm">Start free trial</Button>
+          </AuthDialog>
         </div>
       </div>
     </header>
@@ -74,7 +79,9 @@ function Hero() {
           less time on admin.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg">Start free trial</Button>
+          <AuthDialog>
+            <Button size="lg">Start free trial</Button>
+          </AuthDialog>
           <Button size="lg" variant="outline" render={<a href="#workflow" />}>
             See how it works
           </Button>
@@ -248,10 +255,12 @@ function CTABand() {
           We&apos;re building Fixa in the open with a small group of pilot
           customers. Start your free trial, or get in touch to help shape it.
         </p>
-        <Button size="lg" variant="secondary">
-          Start free trial
-          <ArrowRight className="ml-2 size-4" />
-        </Button>
+        <AuthDialog>
+          <Button size="lg" variant="secondary">
+            Start free trial
+            <ArrowRight className="ml-2 size-4" />
+          </Button>
+        </AuthDialog>
       </div>
     </section>
   );
