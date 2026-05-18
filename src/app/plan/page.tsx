@@ -14,7 +14,9 @@ type Section = {
   title: string;
   description: string;
   status: "empty" | "drafting" | "ready";
-  items: string[];
+  href?: string;
+  cta?: string;
+  body?: React.ReactNode;
 };
 
 const sections: Section[] = [
@@ -24,15 +26,15 @@ const sections: Section[] = [
     description:
       "Release stages from first usable slice to broad launch. Each phase defines the minimum scope and the audience.",
     status: "empty",
-    items: [],
   },
   {
     id: "workflows",
     title: "Workflows",
     description:
-      "End-to-end user journeys the product needs to support — e.g. quote → schedule → execute → invoice.",
-    status: "empty",
-    items: [],
+      "End-to-end user journeys the product needs to support. Built from the Miro board: Request → Intake → Quote → Job → Invoice, plus Supplier Hub and Client Hub.",
+    status: "drafting",
+    href: "/plan/workflow",
+    cta: "Open workflow →",
   },
   {
     id: "integrations",
@@ -40,7 +42,6 @@ const sections: Section[] = [
     description:
       "External systems Fixa connects to: payment, accounting, calendars, messaging, identity.",
     status: "empty",
-    items: [],
   },
   {
     id: "open-questions",
@@ -48,13 +49,12 @@ const sections: Section[] = [
     description:
       "Decisions we have not made yet. Park assumptions here so they do not get lost.",
     status: "empty",
-    items: [],
   },
 ];
 
 const statusVariant: Record<Section["status"], "secondary" | "default"> = {
   empty: "secondary",
-  drafting: "secondary",
+  drafting: "default",
   ready: "default",
 };
 
@@ -93,16 +93,17 @@ export default function PlanPage() {
                 </Badge>
               </CardHeader>
               <CardContent>
-                {section.items.length === 0 ? (
+                {section.href ? (
+                  <Link
+                    href={section.href}
+                    className="text-sm font-medium underline-offset-4 hover:underline"
+                  >
+                    {section.cta ?? "Open →"}
+                  </Link>
+                ) : (
                   <p className="text-sm text-muted-foreground italic">
                     Nothing here yet. Drop content from Miro when ready.
                   </p>
-                ) : (
-                  <ul className="list-disc space-y-1 pl-5 text-sm">
-                    {section.items.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
                 )}
               </CardContent>
             </Card>
