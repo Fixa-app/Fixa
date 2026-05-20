@@ -1,21 +1,16 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/auth/admin";
+import { signOut } from "@/lib/auth/actions";
 
 export async function SiteHeader() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  async function signOut() {
-    "use server";
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-    redirect("/");
-  }
+  const userIsAdmin = isAdmin(user);
 
   return (
     <header className="border-b border-border">
@@ -36,6 +31,11 @@ export async function SiteHeader() {
           <Link href="/plan" className="hover:text-foreground">
             Plan
           </Link>
+          {userIsAdmin && (
+            <Link href="/admin" className="hover:text-foreground">
+              Admin
+            </Link>
+          )}
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
