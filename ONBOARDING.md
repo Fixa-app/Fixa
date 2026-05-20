@@ -159,6 +159,19 @@ supabase db push
 
 Migrations are versioned and tracked in remote history, so we can each apply them in order without stepping on each other.
 
+**Gotcha — table privileges.** This Supabase project has "Automatically expose new tables" turned off (for safety: nothing leaks to the public API by accident). That means every new public-schema table needs explicit `GRANT`s before the `authenticated` role can query it. Without the grants, Postgres returns `42501 "permission denied"` before RLS even gets a chance to run. Pattern for a typical row-per-user table:
+
+```sql
+create table public.things (...);
+alter table public.things enable row level security;
+create policy "..." on public.things ...;
+
+-- Required, or 42501 errors on every query
+grant select, insert, update, delete on public.things to authenticated;
+```
+
+Grant only what users actually need (often just `select` for read-only data).
+
 Admin status is stored in `profiles.is_admin` (Postgres), managed via the [/admin/users](src/app/admin/users/) page. To bootstrap the first admin on a fresh deployment, set the flag via the Supabase SQL editor:
 
 ```sql
