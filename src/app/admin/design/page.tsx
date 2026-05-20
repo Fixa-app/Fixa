@@ -55,7 +55,7 @@ export default function DesignPage() {
             <Pair label="Primitives" value="Base UI (@base-ui/react)" />
             <Pair label="Icons" value="lucide-react" />
             <Pair label="Sans font" value="Geist" />
-            <Pair label="Serif font" value="Instrument Serif (headlines)" />
+            <Pair label="Serif font" value="Source Serif 4 (headlines)" />
             <Pair label="Mono font" value="Geist Mono" />
             <Pair label="Brand color" value="Blue (oklch primary token)" />
             <Pair label="Theme" value="Light + dark via CSS variables" />
@@ -106,7 +106,7 @@ export default function DesignPage() {
 
       <DesignSection
         title="Typography"
-        description="Instrument Serif for editorial headlines (hero, section titles on marketing). Geist Sans for everything else. Geist Mono for technical content (paths, IDs, env vars)."
+        description="Source Serif 4 for editorial headlines (hero, section titles on marketing). Geist Sans for everything else. Geist Mono for technical content (paths, IDs, env vars)."
       >
         <TypeScale />
       </DesignSection>
@@ -213,13 +213,13 @@ function TypeScale() {
     <Card>
       <CardContent className="flex flex-col divide-y divide-border pt-6">
         <TypeRow
-          className="font-serif text-6xl leading-[1.05] tracking-tight"
+          className="font-serif text-6xl font-semibold leading-[1.05] tracking-tight"
           label="font-serif text-6xl (marketing hero)"
         >
           Editorial headline
         </TypeRow>
         <TypeRow
-          className="font-serif text-4xl leading-[1.05] tracking-tight"
+          className="font-serif text-4xl font-semibold leading-[1.05] tracking-tight"
           label="font-serif text-4xl (marketing sections)"
         >
           Editorial section title

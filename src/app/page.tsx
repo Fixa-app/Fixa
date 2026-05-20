@@ -33,7 +33,7 @@ function Hero() {
         <span className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
           Pre-launch
         </span>
-        <h1 className="font-serif text-5xl leading-[1.05] tracking-tight sm:text-7xl">
+        <h1 className="font-serif text-5xl font-semibold leading-[1.05] tracking-tight sm:text-7xl">
           Run your trade business from one workflow.
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
@@ -107,7 +107,7 @@ function Features() {
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
-          <h2 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">
+          <h2 className="font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
             One place for everything between the call and the cash.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
@@ -148,7 +148,7 @@ function Workflow() {
     <section id="workflow" className="px-6 py-20 sm:py-24">
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
-          <h2 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">
+          <h2 className="font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
             From first call to final invoice.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
