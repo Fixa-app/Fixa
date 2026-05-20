@@ -64,24 +64,24 @@ export function AuthDialog({ children }: { children: ReactElement }) {
         {status === "sent" ? (
           <div className="flex flex-col gap-4 pt-2">
             <DialogHeader>
-              <DialogTitle>Check your email</DialogTitle>
+              <DialogTitle>Bekijk je inbox</DialogTitle>
               <DialogDescription>
-                We sent a magic link to <strong>{email}</strong>. Click the link
-                to finish signing in. You can close this window.
+                We hebben een magic link gestuurd naar <strong>{email}</strong>.
+                Klik op de link om in te loggen. Je kunt dit venster sluiten.
               </DialogDescription>
             </DialogHeader>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
             <DialogHeader>
-              <DialogTitle>Continue to Fixa</DialogTitle>
+              <DialogTitle>Verder naar Fixa</DialogTitle>
               <DialogDescription>
-                Enter your email. We&apos;ll send you a magic link to sign in —
-                or create your account if it&apos;s your first visit.
+                Vul je e-mailadres in. We sturen je een magic link om in te
+                loggen — of maken een account aan als je voor het eerst komt.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-2">
-              <Label htmlFor="auth-email">Email</Label>
+              <Label htmlFor="auth-email">E-mailadres</Label>
               <Input
                 id="auth-email"
                 type="email"
@@ -90,7 +90,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
                 autoFocus
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@example.com"
+                placeholder="jij@voorbeeld.nl"
                 disabled={status === "sending"}
               />
             </div>
@@ -98,7 +98,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
               <p className="text-sm text-destructive">{errorMessage}</p>
             )}
             <Button type="submit" disabled={status === "sending" || !email}>
-              {status === "sending" ? "Sending..." : "Send magic link"}
+              {status === "sending" ? "Versturen..." : "Verstuur magic link"}
             </Button>
           </form>
         )}

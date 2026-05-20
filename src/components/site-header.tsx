@@ -20,13 +20,13 @@ export async function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground">
-            Features
+            Functies
           </a>
           <a href="#workflow" className="hover:text-foreground">
-            How it works
+            Hoe het werkt
           </a>
           <a href="#industries" className="hover:text-foreground">
-            Who it&apos;s for
+            Voor wie
           </a>
           <Link href="/plan" className="hover:text-foreground">
             Plan
@@ -48,7 +48,7 @@ export async function SiteHeader() {
               </span>
               <form action={signOut}>
                 <Button variant="ghost" size="sm" type="submit">
-                  Sign out
+                  Uitloggen
                 </Button>
               </form>
             </>
@@ -56,11 +56,11 @@ export async function SiteHeader() {
             <>
               <AuthDialog>
                 <Button variant="ghost" size="sm">
-                  Sign in
+                  Inloggen
                 </Button>
               </AuthDialog>
               <AuthDialog>
-                <Button size="sm">Start free trial</Button>
+                <Button size="sm">Gratis proberen</Button>
               </AuthDialog>
             </>
           )}

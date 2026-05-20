@@ -34,17 +34,17 @@ function Hero() {
           Pre-launch
         </span>
         <h1 className="font-display font-medium text-5xl leading-[1.05] tracking-tight sm:text-7xl">
-          Run your trade business from one workflow.
+          Run je vakbedrijf vanuit één workflow.
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
-          Fixa turns requests, intakes, quotes, jobs, and invoices into a
-          single, predictable flow — so you spend more time on the tools and
-          less time on admin.
+          Fixa brengt aanvragen, intakes, offertes, werk en facturen samen in
+          één voorspelbare flow — zodat je meer tijd hebt voor je vak en minder
+          voor administratie.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <AuthDialog>
             <Button size="lg" className="rounded-full">
-              Start free trial
+              Gratis proberen
             </Button>
           </AuthDialog>
           <Button
@@ -54,12 +54,12 @@ function Hero() {
             nativeButton={false}
             render={<a href="#workflow" />}
           >
-            See how it works
+            Bekijk hoe het werkt
           </Button>
         </div>
         <p className="text-sm text-muted-foreground">
-          Built for plumbers, electricians, handymen, and the trades that show
-          up on site.
+          Gemaakt voor loodgieters, elektriciens, klussers en alle vakmensen
+          die ter plaatse komen.
         </p>
       </div>
     </section>
@@ -69,33 +69,33 @@ function Hero() {
 const features = [
   {
     icon: Inbox,
-    title: "Capture every request",
-    body: "Online forms, manual entry, or self-service through the Client Hub. Nothing slips through the cracks.",
+    title: "Vang elke aanvraag op",
+    body: "Online formulieren, handmatige invoer of self-service via de Klanthub. Niets glipt door je vingers.",
   },
   {
     icon: Calendar,
-    title: "Schedule intakes",
-    body: "Propose timeslots, get them confirmed, and arrive on site with everything you need.",
+    title: "Plan intakes",
+    body: "Stel tijden voor, krijg bevestiging en kom voorbereid ter plaatse aan.",
   },
   {
     icon: FileText,
-    title: "Send quotes that close",
-    body: "Interactive quotes with upsell line items. Clients accept, decline, or request changes in one click.",
+    title: "Stuur offertes die werken",
+    body: "Interactieve offertes met upsell-regels. Klanten accepteren, weigeren of vragen aanpassingen in één klik.",
   },
   {
     icon: Wrench,
-    title: "Run the job",
-    body: "Order third-party material, align co-workers, share the timeslot with the client — all in one place.",
+    title: "Voer het werk uit",
+    body: "Bestel materialen, stem af met collega's en deel de planning met de klant — allemaal op één plek.",
   },
   {
     icon: Receipt,
-    title: "Invoice and get paid",
-    body: "Fractional payments, automated reminders, and a paid status that updates in real time.",
+    title: "Factureer en word betaald",
+    body: "Deelbetalingen, automatische herinneringen en een betaalstatus die realtime bijwerkt.",
   },
   {
     icon: Users,
-    title: "Client Hub",
-    body: "Your clients see what is happening and when — without you having to call, text, or email.",
+    title: "Klanthub",
+    body: "Je klanten zien wat er speelt en wanneer — zonder dat jij hoeft te bellen, sms'en of mailen.",
   },
 ];
 
@@ -108,11 +108,11 @@ function Features() {
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
           <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
-            One place for everything between the call and the cash.
+            Eén plek voor alles tussen het telefoontje en de betaling.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
-            Fixa replaces the email threads, spreadsheets, and notebooks trades
-            use to track work today.
+            Fixa vervangt de mailtjes, spreadsheets en notitieboekjes waarmee
+            vakbedrijven nu hun werk bijhouden.
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -133,14 +133,14 @@ function Features() {
 }
 
 const workflowSteps = [
-  { name: "Request", body: "Capture work from three channels." },
+  { name: "Aanvraag", body: "Vang werk op via drie kanalen." },
   {
     name: "Intake",
-    body: "Decide if a visit is needed. Gather what's required to quote.",
+    body: "Bepaal of een bezoek nodig is. Verzamel wat je nodig hebt voor de offerte.",
   },
-  { name: "Quote", body: "Compose, share, iterate — until accepted." },
-  { name: "Job", body: "Schedule, dispatch, execute." },
-  { name: "Invoice", body: "Bill, remind, get paid." },
+  { name: "Offerte", body: "Opstellen, delen, aanpassen — tot het akkoord is." },
+  { name: "Werk", body: "Plannen, toewijzen, uitvoeren." },
+  { name: "Factuur", body: "Versturen, herinneren, geld ontvangen." },
 ];
 
 function Workflow() {
@@ -149,10 +149,10 @@ function Workflow() {
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
           <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
-            From first call to final invoice.
+            Van eerste telefoontje tot laatste factuur.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
-            One workflow that mirrors how trade work actually moves.
+            Eén workflow die past bij hoe vakwerk écht loopt.
           </p>
         </div>
         <ol className="grid gap-4 md:grid-cols-5">
@@ -177,14 +177,14 @@ function Workflow() {
 }
 
 const industries = [
-  "Plumbing",
-  "Electrical",
-  "HVAC",
-  "Landscaping",
-  "Cleaning",
-  "Handyman",
-  "Painting",
-  "Roofing",
+  "Loodgieters",
+  "Elektriciens",
+  "CV & klimaat",
+  "Hoveniers",
+  "Schoonmaak",
+  "Klusbedrijf",
+  "Schilders",
+  "Dakdekkers",
 ];
 
 function Industries() {
@@ -195,7 +195,7 @@ function Industries() {
     >
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 text-center">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Built for the trades that show up on site.
+          Gemaakt voor vakbedrijven die ter plaatse komen.
         </h2>
         <ul className="flex flex-wrap justify-center gap-3 text-sm">
           {industries.map((industry) => (
@@ -208,7 +208,8 @@ function Industries() {
           ))}
         </ul>
         <p className="max-w-xl text-muted-foreground">
-          If your day is a mix of quotes, visits, and invoices, Fixa is for you.
+          Bestaat je dag uit offertes, bezoeken en facturen? Dan is Fixa er
+          voor jou.
         </p>
       </div>
     </section>
@@ -220,15 +221,15 @@ function CTABand() {
     <section className="px-6 py-20 sm:py-24">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-2xl border border-border bg-foreground p-12 text-center text-background">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Be one of the first to try Fixa.
+          Wees een van de eersten die Fixa proberen.
         </h2>
         <p className="max-w-xl text-background/80">
-          We&apos;re building Fixa in the open with a small group of pilot
-          customers. Start your free trial, or get in touch to help shape it.
+          We bouwen Fixa in het open, samen met een kleine groep pilotklanten.
+          Start je gratis proefperiode of neem contact op om mee te bouwen.
         </p>
         <AuthDialog>
           <Button size="lg" variant="secondary" className="rounded-full">
-            Start free trial
+            Gratis proberen
             <ArrowRight className="ml-2 size-4" />
           </Button>
         </AuthDialog>
@@ -247,10 +248,10 @@ function SiteFooter() {
             Plan
           </Link>
           <a href="#features" className="hover:text-foreground">
-            Features
+            Functies
           </a>
           <a href="#workflow" className="hover:text-foreground">
-            How it works
+            Hoe het werkt
           </a>
         </div>
       </div>
