@@ -111,11 +111,14 @@ git push                    # ships to Vercel prod automatically
 | Path | What lives there |
 |---|---|
 | [src/app/](src/app/) | Next.js App Router pages and route handlers |
+| [src/app/admin/](src/app/admin/) | Admin-only pages. Layout server-checks the session, silently redirects non-admins to `/` |
 | [src/app/auth/callback/](src/app/auth/callback/) | Magic-link callback that exchanges the code for a session |
-| [src/components/](src/components/) | Hand-written React components (header, auth dialog) |
+| [src/components/](src/components/) | Hand-written React components (site header, admin header, auth dialog) |
 | [src/components/ui/](src/components/ui/) | shadcn/ui primitives. Regenerate via shadcn CLI, don't hand-edit |
+| [src/lib/auth/](src/lib/auth/) | `isAdmin()` check (queries `profiles.is_admin`) and shared `signOut` server action |
 | [src/lib/supabase/](src/lib/supabase/) | Supabase client helpers (browser + server, both PKCE) |
 | [src/data/](src/data/) | Typed content data (e.g. the workflow definition) |
+| [supabase/migrations/](supabase/migrations/) | Versioned SQL migrations applied via the Supabase CLI |
 | [.env.local](.env.local) | Your local env vars. Gitignored. |
 | [.env.example](.env.example) | What env vars you need. Committed. |
 
@@ -126,6 +129,41 @@ git push                    # ships to Vercel prod automatically
 - **Supabase** for auth + Postgres
 - **Vercel** for deploys
 - **pnpm** for packages
+
+## Working with the database (optional, only if you're editing schema)
+
+App code that just reads or writes via the Supabase client doesn't need the CLI — your Supabase keys in `.env.local` already cover it. The CLI is only needed when you want to create or apply a migration.
+
+```bash
+# One-time install
+brew install supabase/tap/supabase
+
+# One-time auth (opens browser)
+supabase login
+
+# One-time link from this repo to the Fixa project
+supabase link --project-ref yruvaccvrxzotaalnvrq
+```
+
+Then the loop for any schema change:
+
+```bash
+# Scaffold a new timestamped migration file in supabase/migrations/
+supabase migration new add_clients_table
+
+# Edit the generated .sql file in your editor
+
+# Push it to remote Supabase
+supabase db push
+```
+
+Migrations are versioned and tracked in remote history, so we can each apply them in order without stepping on each other.
+
+Admin status is stored in `profiles.is_admin` (Postgres), managed via the [/admin/users](src/app/admin/users/) page. To bootstrap the first admin on a fresh deployment, set the flag via the Supabase SQL editor:
+
+```sql
+update profiles set is_admin = true where email = 'your@email.com';
+```
 
 ## Communication
 
