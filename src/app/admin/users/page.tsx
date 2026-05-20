@@ -8,7 +8,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
-import { getBootstrapAdminEmails } from "@/lib/auth/admin";
 import { setAdminFlag } from "./actions";
 
 type Profile = {
@@ -20,15 +19,16 @@ type Profile = {
 
 export default async function AdminUsersPage() {
   const supabase = await createClient();
+
+  const {
+    data: { user: currentUser },
+  } = await supabase.auth.getUser();
+
   const { data: profiles, error } = await supabase
     .from("profiles")
     .select("user_id, email, is_admin, created_at")
     .order("created_at", { ascending: false })
     .returns<Profile[]>();
-
-  const bootstrapAdmins = new Set(
-    getBootstrapAdminEmails().map((e) => e.toLowerCase()),
-  );
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-10">
@@ -46,11 +46,7 @@ export default async function AdminUsersPage() {
             <CardTitle className="text-destructive">
               Could not load users
             </CardTitle>
-            <CardDescription>
-              {error.message}. If this is the first time visiting this page,
-              the profiles table migration probably has not been applied yet
-              (supabase/migrations/20260520120000_create_profiles.sql).
-            </CardDescription>
+            <CardDescription>{error.message}</CardDescription>
           </CardHeader>
         </Card>
       )}
@@ -59,9 +55,8 @@ export default async function AdminUsersPage() {
         <CardHeader>
           <CardTitle>All users</CardTitle>
           <CardDescription>
-            Bootstrap admins are configured via the ADMIN_EMAILS env var and
-            cannot be demoted from the UI — toggle them by removing the env
-            var.
+            Admin access is managed here. You cannot revoke your own admin
+            access — ask another admin to do it for you.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -73,9 +68,7 @@ export default async function AdminUsersPage() {
           ) : (
             <ul className="divide-y divide-border">
               {profiles.map((profile) => {
-                const isBootstrap = bootstrapAdmins.has(
-                  profile.email.toLowerCase(),
-                );
+                const isSelf = profile.user_id === currentUser?.id;
                 return (
                   <li
                     key={profile.user_id}
@@ -84,6 +77,11 @@ export default async function AdminUsersPage() {
                     <div className="flex min-w-0 flex-col">
                       <span className="truncate text-sm font-medium">
                         {profile.email}
+                        {isSelf && (
+                          <span className="ml-2 text-xs text-muted-foreground">
+                            (you)
+                          </span>
+                        )}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         Joined{" "}
@@ -93,9 +91,6 @@ export default async function AdminUsersPage() {
                     <div className="flex items-center gap-3">
                       {profile.is_admin && (
                         <Badge variant="default">admin</Badge>
-                      )}
-                      {isBootstrap && (
-                        <Badge variant="secondary">bootstrap</Badge>
                       )}
                       <form
                         action={setAdminFlag.bind(
@@ -108,10 +103,10 @@ export default async function AdminUsersPage() {
                           type="submit"
                           size="sm"
                           variant="outline"
-                          disabled={isBootstrap}
+                          disabled={isSelf && profile.is_admin}
                           title={
-                            isBootstrap
-                              ? "Bootstrap admins cannot be demoted from the UI"
+                            isSelf && profile.is_admin
+                              ? "You cannot revoke your own admin access"
                               : undefined
                           }
                         >
