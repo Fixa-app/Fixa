@@ -28,12 +28,12 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="px-6 py-20 sm:py-28">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
+    <section className="px-6 py-24 sm:py-32">
+      <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
         <span className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
           Pre-launch
         </span>
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
+        <h1 className="font-serif text-5xl leading-[1.05] tracking-tight sm:text-7xl">
           Run your trade business from one workflow.
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
@@ -43,11 +43,14 @@ function Hero() {
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <AuthDialog>
-            <Button size="lg">Start free trial</Button>
+            <Button size="lg" className="rounded-full">
+              Start free trial
+            </Button>
           </AuthDialog>
           <Button
             size="lg"
             variant="outline"
+            className="rounded-full"
             nativeButton={false}
             render={<a href="#workflow" />}
           >
@@ -104,7 +107,7 @@ function Features() {
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h2 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">
             One place for everything between the call and the cash.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
@@ -145,7 +148,7 @@ function Workflow() {
     <section id="workflow" className="px-6 py-20 sm:py-24">
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h2 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">
             From first call to final invoice.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
@@ -224,7 +227,7 @@ function CTABand() {
           customers. Start your free trial, or get in touch to help shape it.
         </p>
         <AuthDialog>
-          <Button size="lg" variant="secondary">
+          <Button size="lg" variant="secondary" className="rounded-full">
             Start free trial
             <ArrowRight className="ml-2 size-4" />
           </Button>
