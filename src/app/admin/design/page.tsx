@@ -213,13 +213,13 @@ function TypeScale() {
     <Card>
       <CardContent className="flex flex-col divide-y divide-border pt-6">
         <TypeRow
-          className="font-display text-6xl font-bold leading-[1.05] tracking-tight"
+          className="font-display text-6xl font-medium leading-[1.05] tracking-tight"
           label="font-display text-6xl (marketing hero)"
         >
           Editorial headline
         </TypeRow>
         <TypeRow
-          className="font-display text-4xl font-bold leading-[1.05] tracking-tight"
+          className="font-display text-4xl font-medium leading-[1.05] tracking-tight"
           label="font-display text-4xl (marketing sections)"
         >
           Editorial section title
