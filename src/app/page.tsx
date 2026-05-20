@@ -1,11 +1,20 @@
 import {
   ArrowRight,
+  ArrowUpRight,
   Calendar,
+  Droplets,
   FileText,
+  Hammer,
+  Home as HomeIcon,
   Inbox,
+  PaintBucket,
   Receipt,
+  Sparkles,
+  Sprout,
   Users,
+  Wind,
   Wrench,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -16,9 +25,9 @@ export default function Home() {
     <>
       <main className="flex-1">
         <Hero />
+        <Industries />
         <Features />
         <Workflow />
-        <Industries />
         <CTABand />
       </main>
       <SiteFooter />
@@ -176,15 +185,55 @@ function Workflow() {
   );
 }
 
-const industries = [
-  "Loodgieters",
-  "Elektriciens",
-  "CV & klimaat",
-  "Hoveniers",
-  "Schoonmaak",
-  "Klusbedrijf",
-  "Schilders",
-  "Dakdekkers",
+const industryCards = [
+  {
+    name: "Loodgieters",
+    icon: Droplets,
+    bg: "bg-sky-500",
+    fg: "text-sky-50",
+  },
+  {
+    name: "Elektriciens",
+    icon: Zap,
+    bg: "bg-amber-300",
+    fg: "text-amber-950",
+  },
+  {
+    name: "CV & klimaat",
+    icon: Wind,
+    bg: "bg-teal-600",
+    fg: "text-teal-50",
+  },
+  {
+    name: "Hoveniers",
+    icon: Sprout,
+    bg: "bg-emerald-600",
+    fg: "text-emerald-50",
+  },
+  {
+    name: "Schoonmaak",
+    icon: Sparkles,
+    bg: "bg-rose-400",
+    fg: "text-rose-50",
+  },
+  {
+    name: "Klusbedrijf",
+    icon: Hammer,
+    bg: "bg-amber-700",
+    fg: "text-amber-50",
+  },
+  {
+    name: "Schilders",
+    icon: PaintBucket,
+    bg: "bg-orange-500",
+    fg: "text-orange-50",
+  },
+  {
+    name: "Dakdekkers",
+    icon: HomeIcon,
+    bg: "bg-slate-700",
+    fg: "text-slate-50",
+  },
 ];
 
 function Industries() {
@@ -193,24 +242,31 @@ function Industries() {
       id="industries"
       className="border-t border-border bg-muted/20 px-6 py-20 sm:py-24"
     >
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 text-center">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Gemaakt voor vakbedrijven die ter plaatse komen.
-        </h2>
-        <ul className="flex flex-wrap justify-center gap-3 text-sm">
-          {industries.map((industry) => (
-            <li
-              key={industry}
-              className="rounded-full border border-border bg-background px-4 py-1.5 text-foreground"
+      <div className="mx-auto flex max-w-7xl flex-col gap-10">
+        <div className="flex max-w-2xl flex-col gap-3">
+          <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
+            Voor welke vakbedrijven?
+          </h2>
+          <p className="text-muted-foreground">
+            Gebouwd voor iedereen die ter plaatse komt en zelf offertes,
+            planning en facturen regelt.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {industryCards.map((industry) => (
+            <a
+              key={industry.name}
+              href="#features"
+              className={`group relative aspect-[4/5] overflow-hidden rounded-2xl p-5 transition-transform hover:scale-[1.02] ${industry.bg} ${industry.fg}`}
             >
-              {industry}
-            </li>
+              <industry.icon className="size-10 opacity-30" />
+              <div className="absolute inset-x-5 bottom-5 flex items-center justify-between text-lg font-semibold">
+                <span>{industry.name}</span>
+                <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
+            </a>
           ))}
-        </ul>
-        <p className="max-w-xl text-muted-foreground">
-          Bestaat je dag uit offertes, bezoeken en facturen? Dan is Fixa er
-          voor jou.
-        </p>
+        </div>
       </div>
     </section>
   );
