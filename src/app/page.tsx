@@ -45,7 +45,12 @@ function Hero() {
           <AuthDialog>
             <Button size="lg">Start free trial</Button>
           </AuthDialog>
-          <Button size="lg" variant="outline" render={<a href="#workflow" />}>
+          <Button
+            size="lg"
+            variant="outline"
+            nativeButton={false}
+            render={<a href="#workflow" />}
+          >
             See how it works
           </Button>
         </div>

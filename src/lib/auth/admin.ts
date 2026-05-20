@@ -12,16 +12,16 @@ export async function isAdmin(user: User | null | undefined): Promise<boolean> {
     .maybeSingle();
 
   if (error) {
-    console.error("[isAdmin] profile query failed", {
-      userId: user.id,
-      email: user.email,
-      error: { message: error.message, code: error.code, details: error.details },
-    });
+    console.error(
+      `[isAdmin] profile query failed for ${user.email} (id=${user.id}): message="${error.message}" code="${error.code}" details="${error.details}" hint="${error.hint}"`,
+    );
     return false;
   }
 
   if (!data) {
-    console.warn("[isAdmin] no profile row found for user", { userId: user.id, email: user.email });
+    console.warn(
+      `[isAdmin] no profile row for ${user.email} (id=${user.id})`,
+    );
     return false;
   }
 
