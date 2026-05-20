@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, Workflow, BarChart3 } from "lucide-react";
+import { Users, Workflow, BarChart3, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import {
   Card,
@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { sendTestEmail } from "./actions";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -59,6 +61,28 @@ export default async function AdminDashboardPage() {
           title="Workflow spec"
           description="The five-stage workflow rebuilt from Miro. Edit content in src/data/workflow.ts."
         />
+      </section>
+
+      <section>
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+            <Mail className="size-5 text-foreground/80" />
+            <div className="flex flex-col gap-1">
+              <CardTitle className="text-base">Email check</CardTitle>
+              <CardDescription>
+                Send a test email to yourself via Resend ({greeting}@…) to
+                verify the SMTP / API integration is wired correctly.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <form action={sendTestEmail}>
+              <Button type="submit" size="sm" variant="outline">
+                Send test email
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </section>
     </div>
   );
