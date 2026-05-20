@@ -46,6 +46,12 @@ export function AdminHeader({ user }: { user: User }) {
             <Link href="/admin/users" className="hover:text-zinc-100">
               Users
             </Link>
+            <Link href="/plan" className="hover:text-zinc-100">
+              Plan
+            </Link>
+            <Link href="/plan/workflow" className="hover:text-zinc-100">
+              Workflow
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth/admin";
-import { AdminHeader } from "@/components/admin-header";
 
 export const metadata = {
   title: "Fixa Admin",
@@ -21,10 +20,5 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return (
-    <>
-      <AdminHeader user={user!} />
-      <main className="flex-1 bg-muted/20">{children}</main>
-    </>
-  );
+  return <main className="flex-1 bg-muted/20">{children}</main>;
 }

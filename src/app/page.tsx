@@ -10,12 +10,10 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
-import { SiteHeader } from "@/components/site-header";
 
 export default function Home() {
   return (
     <>
-      <SiteHeader />
       <main className="flex-1">
         <Hero />
         <Features />

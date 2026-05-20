@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/auth/admin";
+import { SiteHeader } from "@/components/site-header";
+import { AdminHeader } from "@/components/admin-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,17 +21,24 @@ export const metadata: Metadata = {
   description: "Field-service management, reimagined.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const userIsAdmin = await isAdmin(user);
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        {userIsAdmin && user ? <AdminHeader user={user} /> : <SiteHeader />}
         {children}
       </body>
     </html>
