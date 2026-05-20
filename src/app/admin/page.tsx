@@ -17,6 +17,10 @@ export default async function AdminDashboardPage() {
 
   const greeting = user?.email?.split("@")[0] ?? "there";
 
+  const { count: userCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true });
+
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-10">
       <header className="flex flex-col gap-1">
@@ -29,7 +33,15 @@ export default async function AdminDashboardPage() {
       </header>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Total users" value="—" hint="Wire after service role" />
+        <StatCard
+          label="Total users"
+          value={userCount?.toString() ?? "—"}
+          hint={
+            userCount === null
+              ? "Migration not applied yet"
+              : "Across all environments"
+          }
+        />
         <StatCard label="Active requests" value="—" hint="No tables yet" />
         <StatCard label="Open invoices" value="—" hint="No tables yet" />
       </section>
@@ -39,7 +51,7 @@ export default async function AdminDashboardPage() {
           href="/admin/users"
           icon={Users}
           title="Users"
-          description="Manage who can access Fixa, see signups, view auth events."
+          description="Manage who can access Fixa and who is an admin."
         />
         <ShortcutCard
           href="/plan/workflow"

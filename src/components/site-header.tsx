@@ -10,7 +10,7 @@ export async function SiteHeader() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const userIsAdmin = isAdmin(user);
+  const userIsAdmin = await isAdmin(user);
 
   return (
     <header className="border-b border-border">
