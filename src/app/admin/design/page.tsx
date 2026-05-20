@@ -55,7 +55,7 @@ export default function DesignPage() {
             <Pair label="Primitives" value="Base UI (@base-ui/react)" />
             <Pair label="Icons" value="lucide-react" />
             <Pair label="Sans font" value="Geist" />
-            <Pair label="Display font" value="Plus Jakarta Sans (headlines)" />
+            <Pair label="Display font" value="Noto Serif (headlines)" />
             <Pair label="Mono font" value="Geist Mono" />
             <Pair label="Brand color" value="Blue (oklch primary token)" />
             <Pair label="Theme" value="Light + dark via CSS variables" />
@@ -106,7 +106,7 @@ export default function DesignPage() {
 
       <DesignSection
         title="Typography"
-        description="Plus Jakarta Sans Bold for marketing headlines (hero, section titles) via `font-display`. Geist Sans for everything else. Geist Mono for technical content (paths, IDs, env vars)."
+        description="Noto Serif Bold for marketing headlines (hero, section titles) via `font-display`. Geist Sans for everything else. Geist Mono for technical content (paths, IDs, env vars)."
       >
         <TypeScale />
       </DesignSection>
