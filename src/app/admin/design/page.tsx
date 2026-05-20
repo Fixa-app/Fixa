@@ -54,7 +54,7 @@ export default function DesignPage() {
             <Pair label="Components" value="shadcn/ui (base-nova style)" />
             <Pair label="Primitives" value="Base UI (@base-ui/react)" />
             <Pair label="Icons" value="lucide-react" />
-            <Pair label="Sans font" value="Geist" />
+            <Pair label="Sans font" value="Manrope (body + nav)" />
             <Pair label="Display font" value="Noto Serif (headlines)" />
             <Pair label="Mono font" value="Geist Mono" />
             <Pair label="Brand color" value="Blue (oklch primary token)" />
@@ -75,7 +75,7 @@ export default function DesignPage() {
               </Label>
               <div className="text-2xl font-semibold tracking-tight">Fixa</div>
               <p className="text-sm text-muted-foreground">
-                Geist semibold, slight negative tracking. Marketing site,
+                Manrope semibold, slight negative tracking. Marketing site,
                 emails, signed-in product header.
               </p>
             </div>
@@ -106,7 +106,7 @@ export default function DesignPage() {
 
       <DesignSection
         title="Typography"
-        description="Noto Serif Bold for marketing headlines (hero, section titles) via `font-display`. Geist Sans for everything else. Geist Mono for technical content (paths, IDs, env vars)."
+        description="Noto Serif Bold for marketing headlines (hero, section titles) via `font-display`. Manrope for body text, nav, UI. Geist Mono for technical content (paths, IDs, env vars)."
       >
         <TypeScale />
       </DesignSection>
