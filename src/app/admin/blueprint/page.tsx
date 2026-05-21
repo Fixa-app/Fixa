@@ -26,11 +26,20 @@ type CardData = {
 
 /* --------------------------- Cards --------------------------- */
 
-const manual: CardData = {
-  name: "Manual",
+// Pro dashboard
+const newRequestsPro: CardData = {
+  name: "New requests",
   icon: PenLine,
   surface: "Pro",
-  description: "Professional creates the request inside Fixa.",
+  description: "Quick-add a new request manually from inside Fixa.",
+};
+
+const websitePro: CardData = {
+  name: "Website",
+  icon: Globe,
+  surface: "Pro",
+  description:
+    "Public form on the pro's website that creates a new request.",
 };
 
 const requestsPro: CardData = {
@@ -86,9 +95,10 @@ const invoicesPro: CardData = {
   statuses: ["Draft", "Sent", "Late", "Paid"],
 };
 
-const clientRequest: CardData = {
-  name: "Client request",
-  icon: Users,
+// Client hub
+const newRequestsClient: CardData = {
+  name: "New requests",
+  icon: PenLine,
   surface: "Client",
   description: "Client submits a new request from their portal.",
 };
@@ -125,14 +135,8 @@ const invoicesClient: CardData = {
   statuses: ["Unpaid", "Paid"],
 };
 
-const website: CardData = {
-  name: "Website",
-  icon: Globe,
-  surface: "Online",
-  description: "Public form on the professional's website.",
-};
-
-const externalChannels: CardData = {
+// Online
+const channelsOnline: CardData = {
   name: "Channels",
   icon: Workflow,
   surface: "Online",
@@ -141,16 +145,14 @@ const externalChannels: CardData = {
 
 /* --------------------------- Layout constants --------------------------- */
 
-const phaseLabels = [
-  "Better leads",
-  "More work",
-  "Work smarter",
-  "More profits",
-];
-
-// 7 columns: 4 phases (flexible width) + 3 arrow columns (fixed)
+// 9 columns: 5 card columns + 4 arrow gap columns
+//   col 1 = New requests
+//   col 3 = Requests / Intakes (Better leads)
+//   col 5 = Quotes (More work)
+//   col 7 = Jobs / Schedule (Work smarter)
+//   col 9 = Invoices (More profits)
 const gridTemplate =
-  "minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)";
+  "minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)";
 
 /* --------------------------- Page --------------------------- */
 
@@ -184,12 +186,16 @@ function PhaseHeaders() {
       className="grid gap-x-4"
       style={{ gridTemplateColumns: gridTemplate }}
     >
-      {phaseLabels.map((label, i) => (
-        <Fragment key={label}>
-          <Eyebrow>{label}</Eyebrow>
-          {i < phaseLabels.length - 1 && <div />}
-        </Fragment>
-      ))}
+      {/* Better leads spans cols 1-3 (New requests + arrow + Requests col) */}
+      <div className="col-span-3">
+        <Eyebrow>Better leads</Eyebrow>
+      </div>
+      <div />
+      <Eyebrow>More work</Eyebrow>
+      <div />
+      <Eyebrow>Work smarter</Eyebrow>
+      <div />
+      <Eyebrow>More profits</Eyebrow>
     </div>
   );
 }
@@ -202,16 +208,9 @@ function ProSection() {
         className="grid items-start gap-x-4 gap-y-2"
         style={{ gridTemplateColumns: gridTemplate }}
       >
-        {/* Sub-row 1: above primary */}
-        <CardItem card={manual} />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-
-        {/* Sub-row 2: primary + horizontal arrows */}
+        {/* Sub-row 1: primary entities + horizontal arrows */}
+        <CardItem card={newRequestsPro} />
+        <HorizontalArrow />
         <CardItem card={requestsPro} />
         <HorizontalArrow />
         <CardItem card={quotesPro} />
@@ -220,7 +219,9 @@ function ProSection() {
         <HorizontalArrow />
         <CardItem card={invoicesPro} />
 
-        {/* Sub-row 3: below primary */}
+        {/* Sub-row 2: below-primary cards (same column as the primary above) */}
+        <CardItem card={websitePro} />
+        <Empty />
         <CardItem card={intakesPro} />
         <Empty />
         <Empty />
@@ -241,16 +242,8 @@ function ClientSection() {
         className="grid items-start gap-x-4 gap-y-2"
         style={{ gridTemplateColumns: gridTemplate }}
       >
-        {/* Sub-row 1: above primary */}
-        <CardItem card={clientRequest} />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-
-        {/* Sub-row 2: primary + horizontal arrows */}
+        <CardItem card={newRequestsClient} />
+        <HorizontalArrow />
         <CardItem card={requestsClient} />
         <HorizontalArrow />
         <CardItem card={quotesClient} />
@@ -271,10 +264,9 @@ function OnlineSection() {
         className="grid items-start gap-x-4 gap-y-2"
         style={{ gridTemplateColumns: gridTemplate }}
       >
-        <div className="flex flex-col gap-2">
-          <CardItem card={website} />
-          <CardItem card={externalChannels} />
-        </div>
+        <CardItem card={channelsOnline} />
+        <Empty />
+        <Empty />
         <Empty />
         <Empty />
         <Empty />
