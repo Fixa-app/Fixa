@@ -1,26 +1,27 @@
 import { Fragment } from "react";
 import {
   ArrowRight,
+  FileText,
   Globe,
+  Inbox,
   type LucideIcon,
   PenLine,
+  Receipt,
   Users,
   Workflow,
+  Wrench,
 } from "lucide-react";
 
 type Surface = "Pro" | "Client" | "Online";
 
-type Card = {
+type CardData = {
   name: string;
+  icon: LucideIcon;
   surface: Surface;
   description: string;
 };
 
-type EntryChannel = Card & {
-  icon: LucideIcon;
-};
-
-const entryChannels: EntryChannel[] = [
+const entryChannels: CardData[] = [
   {
     name: "Manual",
     icon: PenLine,
@@ -48,33 +49,38 @@ const entryChannels: EntryChannel[] = [
   },
 ];
 
-type Phase = Card & {
+type Phase = CardData & {
   category: string;
 };
 
-const phases: Phase[] = [
-  {
-    category: "Better leads",
-    name: "Request",
-    surface: "Pro",
-    description:
-      "Triage incoming work. Qualify, optional intake, decide to quote.",
-  },
+const requestPhase: Phase = {
+  category: "Better leads",
+  name: "Request",
+  icon: Inbox,
+  surface: "Pro",
+  description:
+    "Triage incoming work. Qualify, optional intake, decide to quote.",
+};
+
+const otherPhases: Phase[] = [
   {
     category: "More work",
     name: "Quote",
+    icon: FileText,
     surface: "Pro",
     description: "Compose, share, iterate until accepted.",
   },
   {
     category: "Work smarter",
     name: "Job",
+    icon: Wrench,
     surface: "Pro",
     description: "Schedule, dispatch, execute the accepted work.",
   },
   {
     category: "More profits",
     name: "Invoice",
+    icon: Receipt,
     surface: "Pro",
     description: "Bill, remind, get paid, close the loop.",
   },
@@ -99,40 +105,98 @@ export default function BlueprintPage() {
 
 function Board() {
   return (
-    <div className="flex items-stretch gap-2">
-      <div className="flex w-[260px] flex-col gap-3">
-        {entryChannels.map((ch) => (
-          <ChannelCard key={ch.name} channel={ch} />
-        ))}
+    <div className="flex items-stretch gap-3">
+      <div className="flex flex-col gap-3">
+        <Eyebrow>Better leads</Eyebrow>
+        <div className="flex flex-1 items-stretch gap-2">
+          <div className="flex w-[240px] flex-col gap-2">
+            {entryChannels.map((ch) => (
+              <CardItem key={ch.name} card={ch} dashRight />
+            ))}
+          </div>
+          <Connector />
+          <div className="flex items-center">
+            <CardItem card={requestPhase} className="w-[240px]" />
+          </div>
+        </div>
       </div>
-      <Connector />
+
+      {otherPhases.map((p) => (
+        <Fragment key={p.name}>
+          <ArrowBlock />
+          <PhaseBlock phase={p} />
+        </Fragment>
+      ))}
+    </div>
+  );
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+      {children}
+    </p>
+  );
+}
+
+function PhaseBlock({ phase }: { phase: Phase }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <Eyebrow>{phase.category}</Eyebrow>
       <div className="flex flex-1 items-center">
-        <PhasesGrid />
+        <CardItem card={phase} className="w-[240px]" />
       </div>
     </div>
   );
 }
 
-function ChannelCard({ channel }: { channel: EntryChannel }) {
+function ArrowBlock() {
   return (
-    <div className="relative flex flex-col gap-2 rounded-md border border-border bg-card p-4">
+    <div className="flex flex-col gap-3">
+      <div className="h-4" />
+      <div className="flex flex-1 items-center">
+        <ArrowRight
+          aria-hidden
+          className="size-4 text-muted-foreground"
+          strokeWidth={1.5}
+        />
+      </div>
+    </div>
+  );
+}
+
+function CardItem({
+  card,
+  className = "",
+  dashRight = false,
+}: {
+  card: CardData;
+  className?: string;
+  dashRight?: boolean;
+}) {
+  return (
+    <div
+      className={`relative flex flex-col gap-2 rounded-md border border-border bg-card p-4 ${className}`}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <channel.icon
+          <card.icon
             className="size-4 text-foreground/70"
             strokeWidth={2}
           />
-          <span className="text-sm font-semibold">{channel.name}</span>
+          <span className="text-sm font-semibold">{card.name}</span>
         </div>
-        <SurfaceBadge surface={channel.surface} />
+        <SurfaceBadge surface={card.surface} />
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        {channel.description}
+        {card.description}
       </p>
-      <div
-        aria-hidden
-        className="absolute top-1/2 -right-3 h-px w-4 -translate-y-1/2 bg-border"
-      />
+      {dashRight && (
+        <div
+          aria-hidden
+          className="absolute top-1/2 -right-3 h-px w-4 -translate-y-1/2 bg-border"
+        />
+      )}
     </div>
   );
 }
@@ -153,46 +217,6 @@ function Connector() {
         className="absolute top-1/2 right-0 size-4 -translate-y-1/2 text-muted-foreground"
         strokeWidth={1.5}
       />
-    </div>
-  );
-}
-
-function PhasesGrid() {
-  return (
-    <div className="grid w-full grid-cols-4 gap-x-10 gap-y-3">
-      {phases.map((p) => (
-        <p
-          key={`${p.name}-eyebrow`}
-          className="text-xs font-bold tracking-widest text-muted-foreground uppercase"
-        >
-          {p.category}
-        </p>
-      ))}
-      {phases.map((phase, i) => (
-        <Fragment key={`${phase.name}-card`}>
-          <div className="relative flex flex-col gap-2 rounded-md border border-border bg-card p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                  {i + 1}
-                </span>
-                <span className="text-sm font-semibold">{phase.name}</span>
-              </div>
-              <SurfaceBadge surface={phase.surface} />
-            </div>
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              {phase.description}
-            </p>
-            {i < phases.length - 1 && (
-              <ArrowRight
-                aria-hidden
-                className="absolute top-1/2 -right-8 size-4 -translate-y-1/2 text-muted-foreground"
-                strokeWidth={1.5}
-              />
-            )}
-          </div>
-        </Fragment>
-      ))}
     </div>
   );
 }
