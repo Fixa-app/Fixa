@@ -83,7 +83,7 @@ const productMenu: ProductColumn[] = [
 ];
 
 const productMenuFooter: ProductMenuItem[] = [
-  { label: "Fixa Copilot", href: "#features", icon: Sparkles, ai: true },
+  { label: "AI", href: "#features", icon: Sparkles, ai: true },
   { label: "Integraties", href: "#features", icon: Boxes },
 ];
 
@@ -95,7 +95,7 @@ export async function SiteHeader() {
   const userIsAdmin = await isAdmin(user);
 
   return (
-    <header className="border-b border-border">
+    <header className="relative z-50 border-b border-border bg-background">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-8">
           <Link href="/" aria-label="Fixa" className="flex items-center">
@@ -121,7 +121,7 @@ export async function SiteHeader() {
                   <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold hover:bg-transparent focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
                     Product
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="w-screen rounded-none border-t border-border bg-background shadow-none ring-0">
+                  <NavigationMenuContent className="w-screen rounded-none bg-background shadow-none ring-0">
                     <div className="mx-auto max-w-6xl">
                       <div className="grid grid-cols-4 gap-10 px-6 py-10">
                         {productMenu.map((col) => (
@@ -137,16 +137,18 @@ export async function SiteHeader() {
                                     className="gap-3 text-base font-bold"
                                   >
                                     <item.icon
-                                      className="size-5 text-foreground"
-                                      strokeWidth={2.5}
+                                      className={
+                                        item.ai
+                                          ? "size-5 text-violet-500"
+                                          : "size-5 text-foreground"
+                                      }
+                                      strokeWidth={2}
                                     />
                                     <span>{item.label}</span>
                                     {item.ai && (
-                                      <Sparkles
-                                        className="ml-auto size-3.5 text-violet-500"
-                                        strokeWidth={2.5}
-                                        aria-label="AI"
-                                      />
+                                      <span className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-bold tracking-wide text-violet-700">
+                                        AI
+                                      </span>
                                     )}
                                   </NavigationMenuLink>
                                 </li>
@@ -155,7 +157,7 @@ export async function SiteHeader() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center gap-8 border-t border-border bg-muted/40 px-6 py-4">
+                      <div className="flex items-center gap-8 border-t border-border px-6 py-4">
                         {productMenuFooter.map((item) => (
                           <NavigationMenuLink
                             key={item.label}
@@ -168,7 +170,7 @@ export async function SiteHeader() {
                                   ? "size-5 text-violet-500"
                                   : "size-5 text-foreground"
                               }
-                              strokeWidth={2.5}
+                              strokeWidth={2}
                             />
                             <span>{item.label}</span>
                           </NavigationMenuLink>
