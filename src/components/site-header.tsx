@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   BarChart3,
   BookOpen,
+  Boxes,
   Calendar,
   CalendarCheck,
   CreditCard,
@@ -12,6 +13,7 @@ import {
   MessageSquare,
   Receipt,
   Repeat,
+  Sparkles,
   Star,
   Truck,
   UserCog,
@@ -31,9 +33,16 @@ import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth/admin";
 import { signOut } from "@/lib/auth/actions";
 
+type ProductMenuItem = {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  ai?: boolean;
+};
+
 type ProductColumn = {
   title: string;
-  items: { label: string; href: string; icon: LucideIcon }[];
+  items: ProductMenuItem[];
 };
 
 const productMenu: ProductColumn[] = [
@@ -48,16 +57,16 @@ const productMenu: ProductColumn[] = [
   {
     title: "Win meer deals",
     items: [
-      { label: "Offertes", href: "#features", icon: FileText },
+      { label: "Offertes", href: "#features", icon: FileText, ai: true },
       { label: "Service plans", href: "#features", icon: Repeat },
-      { label: "Communicatie", href: "#features", icon: MessageSquare },
+      { label: "Communicatie", href: "#features", icon: MessageSquare, ai: true },
     ],
   },
   {
     title: "Werk slimmer",
     items: [
-      { label: "Planning", href: "#features", icon: Calendar },
-      { label: "Dispatching", href: "#features", icon: Truck },
+      { label: "Planning", href: "#features", icon: Calendar, ai: true },
+      { label: "Dispatching", href: "#features", icon: Truck, ai: true },
       { label: "Klanthub", href: "#features", icon: Users },
     ],
   },
@@ -68,9 +77,14 @@ const productMenu: ProductColumn[] = [
       { label: "Betalingen", href: "#features", icon: CreditCard },
       { label: "Klantbeheer", href: "#features", icon: UserCog },
       { label: "Boekhoudkoppelingen", href: "#features", icon: BookOpen },
-      { label: "Business dashboard", href: "#features", icon: BarChart3 },
+      { label: "Business dashboard", href: "#features", icon: BarChart3, ai: true },
     ],
   },
+];
+
+const productMenuFooter: ProductMenuItem[] = [
+  { label: "Fixa Copilot", href: "#features", icon: Sparkles, ai: true },
+  { label: "Integraties", href: "#features", icon: Boxes },
 ];
 
 export async function SiteHeader() {
@@ -108,30 +122,58 @@ export async function SiteHeader() {
                     Product
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="w-screen rounded-none border-t border-border bg-background shadow-none ring-0">
-                    <div className="mx-auto grid max-w-6xl grid-cols-4 gap-10 px-6 py-10">
-                      {productMenu.map((col) => (
-                        <div key={col.title} className="flex flex-col gap-4">
-                          <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
-                            {col.title}
-                          </h3>
-                          <ul className="flex flex-col gap-1">
-                            {col.items.map((item) => (
-                              <li key={item.label}>
-                                <NavigationMenuLink
-                                  href={item.href}
-                                  className="gap-3 text-base font-bold"
-                                >
-                                  <item.icon
-                                    className="size-5 text-foreground"
-                                    strokeWidth={2.5}
-                                  />
-                                  <span>{item.label}</span>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                    <div className="mx-auto max-w-6xl">
+                      <div className="grid grid-cols-4 gap-10 px-6 py-10">
+                        {productMenu.map((col) => (
+                          <div key={col.title} className="flex flex-col gap-4">
+                            <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+                              {col.title}
+                            </h3>
+                            <ul className="flex flex-col gap-1">
+                              {col.items.map((item) => (
+                                <li key={item.label}>
+                                  <NavigationMenuLink
+                                    href={item.href}
+                                    className="gap-3 text-base font-bold"
+                                  >
+                                    <item.icon
+                                      className="size-5 text-foreground"
+                                      strokeWidth={2.5}
+                                    />
+                                    <span>{item.label}</span>
+                                    {item.ai && (
+                                      <Sparkles
+                                        className="ml-auto size-3.5 text-violet-500"
+                                        strokeWidth={2.5}
+                                        aria-label="AI"
+                                      />
+                                    )}
+                                  </NavigationMenuLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-8 border-t border-border bg-muted/40 px-6 py-4">
+                        {productMenuFooter.map((item) => (
+                          <NavigationMenuLink
+                            key={item.label}
+                            href={item.href}
+                            className="w-auto gap-2 text-base font-bold"
+                          >
+                            <item.icon
+                              className={
+                                item.ai
+                                  ? "size-5 text-violet-500"
+                                  : "size-5 text-foreground"
+                              }
+                              strokeWidth={2.5}
+                            />
+                            <span>{item.label}</span>
+                          </NavigationMenuLink>
+                        ))}
+                      </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
