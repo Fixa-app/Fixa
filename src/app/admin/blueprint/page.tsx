@@ -9,7 +9,7 @@ import {
   Globe,
   Inbox,
   type LucideIcon,
-  PenLine,
+  Plus,
   Receipt,
   Repeat,
   UserCog,
@@ -39,9 +39,9 @@ type CardData = {
 
 /* --------------------------- Cards --------------------------- */
 
-const newRequestsPro: CardData = {
-  name: "New requests",
-  icon: PenLine,
+const newRequestPro: CardData = {
+  name: "New request",
+  icon: Plus,
   surface: "Pro",
   description: "Quick-add a new request manually from inside Fixa.",
   userStories: [
@@ -213,7 +213,7 @@ const usersPro: CardData = {
 
 const newRequestsClient: CardData = {
   name: "New requests",
-  icon: PenLine,
+  icon: Plus,
   surface: "Client",
   description: "Client submits a new request from their portal.",
   userStories: [
@@ -257,9 +257,14 @@ const channelsOnline: CardData = {
 
 /* --------------------------- Layout constants --------------------------- */
 
-// 11 columns: 6 card columns + 5 arrow gap columns
+// 9 columns: 5 card columns + 4 arrow gap columns
+//   col 1 = Leads (single column, stack of New request / Requests / Intakes / Website)
+//   col 3 = Sales (Quotes / Service plans)
+//   col 5 = Operations (Jobs / Schedule / Inbox)
+//   col 7 = Financial (Invoices)
+//   col 9 = Management (Customers / Reports / Users) — parallel, not in funnel
 const gridTemplateWithArrows =
-  "minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr)";
+  "minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr) 16px minmax(180px, 1fr)";
 
 /* --------------------------- Page --------------------------- */
 
@@ -279,7 +284,7 @@ export default function BlueprintPage() {
       </header>
 
       <div className="-mx-6 overflow-x-auto px-6">
-        <div className="flex min-w-[1180px] flex-col gap-2">
+        <div className="flex min-w-[1000px] flex-col gap-2">
           <PhaseHeaders />
           <ProSection />
           <ClientSection />
@@ -298,9 +303,7 @@ function PhaseHeaders() {
       className="grid gap-x-2"
       style={{ gridTemplateColumns: gridTemplateWithArrows }}
     >
-      <div className="col-span-3">
-        <Eyebrow>Leads</Eyebrow>
-      </div>
+      <Eyebrow>Leads</Eyebrow>
       <div />
       <Eyebrow>Sales</Eyebrow>
       <div />
@@ -318,46 +321,20 @@ function ProSection() {
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Pro dashboard</SurfaceDivider>
       <div
-        className="grid items-start gap-x-2 gap-y-2"
+        className="grid items-start gap-x-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
-        {/* Sub-row 1 */}
-        <CardItem card={newRequestsPro} />
-        <ConvergingConnector />
-        <CardItem card={requestsPro} />
+        <ColumnStack
+          cards={[newRequestPro, requestsPro, intakesPro, websitePro]}
+        />
         <HorizontalArrow />
-        <CardItem card={quotesPro} />
+        <ColumnStack cards={[quotesPro, servicePlansPro]} />
         <HorizontalArrow />
-        <CardItem card={jobsPro} />
+        <ColumnStack cards={[jobsPro, schedule, inboxPro]} />
         <HorizontalArrow />
-        <CardItem card={invoicesPro} />
+        <ColumnStack cards={[invoicesPro]} />
         <Empty />
-        <CardItem card={customersPro} />
-
-        {/* Sub-row 2 */}
-        <CardItem card={websitePro} />
-        <CardItem card={intakesPro} />
-        <Empty />
-        <CardItem card={servicePlansPro} />
-        <Empty />
-        <CardItem card={schedule} />
-        <Empty />
-        <Empty />
-        <Empty />
-        <CardItem card={reportsPro} />
-
-        {/* Sub-row 3 */}
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <Empty />
-        <CardItem card={inboxPro} />
-        <Empty />
-        <Empty />
-        <Empty />
-        <CardItem card={usersPro} />
+        <ColumnStack cards={[customersPro, reportsPro, usersPro]} />
       </div>
     </section>
   );
@@ -368,16 +345,14 @@ function ClientSection() {
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Client hub</SurfaceDivider>
       <div
-        className="grid items-start gap-x-2 gap-y-2"
+        className="grid items-start gap-x-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
-        <CardItem card={newRequestsClient} />
+        <ColumnStack cards={[newRequestsClient]} />
         <HorizontalArrow />
         <div className="col-span-7">
           <CardItem card={projectsClient} />
         </div>
-        <Empty />
-        <Empty />
       </div>
     </section>
   );
@@ -388,13 +363,10 @@ function OnlineSection() {
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Online</SurfaceDivider>
       <div
-        className="grid items-start gap-x-2 gap-y-2"
+        className="grid items-start gap-x-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
-        <CardItem card={channelsOnline} />
-        <Empty />
-        <Empty />
-        <Empty />
+        <ColumnStack cards={[channelsOnline]} />
         <Empty />
         <Empty />
         <Empty />
@@ -432,29 +404,24 @@ function Empty() {
   return <div aria-hidden />;
 }
 
-function HorizontalArrow() {
+function ColumnStack({ cards }: { cards: CardData[] }) {
   return (
-    <div className="flex items-center justify-center self-center">
-      <ArrowRight
-        aria-hidden
-        className="size-4 text-muted-foreground"
-        strokeWidth={1.5}
-      />
+    <div className="flex flex-col gap-2">
+      {cards.map((c) => (
+        <CardItem key={c.name} card={c} />
+      ))}
     </div>
   );
 }
 
-function ConvergingConnector() {
+function HorizontalArrow() {
+  // pt-3.5 (14px) so the arrow icon sits roughly at the first card's vertical
+  // center (cards are ~44px tall with current padding).
   return (
-    <div
-      aria-hidden
-      className="relative"
-      style={{ gridRow: "1 / span 2", gridColumn: 2 }}
-    >
-      <div className="absolute top-[24%] bottom-[24%] left-1/2 w-px -translate-x-1/2 bg-border" />
-      <div className="absolute top-[24%] left-1/2 right-1 h-px bg-border" />
+    <div className="flex items-start justify-center pt-3.5">
       <ArrowRight
-        className="absolute top-[24%] right-0 size-4 -translate-y-1/2 text-muted-foreground"
+        aria-hidden
+        className="size-4 text-muted-foreground"
         strokeWidth={1.5}
       />
     </div>
