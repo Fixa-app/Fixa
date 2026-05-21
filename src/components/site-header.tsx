@@ -16,36 +16,35 @@ export async function SiteHeader() {
   return (
     <header className="border-b border-border">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" aria-label="Fixa" className="flex items-center">
-          <Image
-            src="/fixa-logo.svg"
-            alt="Fixa"
-            width={40}
-            height={40}
-            priority
-            className="h-10 w-auto"
-          />
-        </Link>
-        <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="hover:text-foreground">
-            Functies
-          </a>
-          <a href="#workflow" className="hover:text-foreground">
-            Hoe het werkt
-          </a>
-          <a href="#industries" className="hover:text-foreground">
-            Voor wie
-          </a>
-          <Link href="/plan" className="hover:text-foreground">
-            Plan
+        <div className="flex items-center gap-8">
+          <Link href="/" aria-label="Fixa" className="flex items-center">
+            <Image
+              src="/fixa-logo.svg"
+              alt="Fixa"
+              width={48}
+              height={48}
+              priority
+              className="h-12 w-auto"
+            />
           </Link>
-          {userIsAdmin && (
-            <Link href="/admin" className="hover:text-foreground">
-              Admin
+          <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+            <a href="#industries" className="text-foreground hover:text-foreground/70">
+              Voor wie
+            </a>
+            <a href="#features" className="text-foreground hover:text-foreground/70">
+              Product
+            </a>
+            <Link href="/pricing" className="text-foreground hover:text-foreground/70">
+              Prijzen
             </Link>
-          )}
-        </nav>
-        <div className="flex items-center gap-2">
+            {userIsAdmin && (
+              <Link href="/admin" className="text-foreground hover:text-foreground/70">
+                Admin
+              </Link>
+            )}
+          </nav>
+        </div>
+        <div className="flex items-center gap-3">
           {user ? (
             <>
               <span
@@ -63,12 +62,18 @@ export async function SiteHeader() {
           ) : (
             <>
               <AuthDialog>
-                <Button variant="ghost" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-medium hover:bg-transparent hover:text-foreground/70"
+                >
                   Inloggen
                 </Button>
               </AuthDialog>
               <AuthDialog>
-                <Button size="sm">Gratis proberen</Button>
+                <Button size="sm" className="rounded-full px-5">
+                  Begin nu
+                </Button>
               </AuthDialog>
             </>
           )}
