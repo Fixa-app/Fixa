@@ -115,9 +115,12 @@ export async function SiteHeader() {
                               <li key={item.label}>
                                 <NavigationMenuLink
                                   href={item.href}
-                                  className="font-medium"
+                                  className="gap-3 text-base font-bold"
                                 >
-                                  <item.icon className="size-4 text-foreground/60" />
+                                  <item.icon
+                                    className="size-5 text-foreground"
+                                    strokeWidth={2.5}
+                                  />
                                   <span>{item.label}</span>
                                 </NavigationMenuLink>
                               </li>
