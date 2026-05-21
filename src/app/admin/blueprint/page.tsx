@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import {
   ArrowRight,
   BarChart3,
+  Bell,
   Calendar,
   CalendarCheck,
   ClipboardList,
@@ -12,6 +13,7 @@ import {
   PenLine,
   Receipt,
   Repeat,
+  UserCog,
   Users,
   Workflow,
   Wrench,
@@ -113,13 +115,29 @@ const reportsPro: CardData = {
     "Revenue, profitability, top customers, time-to-paid analytics.",
 };
 
-const clientsPro: CardData = {
-  name: "Clients",
+const customersPro: CardData = {
+  name: "Customers",
   icon: Users,
   surface: "Pro",
   description:
     "Customer records — contacts, history of requests/quotes/jobs/invoices, lifetime value.",
   statuses: ["Active", "Inactive", "VIP", "Archived"],
+};
+
+const inboxPro: CardData = {
+  name: "Inbox",
+  icon: Bell,
+  surface: "Pro",
+  description: "Centralised messages from clients, suppliers, and team.",
+  statuses: ["New", "Read", "Snoozed", "Archived"],
+};
+
+const usersPro: CardData = {
+  name: "Users",
+  icon: UserCog,
+  surface: "Pro",
+  description: "Team members, roles, permissions.",
+  statuses: ["Active", "Invited", "Disabled"],
 };
 
 const newRequestsClient: CardData = {
@@ -154,15 +172,15 @@ const channelsOnline: CardData = {
 
 /* --------------------------- Layout constants --------------------------- */
 
-// 9 columns: 5 card columns (fixed) + 4 arrow gap columns (narrow)
-//   col 1 = New requests
-//   col 3 = Requests / Intakes (Better leads)
-//   col 5 = Quotes (More work)
-//   col 7 = Jobs / Schedule (Work smarter)
-//   col 9 = Invoices (More profits)
-const gridTemplate = "repeat(5, minmax(220px, 1fr))";
+// 11 columns: 6 card columns + 5 arrow gap columns
+//   col 1  = New requests (Leads)
+//   col 3  = Requests / Intakes (Leads)
+//   col 5  = Quotes / Service plans (Sales)
+//   col 7  = Jobs / Schedule / Inbox (Operations)
+//   col 9  = Invoices (Financial)
+//   col 11 = Customers / Reports / Users (Management — parallel, not in funnel)
 const gridTemplateWithArrows =
-  "minmax(220px, 1fr) 20px minmax(220px, 1fr) 20px minmax(220px, 1fr) 20px minmax(220px, 1fr) 20px minmax(220px, 1fr)";
+  "minmax(200px, 1fr) 16px minmax(200px, 1fr) 16px minmax(200px, 1fr) 16px minmax(200px, 1fr) 16px minmax(200px, 1fr) 16px minmax(200px, 1fr)";
 
 const CARD_MIN_HEIGHT = 150; // px; chosen so the tallest card content fits without scroll
 
@@ -181,7 +199,7 @@ export default function BlueprintPage() {
       </header>
 
       <div className="-mx-6 overflow-x-auto px-6">
-        <div className="flex min-w-[1180px] flex-col gap-2">
+        <div className="flex min-w-[1320px] flex-col gap-2">
           <PhaseHeaders />
           <ProSection />
           <ClientSection />
@@ -201,14 +219,16 @@ function PhaseHeaders() {
       style={{ gridTemplateColumns: gridTemplateWithArrows }}
     >
       <div className="col-span-3">
-        <Eyebrow>Better leads</Eyebrow>
+        <Eyebrow>Leads</Eyebrow>
       </div>
       <div />
-      <Eyebrow>More work</Eyebrow>
+      <Eyebrow>Sales</Eyebrow>
       <div />
-      <Eyebrow>Work smarter</Eyebrow>
+      <Eyebrow>Operations</Eyebrow>
       <div />
-      <Eyebrow>More profits</Eyebrow>
+      <Eyebrow>Financial</Eyebrow>
+      <div />
+      <Eyebrow>Management</Eyebrow>
     </div>
   );
 }
@@ -221,7 +241,7 @@ function ProSection() {
         className="grid items-start gap-x-2 gap-y-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
-        {/* Sub-row 1: primary entities + horizontal arrows */}
+        {/* Sub-row 1: primary entities + horizontal arrows + Management top card */}
         <CardItem card={newRequestsPro} />
         <ConvergingConnector />
         <CardItem card={requestsPro} />
@@ -231,6 +251,8 @@ function ProSection() {
         <CardItem card={jobsPro} />
         <HorizontalArrow />
         <CardItem card={invoicesPro} />
+        <Empty />
+        <CardItem card={customersPro} />
 
         {/* Sub-row 2: below-primary (col 2 is occupied by the spanning connector) */}
         <CardItem card={websitePro} />
@@ -240,18 +262,22 @@ function ProSection() {
         <Empty />
         <CardItem card={schedule} />
         <Empty />
+        <Empty />
+        <Empty />
         <CardItem card={reportsPro} />
 
         {/* Sub-row 3: deeper-stack cards */}
         <Empty />
         <Empty />
-        <CardItem card={clientsPro} />
         <Empty />
         <Empty />
         <Empty />
         <Empty />
+        <CardItem card={inboxPro} />
         <Empty />
         <Empty />
+        <Empty />
+        <CardItem card={usersPro} />
       </div>
     </section>
   );
@@ -270,6 +296,8 @@ function ClientSection() {
         <div className="col-span-7">
           <CardItem card={projectsClient} />
         </div>
+        <Empty />
+        <Empty />
       </div>
     </section>
   );
@@ -284,6 +312,8 @@ function OnlineSection() {
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
         <CardItem card={channelsOnline} />
+        <Empty />
+        <Empty />
         <Empty />
         <Empty />
         <Empty />
