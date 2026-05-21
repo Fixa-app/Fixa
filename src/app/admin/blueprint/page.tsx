@@ -285,7 +285,6 @@ export default function BlueprintPage() {
 
       <div className="-mx-6 overflow-x-auto px-6">
         <div className="flex min-w-[1000px] flex-col gap-2">
-          <PhaseHeaders />
           <ProSection />
           <ClientSection />
           <OnlineSection />
@@ -320,6 +319,7 @@ function ProSection() {
   return (
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Pro dashboard</SurfaceDivider>
+      <PhaseHeaders />
       <div
         className="grid items-start gap-x-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
