@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import {
   ArrowRight,
   FileText,
@@ -105,28 +104,46 @@ export default function BlueprintPage() {
 
 function Board() {
   return (
-    <div className="flex items-stretch gap-3">
-      <div className="flex flex-col gap-3">
-        <Eyebrow>Better leads</Eyebrow>
-        <div className="flex flex-1 items-stretch gap-2">
-          <div className="flex w-[240px] flex-col gap-2">
-            {entryChannels.map((ch) => (
-              <CardItem key={ch.name} card={ch} dashRight />
-            ))}
-          </div>
-          <Connector />
-          <div className="flex items-center">
-            <CardItem card={requestPhase} className="w-[240px]" />
-          </div>
+    <div className="flex items-start gap-3">
+      <BetterLeadsBlock />
+      {otherPhases.map((p) => (
+        <PhaseBlock key={p.name} phase={p} />
+      ))}
+    </div>
+  );
+}
+
+function BetterLeadsBlock() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Eyebrow>Better leads</Eyebrow>
+      <div className="flex items-stretch gap-2">
+        <div className="flex w-[240px] flex-col gap-2">
+          {entryChannels.map((ch) => (
+            <CardItem key={ch.name} card={ch} dashRight />
+          ))}
+        </div>
+        <Connector />
+        <div className="flex items-start">
+          <CardItem card={requestPhase} className="w-[240px]" />
         </div>
       </div>
+    </div>
+  );
+}
 
-      {otherPhases.map((p) => (
-        <Fragment key={p.name}>
-          <ArrowBlock />
-          <PhaseBlock phase={p} />
-        </Fragment>
-      ))}
+function PhaseBlock({ phase }: { phase: Phase }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <Eyebrow>{phase.category}</Eyebrow>
+      <div className="flex items-center gap-3">
+        <ArrowRight
+          aria-hidden
+          className="size-4 shrink-0 text-muted-foreground"
+          strokeWidth={1.5}
+        />
+        <CardItem card={phase} className="w-[240px]" />
+      </div>
     </div>
   );
 }
@@ -136,32 +153,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
     <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
       {children}
     </p>
-  );
-}
-
-function PhaseBlock({ phase }: { phase: Phase }) {
-  return (
-    <div className="flex flex-col gap-3">
-      <Eyebrow>{phase.category}</Eyebrow>
-      <div className="flex flex-1 items-center">
-        <CardItem card={phase} className="w-[240px]" />
-      </div>
-    </div>
-  );
-}
-
-function ArrowBlock() {
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="h-4" />
-      <div className="flex flex-1 items-center">
-        <ArrowRight
-          aria-hidden
-          className="size-4 text-muted-foreground"
-          strokeWidth={1.5}
-        />
-      </div>
-    </div>
   );
 }
 
@@ -210,11 +201,11 @@ function Connector() {
       />
       <div
         aria-hidden
-        className="absolute top-1/2 right-1 left-1 h-px -translate-y-1/2 bg-border"
+        className="absolute top-[12%] right-1 left-1 h-px bg-border"
       />
       <ArrowRight
         aria-hidden
-        className="absolute top-1/2 right-0 size-4 -translate-y-1/2 text-muted-foreground"
+        className="absolute top-[12%] right-0 size-4 -translate-y-1/2 text-muted-foreground"
         strokeWidth={1.5}
       />
     </div>
