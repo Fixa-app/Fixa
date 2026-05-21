@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import {
+  ArrowRight,
   Calendar,
   CalendarCheck,
   FileText,
@@ -25,7 +26,6 @@ type CardData = {
 
 /* --------------------------- Cards --------------------------- */
 
-// Pro dashboard
 const manual: CardData = {
   name: "Manual",
   icon: PenLine,
@@ -86,7 +86,6 @@ const invoicesPro: CardData = {
   statuses: ["Draft", "Sent", "Late", "Paid"],
 };
 
-// Client hub
 const clientRequest: CardData = {
   name: "Client request",
   icon: Users,
@@ -126,7 +125,6 @@ const invoicesClient: CardData = {
   statuses: ["Unpaid", "Paid"],
 };
 
-// Online
 const website: CardData = {
   name: "Website",
   icon: Globe,
@@ -141,37 +139,7 @@ const externalChannels: CardData = {
   description: "External integrations — Google Reserve, marketplace, ChatGPT.",
 };
 
-/* --------------------------- Board grid --------------------------- */
-
-type Row = {
-  label: string;
-  cells: CardData[][];
-};
-
-const rows: Row[] = [
-  {
-    label: "Pro dashboard",
-    cells: [
-      [manual, requestsPro, intakesPro],
-      [quotesPro],
-      [jobsPro, schedule],
-      [invoicesPro],
-    ],
-  },
-  {
-    label: "Client hub",
-    cells: [
-      [clientRequest, requestsClient],
-      [quotesClient],
-      [jobsClient],
-      [invoicesClient],
-    ],
-  },
-  {
-    label: "Online",
-    cells: [[website, externalChannels], [], [], []],
-  },
-];
+/* --------------------------- Layout constants --------------------------- */
 
 const phaseLabels = [
   "Better leads",
@@ -180,7 +148,11 @@ const phaseLabels = [
   "More profits",
 ];
 
-/* --------------------------- Components --------------------------- */
+// 7 columns: 4 phases (flexible width) + 3 arrow columns (fixed)
+const gridTemplate =
+  "minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)";
+
+/* --------------------------- Page --------------------------- */
 
 export default function BlueprintPage() {
   return (
@@ -194,33 +166,127 @@ export default function BlueprintPage() {
         </h1>
       </header>
 
-      <Board />
+      <div className="flex flex-col gap-2">
+        <PhaseHeaders />
+        <ProSection />
+        <ClientSection />
+        <OnlineSection />
+      </div>
     </div>
   );
 }
 
-function Board() {
+/* --------------------------- Sections --------------------------- */
+
+function PhaseHeaders() {
   return (
     <div
-      className="grid items-start gap-x-4 gap-y-10"
-      style={{ gridTemplateColumns: "160px repeat(4, minmax(0, 1fr))" }}
+      className="grid gap-x-4"
+      style={{ gridTemplateColumns: gridTemplate }}
     >
-      <div />
-      {phaseLabels.map((label) => (
-        <Eyebrow key={label}>{label}</Eyebrow>
-      ))}
-
-      {rows.map((row, rowIdx) => (
-        <Fragment key={row.label}>
-          <RowLabel>{row.label}</RowLabel>
-          {row.cells.map((cards, i) => (
-            <GridCell key={`${rowIdx}-${i}`} cards={cards} />
-          ))}
+      {phaseLabels.map((label, i) => (
+        <Fragment key={label}>
+          <Eyebrow>{label}</Eyebrow>
+          {i < phaseLabels.length - 1 && <div />}
         </Fragment>
       ))}
     </div>
   );
 }
+
+function ProSection() {
+  return (
+    <section className="flex flex-col gap-3">
+      <SurfaceDivider>Pro dashboard</SurfaceDivider>
+      <div
+        className="grid items-start gap-x-4 gap-y-2"
+        style={{ gridTemplateColumns: gridTemplate }}
+      >
+        {/* Sub-row 1: above primary */}
+        <CardItem card={manual} />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+
+        {/* Sub-row 2: primary + horizontal arrows */}
+        <CardItem card={requestsPro} />
+        <HorizontalArrow />
+        <CardItem card={quotesPro} />
+        <HorizontalArrow />
+        <CardItem card={jobsPro} />
+        <HorizontalArrow />
+        <CardItem card={invoicesPro} />
+
+        {/* Sub-row 3: below primary */}
+        <CardItem card={intakesPro} />
+        <Empty />
+        <Empty />
+        <Empty />
+        <CardItem card={schedule} />
+        <Empty />
+        <Empty />
+      </div>
+    </section>
+  );
+}
+
+function ClientSection() {
+  return (
+    <section className="flex flex-col gap-3">
+      <SurfaceDivider>Client hub</SurfaceDivider>
+      <div
+        className="grid items-start gap-x-4 gap-y-2"
+        style={{ gridTemplateColumns: gridTemplate }}
+      >
+        {/* Sub-row 1: above primary */}
+        <CardItem card={clientRequest} />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+
+        {/* Sub-row 2: primary + horizontal arrows */}
+        <CardItem card={requestsClient} />
+        <HorizontalArrow />
+        <CardItem card={quotesClient} />
+        <HorizontalArrow />
+        <CardItem card={jobsClient} />
+        <HorizontalArrow />
+        <CardItem card={invoicesClient} />
+      </div>
+    </section>
+  );
+}
+
+function OnlineSection() {
+  return (
+    <section className="flex flex-col gap-3">
+      <SurfaceDivider>Online</SurfaceDivider>
+      <div
+        className="grid items-start gap-x-4 gap-y-2"
+        style={{ gridTemplateColumns: gridTemplate }}
+      >
+        <div className="flex flex-col gap-2">
+          <CardItem card={website} />
+          <CardItem card={externalChannels} />
+        </div>
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------- Building blocks --------------------------- */
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -230,21 +296,29 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RowLabel({ children }: { children: React.ReactNode }) {
+function SurfaceDivider({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-xs font-bold tracking-widest text-foreground uppercase">
-      {children}
-    </p>
+    <div className="flex flex-col gap-2 pt-6">
+      <span className="text-xs font-bold tracking-widest text-foreground uppercase">
+        {children}
+      </span>
+      <div className="h-px bg-border" />
+    </div>
   );
 }
 
-function GridCell({ cards }: { cards: CardData[] }) {
-  if (cards.length === 0) return <div />;
+function Empty() {
+  return <div aria-hidden />;
+}
+
+function HorizontalArrow() {
   return (
-    <div className="flex flex-col gap-2">
-      {cards.map((c) => (
-        <CardItem key={c.name} card={c} />
-      ))}
+    <div className="flex items-center justify-center self-center">
+      <ArrowRight
+        aria-hidden
+        className="size-4 text-muted-foreground"
+        strokeWidth={1.5}
+      />
     </div>
   );
 }
