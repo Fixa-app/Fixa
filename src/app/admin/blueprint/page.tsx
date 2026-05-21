@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import {
   ArrowRight,
+  BarChart3,
   Calendar,
   CalendarCheck,
   ClipboardList,
@@ -10,6 +11,8 @@ import {
   type LucideIcon,
   PenLine,
   Receipt,
+  Repeat,
+  Users,
   Workflow,
   Wrench,
 } from "lucide-react";
@@ -91,6 +94,32 @@ const invoicesPro: CardData = {
   surface: "Pro",
   description: "Bill, remind, get paid, close the loop.",
   statuses: ["Draft", "Sent", "Late", "Paid"],
+};
+
+const servicePlansPro: CardData = {
+  name: "Service plans",
+  icon: Repeat,
+  surface: "Pro",
+  description:
+    "Recurring service contracts — maintenance, monthly checks, subscriptions.",
+  statuses: ["Draft", "Active", "Paused", "Cancelled"],
+};
+
+const reportsPro: CardData = {
+  name: "Reports",
+  icon: BarChart3,
+  surface: "Pro",
+  description:
+    "Revenue, profitability, top customers, time-to-paid analytics.",
+};
+
+const clientsPro: CardData = {
+  name: "Clients",
+  icon: Users,
+  surface: "Pro",
+  description:
+    "Customer records — contacts, history of requests/quotes/jobs/invoices, lifetime value.",
+  statuses: ["Active", "Inactive", "VIP", "Archived"],
 };
 
 const newRequestsClient: CardData = {
@@ -207,9 +236,20 @@ function ProSection() {
         <CardItem card={websitePro} />
         <CardItem card={intakesPro} />
         <Empty />
-        <Empty />
+        <CardItem card={servicePlansPro} />
         <Empty />
         <CardItem card={schedule} />
+        <Empty />
+        <CardItem card={reportsPro} />
+
+        {/* Sub-row 3: deeper-stack cards */}
+        <Empty />
+        <Empty />
+        <CardItem card={clientsPro} />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
         <Empty />
         <Empty />
       </div>
