@@ -27,7 +27,7 @@ export async function SiteHeader() {
               className="h-12 w-auto"
             />
           </Link>
-          <nav className="hidden items-center gap-6 text-sm font-semibold md:flex">
+          <nav className="hidden items-center gap-7 text-base font-bold md:flex">
             <a href="#industries" className="text-foreground hover:text-foreground/70">
               Voor wie
             </a>
@@ -64,14 +64,13 @@ export async function SiteHeader() {
               <AuthDialog>
                 <Button
                   variant="ghost"
-                  size="sm"
-                  className="text-sm font-medium hover:bg-transparent hover:text-foreground/70"
+                  className="text-base font-bold hover:bg-transparent hover:text-foreground/70"
                 >
                   Inloggen
                 </Button>
               </AuthDialog>
               <AuthDialog>
-                <Button size="sm" className="rounded-full px-5">
+                <Button className="rounded-full px-5 text-base font-bold">
                   Begin nu
                 </Button>
               </AuthDialog>

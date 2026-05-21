@@ -270,8 +270,8 @@ function TypeScale() {
           Eyebrow / label
         </TypeRow>
         <TypeRow
-          className="text-sm font-semibold"
-          label="text-sm / semibold (nav link)"
+          className="text-base font-bold"
+          label="text-base / bold (nav link)"
         >
           Voor wie · Product · Prijzen
         </TypeRow>
