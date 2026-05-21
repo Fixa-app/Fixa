@@ -18,6 +18,7 @@ type CardData = {
   icon: LucideIcon;
   surface: Surface;
   description: string;
+  statuses?: string[];
 };
 
 const entryChannels: CardData[] = [
@@ -54,34 +55,44 @@ type Phase = CardData & {
 
 const requestPhase: Phase = {
   category: "Better leads",
-  name: "Request",
+  name: "Requests",
   icon: Inbox,
   surface: "Pro",
   description:
     "Triage incoming work. Qualify, optional intake, decide to quote.",
+  statuses: ["New", "Intake scheduled", "Intake done", "Overdue"],
 };
 
 const otherPhases: Phase[] = [
   {
     category: "More work",
-    name: "Quote",
+    name: "Quotes",
     icon: FileText,
     surface: "Pro",
     description: "Compose, share, iterate until accepted.",
+    statuses: ["Draft", "Waiting for response", "Change requested", "Approved"],
   },
   {
     category: "Work smarter",
-    name: "Job",
+    name: "Jobs",
     icon: Wrench,
     surface: "Pro",
     description: "Schedule, dispatch, execute the accepted work.",
+    statuses: [
+      "Unscheduled",
+      "In progress",
+      "Late",
+      "Action required",
+      "Completed",
+    ],
   },
   {
     category: "More profits",
-    name: "Invoice",
+    name: "Invoices",
     icon: Receipt,
     surface: "Pro",
     description: "Bill, remind, get paid, close the loop.",
+    statuses: ["Draft", "Sent", "Late", "Paid"],
   },
 ];
 
@@ -182,6 +193,18 @@ function CardItem({
       <p className="text-xs leading-relaxed text-muted-foreground">
         {card.description}
       </p>
+      {card.statuses && card.statuses.length > 0 && (
+        <div className="flex flex-wrap gap-1 pt-1">
+          {card.statuses.map((s) => (
+            <span
+              key={s}
+              className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium whitespace-nowrap text-muted-foreground"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      )}
       {dashRight && (
         <div
           aria-hidden
