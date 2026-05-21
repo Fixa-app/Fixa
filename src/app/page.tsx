@@ -2,20 +2,13 @@ import {
   ArrowRight,
   ArrowUpRight,
   Calendar,
-  Droplets,
   FileText,
-  Hammer,
-  Home as HomeIcon,
   Inbox,
-  PaintBucket,
   Receipt,
-  Sparkles,
-  Sprout,
   Users,
-  Wind,
   Wrench,
-  Zap,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
@@ -188,51 +181,43 @@ function Workflow() {
 const industryCards = [
   {
     name: "Loodgieters",
-    icon: Droplets,
-    bg: "bg-sky-500",
-    fg: "text-sky-50",
+    image:
+      "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&q=80",
   },
   {
     name: "Elektriciens",
-    icon: Zap,
-    bg: "bg-amber-300",
-    fg: "text-amber-950",
+    image:
+      "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
   },
   {
     name: "CV & klimaat",
-    icon: Wind,
-    bg: "bg-teal-600",
-    fg: "text-teal-50",
+    image:
+      "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=800&q=80",
   },
   {
     name: "Hoveniers",
-    icon: Sprout,
-    bg: "bg-emerald-600",
-    fg: "text-emerald-50",
+    image:
+      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80",
   },
   {
     name: "Schoonmaak",
-    icon: Sparkles,
-    bg: "bg-rose-400",
-    fg: "text-rose-50",
+    image:
+      "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80",
   },
   {
     name: "Klusbedrijf",
-    icon: Hammer,
-    bg: "bg-amber-700",
-    fg: "text-amber-50",
+    image:
+      "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80",
   },
   {
     name: "Schilders",
-    icon: PaintBucket,
-    bg: "bg-orange-500",
-    fg: "text-orange-50",
+    image:
+      "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&q=80",
   },
   {
     name: "Dakdekkers",
-    icon: HomeIcon,
-    bg: "bg-slate-700",
-    fg: "text-slate-50",
+    image:
+      "https://images.unsplash.com/photo-1592595896551-12b371d546d5?w=800&q=80",
   },
 ];
 
@@ -257,10 +242,17 @@ function Industries() {
             <a
               key={industry.name}
               href="#features"
-              className={`group relative aspect-[4/5] overflow-hidden rounded-2xl p-5 transition-transform hover:scale-[1.02] ${industry.bg} ${industry.fg}`}
+              className="group relative aspect-[4/5] overflow-hidden rounded-2xl transition-transform hover:scale-[1.02]"
             >
-              <industry.icon className="size-10 opacity-30" />
-              <div className="absolute inset-x-5 bottom-5 flex items-center justify-between text-lg font-semibold">
+              <Image
+                src={industry.image}
+                alt={industry.name}
+                fill
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute inset-x-5 bottom-5 flex items-center justify-between text-lg font-semibold text-white">
                 <span>{industry.name}</span>
                 <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>
