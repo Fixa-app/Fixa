@@ -4,7 +4,8 @@ export type WorkflowStage = {
   title: string;
   summary: string;
   accentClass: string;
-  inV1: boolean;
+  version: "v1" | "v2" | "v3" | "later";
+  inV1: boolean; // Behouden voor backwards compatibility
   entryPoints?: string[];
   flow: string[];
   dashboard?: {
@@ -24,7 +25,8 @@ export const stages: WorkflowStage[] = [
     summary:
       "Capture incoming work from three channels: online form, manual entry, or the Client Hub.",
     accentClass: "border-l-red-300",
-    inV1: true,
+    version: "v3",
+    inV1: false,
     entryPoints: [
       "Online — homeowner fills out a form (e.g. via Google Maps or the professional's website).",
       "Manual — the professional creates the request themselves.",
@@ -64,7 +66,8 @@ export const stages: WorkflowStage[] = [
     summary:
       "Decide whether the job needs on-location assessment and gather everything required to quote.",
     accentClass: "border-l-amber-300",
-    inV1: true,
+    version: "later",
+    inV1: false,
     flow: [
       "Decision: does the request require an on-location assessment?",
       "If yes: schedule intake — propose a timeslot (visible in Client Hub) — client confirms — visit the client.",
@@ -84,6 +87,7 @@ export const stages: WorkflowStage[] = [
     summary:
       "Compose the quote, optionally pull in supplier input, share it with the client, iterate until accepted.",
     accentClass: "border-l-orange-300",
+    version: "v1",
     inV1: true,
     flow: [
       "Create new quote → quote details.",
@@ -119,7 +123,8 @@ export const stages: WorkflowStage[] = [
     summary:
       "Convert an accepted quote into scheduled work, execute it, handle surprises.",
     accentClass: "border-l-blue-300",
-    inV1: true,
+    version: "v2",
+    inV1: false,
     flow: [
       "Create job — the accepted quote is converted into a job.",
       "Job details: order any third-party material, align co-workers, find a timeslot.",
@@ -148,6 +153,7 @@ export const stages: WorkflowStage[] = [
     summary:
       "Bill for completed work — including fractional payments — and chase if unpaid.",
     accentClass: "border-l-violet-300",
+    version: "v1",
     inV1: true,
     flow: [
       "Create invoice → invoice details (supports fractional payments).",
@@ -169,6 +175,7 @@ export const hubs: WorkflowStage[] = [
     summary:
       "Cross-cutting flow for third-party suppliers who contribute line items or info to a quote.",
     accentClass: "border-l-slate-400",
+    version: "later",
     inV1: false,
     flow: [
       "Supplier receives a request by email containing one or more line items.",
@@ -182,6 +189,7 @@ export const hubs: WorkflowStage[] = [
     summary:
       "Client-facing portal that runs alongside every stage of the workflow.",
     accentClass: "border-l-emerald-400",
+    version: "v1",
     inV1: true,
     flow: [
       "Surfaces requests, intakes, quotes, jobs, and invoices to the client at the right moment.",

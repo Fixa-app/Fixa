@@ -100,8 +100,8 @@ function StageCard({ stage }: { stage: WorkflowStage }) {
           </CardTitle>
           <CardDescription>{stage.summary}</CardDescription>
         </div>
-        <Badge variant={stage.inV1 ? "default" : "secondary"}>
-          {stage.inV1 ? "v1" : "later"}
+        <Badge variant={stage.version === "v1" ? "default" : "secondary"}>
+     {stage.version}
         </Badge>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
