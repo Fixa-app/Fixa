@@ -121,9 +121,9 @@ export async function SiteHeader() {
                   <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold hover:bg-transparent focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
                     Product
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-[940px]">
-                      <div className="grid grid-cols-4 gap-8 p-8">
+                  <NavigationMenuContent className="w-screen bg-background shadow-md">
+                    <div className="mx-auto max-w-6xl">
+                      <div className="grid grid-cols-4 gap-10 px-6 py-10">
                         {productMenu.map((col) => (
                           <div key={col.title} className="flex flex-col gap-4">
                             <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
@@ -153,7 +153,7 @@ export async function SiteHeader() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center gap-8 border-t border-border px-8 py-4">
+                      <div className="flex items-center gap-8 border-t border-border px-6 py-4">
                         {productMenuFooter.map((item) => (
                           <NavigationMenuLink
                             key={item.label}
