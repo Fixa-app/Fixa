@@ -27,7 +27,7 @@ export async function SiteHeader() {
               className="h-12 w-auto"
             />
           </Link>
-          <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+          <nav className="hidden items-center gap-6 text-sm font-semibold md:flex">
             <a href="#industries" className="text-foreground hover:text-foreground/70">
               Voor wie
             </a>

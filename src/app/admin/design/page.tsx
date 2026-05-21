@@ -269,6 +269,12 @@ function TypeScale() {
         >
           Eyebrow / label
         </TypeRow>
+        <TypeRow
+          className="text-sm font-semibold"
+          label="text-sm / semibold (nav link)"
+        >
+          Voor wie · Product · Prijzen
+        </TypeRow>
         <TypeRow className="font-mono text-sm" label="font-mono / text-sm">
           fixa-app/fixa · supabase/migrations/20260520150000.sql
         </TypeRow>

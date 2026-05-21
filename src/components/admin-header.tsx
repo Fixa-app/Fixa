@@ -48,7 +48,7 @@ export function AdminHeader({ user }: { user: User }) {
             <span className="text-zinc-500">·</span>
             <span className="text-zinc-400">Admin</span>
           </Link>
-          <nav className="hidden items-center gap-5 text-sm text-zinc-400 md:flex">
+          <nav className="hidden items-center gap-5 text-sm font-semibold text-zinc-400 md:flex">
             <Link href="/admin" className="hover:text-zinc-100">
               Dashboard
             </Link>
