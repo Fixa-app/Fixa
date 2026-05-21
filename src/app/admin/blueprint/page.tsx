@@ -1,6 +1,5 @@
+import { Fragment } from "react";
 import {
-  ArrowDown,
-  ArrowRight,
   Calendar,
   CalendarCheck,
   FileText,
@@ -24,40 +23,17 @@ type CardData = {
   statuses?: string[];
 };
 
-const entryChannels: CardData[] = [
-  {
-    name: "Manual",
-    icon: PenLine,
-    surface: "Pro",
-    description: "Professional creates the request inside Fixa.",
-  },
-  {
-    name: "Website",
-    icon: Globe,
-    surface: "Online",
-    description: "Customer submits via the pro's website form.",
-  },
-  {
-    name: "Client Hub",
-    icon: Users,
-    surface: "Client",
-    description: "Existing client creates a new request from their portal.",
-  },
-  {
-    name: "Channels",
-    icon: Workflow,
-    surface: "Online",
-    description:
-      "External integrations — Google Reserve, marketplace, ChatGPT.",
-  },
-];
+/* --------------------------- Cards --------------------------- */
 
-type Phase = CardData & {
-  category: string;
+// Pro dashboard
+const manual: CardData = {
+  name: "Manual",
+  icon: PenLine,
+  surface: "Pro",
+  description: "Professional creates the request inside Fixa.",
 };
 
-const requestPhase: Phase = {
-  category: "Better leads",
+const requestsPro: CardData = {
   name: "Requests",
   icon: Inbox,
   surface: "Pro",
@@ -65,55 +41,146 @@ const requestPhase: Phase = {
   statuses: ["New", "Intake scheduled", "Intake done", "Overdue"],
 };
 
-const intakePhase: CardData = {
+const intakesPro: CardData = {
   name: "Intakes",
   icon: CalendarCheck,
   surface: "Pro",
-  description:
-    "On-location assessments before quoting. Scheduled via Schedule.",
+  description: "On-location assessments before quoting.",
   statuses: ["Proposed", "Confirmed", "Completed", "Refused"],
 };
 
-const schedulePhase: CardData = {
+const quotesPro: CardData = {
+  name: "Quotes",
+  icon: FileText,
+  surface: "Pro",
+  description: "Compose, share, iterate until accepted.",
+  statuses: ["Draft", "Waiting for response", "Change requested", "Approved"],
+};
+
+const jobsPro: CardData = {
+  name: "Jobs",
+  icon: Wrench,
+  surface: "Pro",
+  description: "Schedule, dispatch, execute the accepted work.",
+  statuses: [
+    "Unscheduled",
+    "In progress",
+    "Late",
+    "Action required",
+    "Completed",
+  ],
+};
+
+const schedule: CardData = {
   name: "Schedule",
   icon: Calendar,
   surface: "Pro",
-  description:
-    "Central calendar for intakes and jobs across all professionals.",
+  description: "Central calendar for intakes and jobs.",
 };
 
-const otherPhases: Phase[] = [
+const invoicesPro: CardData = {
+  name: "Invoices",
+  icon: Receipt,
+  surface: "Pro",
+  description: "Bill, remind, get paid, close the loop.",
+  statuses: ["Draft", "Sent", "Late", "Paid"],
+};
+
+// Client hub
+const clientRequest: CardData = {
+  name: "Client request",
+  icon: Users,
+  surface: "Client",
+  description: "Client submits a new request from their portal.",
+};
+
+const requestsClient: CardData = {
+  name: "Requests",
+  icon: Inbox,
+  surface: "Client",
+  description: "Client tracks submitted requests and current status.",
+  statuses: ["Submitted", "Intake scheduled", "Quoted"],
+};
+
+const quotesClient: CardData = {
+  name: "Quotes",
+  icon: FileText,
+  surface: "Client",
+  description: "Client reviews and responds to quotes.",
+  statuses: ["Pending", "Reviewing", "Accepted", "Declined"],
+};
+
+const jobsClient: CardData = {
+  name: "Jobs",
+  icon: Wrench,
+  surface: "Client",
+  description: "Client sees scheduled work and live updates.",
+  statuses: ["Upcoming", "In progress", "Completed"],
+};
+
+const invoicesClient: CardData = {
+  name: "Invoices",
+  icon: Receipt,
+  surface: "Client",
+  description: "Client views and pays invoices.",
+  statuses: ["Unpaid", "Paid"],
+};
+
+// Online
+const website: CardData = {
+  name: "Website",
+  icon: Globe,
+  surface: "Online",
+  description: "Public form on the professional's website.",
+};
+
+const externalChannels: CardData = {
+  name: "Channels",
+  icon: Workflow,
+  surface: "Online",
+  description: "External integrations — Google Reserve, marketplace, ChatGPT.",
+};
+
+/* --------------------------- Board grid --------------------------- */
+
+type Row = {
+  label: string;
+  cells: CardData[][];
+};
+
+const rows: Row[] = [
   {
-    category: "More work",
-    name: "Quotes",
-    icon: FileText,
-    surface: "Pro",
-    description: "Compose, share, iterate until accepted.",
-    statuses: ["Draft", "Waiting for response", "Change requested", "Approved"],
-  },
-  {
-    category: "Work smarter",
-    name: "Jobs",
-    icon: Wrench,
-    surface: "Pro",
-    description: "Schedule, dispatch, execute the accepted work.",
-    statuses: [
-      "Unscheduled",
-      "In progress",
-      "Late",
-      "Action required",
-      "Completed",
+    label: "Pro dashboard",
+    cells: [
+      [manual, requestsPro, intakesPro],
+      [quotesPro],
+      [jobsPro, schedule],
+      [invoicesPro],
     ],
   },
   {
-    category: "More profits",
-    name: "Invoices",
-    icon: Receipt,
-    surface: "Pro",
-    description: "Bill, remind, get paid, close the loop.",
-    statuses: ["Draft", "Sent", "Late", "Paid"],
+    label: "Client hub",
+    cells: [
+      [clientRequest, requestsClient],
+      [quotesClient],
+      [jobsClient],
+      [invoicesClient],
+    ],
+  },
+  {
+    label: "Online",
+    cells: [[website, externalChannels], [], [], []],
   },
 ];
+
+const phaseLabels = [
+  "Better leads",
+  "More work",
+  "Work smarter",
+  "More profits",
+];
+
+/* --------------------------- Components --------------------------- */
 
 export default function BlueprintPage() {
   return (
@@ -133,77 +200,24 @@ export default function BlueprintPage() {
 }
 
 function Board() {
-  const [quotePhase, jobPhase, invoicePhase] = otherPhases;
   return (
-    <div className="flex items-start gap-3">
-      <BetterLeadsBlock />
-      <PhaseBlock phase={quotePhase} />
-      <WorkSmarterBlock phase={jobPhase} />
-      <PhaseBlock phase={invoicePhase} />
-    </div>
-  );
-}
+    <div
+      className="grid items-start gap-x-4 gap-y-10"
+      style={{ gridTemplateColumns: "160px repeat(4, minmax(0, 1fr))" }}
+    >
+      <div />
+      {phaseLabels.map((label) => (
+        <Eyebrow key={label}>{label}</Eyebrow>
+      ))}
 
-function BetterLeadsBlock() {
-  return (
-    <div className="flex flex-col gap-3">
-      <Eyebrow>Better leads</Eyebrow>
-      <div className="flex items-stretch gap-2">
-        <div className="flex w-[240px] flex-col gap-2">
-          {entryChannels.map((ch) => (
-            <CardItem key={ch.name} card={ch} dashRight />
+      {rows.map((row, rowIdx) => (
+        <Fragment key={row.label}>
+          <RowLabel>{row.label}</RowLabel>
+          {row.cells.map((cards, i) => (
+            <GridCell key={`${rowIdx}-${i}`} cards={cards} />
           ))}
-        </div>
-        <Connector />
-        <div className="flex items-start">
-          <div className="flex w-[240px] flex-col gap-2">
-            <CardItem card={requestPhase} />
-            <CardItem card={intakePhase} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PhaseBlock({ phase }: { phase: Phase }) {
-  return (
-    <div className="flex flex-col gap-3">
-      <Eyebrow>{phase.category}</Eyebrow>
-      <div className="flex items-center gap-3">
-        <ArrowRight
-          aria-hidden
-          className="size-4 shrink-0 text-muted-foreground"
-          strokeWidth={1.5}
-        />
-        <CardItem card={phase} className="w-[240px]" />
-      </div>
-    </div>
-  );
-}
-
-function WorkSmarterBlock({ phase }: { phase: Phase }) {
-  return (
-    <div className="flex flex-col gap-3">
-      <Eyebrow>{phase.category}</Eyebrow>
-      <div className="flex items-start gap-3">
-        <ArrowRight
-          aria-hidden
-          className="mt-12 size-4 shrink-0 text-muted-foreground"
-          strokeWidth={1.5}
-        />
-        <div className="flex w-[240px] flex-col gap-2">
-          <CardItem card={phase} />
-          <div className="flex justify-center">
-            <ArrowDown
-              aria-hidden
-              className="size-4 text-muted-foreground"
-              strokeWidth={1.5}
-            />
-          </div>
-          <CardItem card={schedulePhase} />
-        </div>
-      </div>
+        </Fragment>
+      ))}
     </div>
   );
 }
@@ -216,25 +230,31 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CardItem({
-  card,
-  className = "",
-  dashRight = false,
-}: {
-  card: CardData;
-  className?: string;
-  dashRight?: boolean;
-}) {
+function RowLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className={`relative flex flex-col gap-2 rounded-md border border-border bg-card p-4 ${className}`}
-    >
+    <p className="text-xs font-bold tracking-widest text-foreground uppercase">
+      {children}
+    </p>
+  );
+}
+
+function GridCell({ cards }: { cards: CardData[] }) {
+  if (cards.length === 0) return <div />;
+  return (
+    <div className="flex flex-col gap-2">
+      {cards.map((c) => (
+        <CardItem key={c.name} card={c} />
+      ))}
+    </div>
+  );
+}
+
+function CardItem({ card }: { card: CardData }) {
+  return (
+    <div className="flex flex-col gap-2 rounded-md border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <card.icon
-            className="size-4 text-foreground/70"
-            strokeWidth={2}
-          />
+          <card.icon className="size-4 text-foreground/70" strokeWidth={2} />
           <span className="text-sm font-semibold">{card.name}</span>
         </div>
         <SurfaceBadge surface={card.surface} />
@@ -254,32 +274,6 @@ function CardItem({
           ))}
         </div>
       )}
-      {dashRight && (
-        <div
-          aria-hidden
-          className="absolute top-1/2 -right-3 h-px w-4 -translate-y-1/2 bg-border"
-        />
-      )}
-    </div>
-  );
-}
-
-function Connector() {
-  return (
-    <div className="relative w-12 shrink-0">
-      <div
-        aria-hidden
-        className="absolute top-[12%] bottom-[12%] left-1 border-l border-border"
-      />
-      <div
-        aria-hidden
-        className="absolute top-[12%] right-1 left-1 h-px bg-border"
-      />
-      <ArrowRight
-        aria-hidden
-        className="absolute top-[12%] right-0 size-4 -translate-y-1/2 text-muted-foreground"
-        strokeWidth={1.5}
-      />
     </div>
   );
 }
