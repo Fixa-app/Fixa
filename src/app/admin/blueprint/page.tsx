@@ -3,13 +3,13 @@ import {
   ArrowRight,
   Calendar,
   CalendarCheck,
+  ClipboardList,
   FileText,
   Globe,
   Inbox,
   type LucideIcon,
   PenLine,
   Receipt,
-  Users,
   Workflow,
   Wrench,
 } from "lucide-react";
@@ -100,36 +100,20 @@ const newRequestsClient: CardData = {
   description: "Client submits a new request from their portal.",
 };
 
-const requestsClient: CardData = {
-  name: "Requests",
-  icon: Inbox,
+const projectsClient: CardData = {
+  name: "Projects",
+  icon: ClipboardList,
   surface: "Client",
-  description: "Client tracks submitted requests and current status.",
-  statuses: ["Submitted", "Intake scheduled", "Quoted"],
-};
-
-const quotesClient: CardData = {
-  name: "Quotes",
-  icon: FileText,
-  surface: "Client",
-  description: "Client reviews and responds to quotes.",
-  statuses: ["Pending", "Reviewing", "Accepted", "Declined"],
-};
-
-const jobsClient: CardData = {
-  name: "Jobs",
-  icon: Wrench,
-  surface: "Client",
-  description: "Client sees scheduled work and live updates.",
-  statuses: ["Upcoming", "In progress", "Completed"],
-};
-
-const invoicesClient: CardData = {
-  name: "Invoices",
-  icon: Receipt,
-  surface: "Client",
-  description: "Client views and pays invoices.",
-  statuses: ["Unpaid", "Paid"],
+  description:
+    "One timeline per engagement. Covers everything from request to paid invoice, with stage updates and actions in one place.",
+  statuses: [
+    "Request",
+    "Quote",
+    "Scheduled",
+    "In progress",
+    "Invoiced",
+    "Paid",
+  ],
 };
 
 const channelsOnline: CardData = {
@@ -243,13 +227,9 @@ function ClientSection() {
       >
         <CardItem card={newRequestsClient} />
         <HorizontalArrow />
-        <CardItem card={requestsClient} />
-        <HorizontalArrow />
-        <CardItem card={quotesClient} />
-        <HorizontalArrow />
-        <CardItem card={jobsClient} />
-        <HorizontalArrow />
-        <CardItem card={invoicesClient} />
+        <div className="col-span-7">
+          <CardItem card={projectsClient} />
+        </div>
       </div>
     </section>
   );
