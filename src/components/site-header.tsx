@@ -103,14 +103,14 @@ export async function SiteHeader() {
                   <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold hover:bg-transparent focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
                     Product
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="grid w-[760px] grid-cols-4 gap-6 p-6">
+                  <NavigationMenuContent className="w-screen rounded-none border-t border-border bg-background shadow-none ring-0">
+                    <div className="mx-auto grid max-w-6xl grid-cols-4 gap-10 px-6 py-10">
                       {productMenu.map((col) => (
-                        <div key={col.title} className="flex flex-col gap-3">
+                        <div key={col.title} className="flex flex-col gap-4">
                           <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
                             {col.title}
                           </h3>
-                          <ul className="flex flex-col gap-0.5">
+                          <ul className="flex flex-col gap-1">
                             {col.items.map((item) => (
                               <li key={item.label}>
                                 <NavigationMenuLink
