@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { ExternalLink } from "lucide-react";
@@ -34,8 +35,16 @@ export function AdminHeader({ user }: { user: User }) {
           <Link
             href="/admin"
             className="flex items-center gap-2 text-sm font-semibold tracking-tight"
+            aria-label="Fixa Admin"
           >
-            <span>Fixa</span>
+            <Image
+              src="/fixa-logo.svg"
+              alt=""
+              width={28}
+              height={28}
+              priority
+              className="h-7 w-auto invert"
+            />
             <span className="text-zinc-500">·</span>
             <span className="text-zinc-400">Admin</span>
           </Link>
