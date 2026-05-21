@@ -47,7 +47,7 @@ type ProductColumn = {
 
 const productMenu: ProductColumn[] = [
   {
-    title: "Meer leads",
+    title: "Betere aanvragen",
     items: [
       { label: "Online boekingen", href: "#features", icon: CalendarCheck },
       { label: "Website & reviews", href: "#features", icon: Star },
@@ -55,7 +55,7 @@ const productMenu: ProductColumn[] = [
     ],
   },
   {
-    title: "Win meer deals",
+    title: "Meer werk",
     items: [
       { label: "Offertes", href: "#features", icon: FileText, ai: true },
       { label: "Service plans", href: "#features", icon: Repeat },
@@ -63,19 +63,19 @@ const productMenu: ProductColumn[] = [
     ],
   },
   {
-    title: "Werk slimmer",
+    title: "Slimmer werken",
     items: [
       { label: "Planning", href: "#features", icon: Calendar, ai: true },
       { label: "Dispatching", href: "#features", icon: Truck, ai: true },
+      { label: "Klantbeheer", href: "#features", icon: UserCog },
       { label: "Klanthub", href: "#features", icon: Users },
     ],
   },
   {
-    title: "Word betaald",
+    title: "Meer winst",
     items: [
       { label: "Facturen", href: "#features", icon: Receipt },
       { label: "Betalingen", href: "#features", icon: CreditCard },
-      { label: "Klantbeheer", href: "#features", icon: UserCog },
       { label: "Boekhoudkoppelingen", href: "#features", icon: BookOpen },
       { label: "Business dashboard", href: "#features", icon: BarChart3, ai: true },
     ],
@@ -142,7 +142,7 @@ export async function SiteHeader() {
                                     />
                                     <span>{item.label}</span>
                                     {item.ai && (
-                                      <span className="inline-flex items-center rounded-full border border-violet-300 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-violet-600 uppercase">
+                                      <span className="inline-flex items-center rounded-full border border-violet-300 px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap text-violet-600 uppercase">
                                         Assist AI
                                       </span>
                                     )}
