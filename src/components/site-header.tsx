@@ -17,8 +17,8 @@ import {
   Truck,
   UserCog,
   Users,
+  Wand2,
 } from "lucide-react";
-import { FixaAIIcon } from "@/components/icons/fixa-ai-icon";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import {
@@ -36,7 +36,7 @@ import { signOut } from "@/lib/auth/actions";
 type ProductMenuItem = {
   label: string;
   href: string;
-  icon: LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: LucideIcon;
   ai?: boolean;
 };
 
@@ -83,7 +83,7 @@ const productMenu: ProductColumn[] = [
 ];
 
 const productMenuFooter: ProductMenuItem[] = [
-  { label: "AI", href: "#features", icon: FixaAIIcon, ai: true },
+  { label: "Fixa Assist AI", href: "#features", icon: Wand2, ai: true },
   { label: "Integraties", href: "#features", icon: Boxes },
 ];
 
@@ -121,9 +121,9 @@ export async function SiteHeader() {
                   <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold hover:bg-transparent focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
                     Product
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="w-screen rounded-none bg-background shadow-none ring-0">
-                    <div className="mx-auto max-w-6xl">
-                      <div className="grid grid-cols-4 gap-10 px-6 py-10">
+                  <NavigationMenuContent>
+                    <div className="w-[940px]">
+                      <div className="grid grid-cols-4 gap-8 p-8">
                         {productMenu.map((col) => (
                           <div key={col.title} className="flex flex-col gap-4">
                             <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
@@ -137,17 +137,13 @@ export async function SiteHeader() {
                                     className="gap-3 text-base font-bold"
                                   >
                                     <item.icon
-                                      className={
-                                        item.ai
-                                          ? "size-5 text-violet-500"
-                                          : "size-5 text-foreground"
-                                      }
+                                      className="size-5 text-foreground"
                                       strokeWidth={2}
                                     />
                                     <span>{item.label}</span>
                                     {item.ai && (
-                                      <span className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-bold tracking-wide text-violet-700">
-                                        AI
+                                      <span className="inline-flex items-center rounded-full border border-violet-300 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-violet-600 uppercase">
+                                        Assist AI
                                       </span>
                                     )}
                                   </NavigationMenuLink>
@@ -157,7 +153,7 @@ export async function SiteHeader() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center gap-8 border-t border-border px-6 py-4">
+                      <div className="flex items-center gap-8 border-t border-border px-8 py-4">
                         {productMenuFooter.map((item) => (
                           <NavigationMenuLink
                             key={item.label}
