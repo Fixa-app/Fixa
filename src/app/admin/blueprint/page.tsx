@@ -2,6 +2,7 @@ import {
   ArrowRight,
   BarChart3,
   Bell,
+  BookOpen,
   Calendar,
   CalendarCheck,
   ClipboardList,
@@ -172,6 +173,20 @@ const invoicesPro: CardData = {
   ],
 };
 
+const accountingPro: CardData = {
+  name: "Accounting",
+  icon: BookOpen,
+  surface: "Pro",
+  description:
+    "Sync invoices, payments, and customers to the pro's bookkeeping software.",
+  statuses: ["Connected", "Syncing", "Error", "Disconnected"],
+  userStories: [
+    "As a pro, I want Fixa to push invoices and payments to my bookkeeping tool so I don't double-enter.",
+    "As a pro, I want to map Fixa categories to ledger accounts once and forget it.",
+    "As a pro, I want to see sync errors and resolve them without leaving Fixa.",
+  ],
+};
+
 const customersPro: CardData = {
   name: "Customers",
   icon: Users,
@@ -332,7 +347,7 @@ function ProSection() {
         <HorizontalArrow />
         <ColumnStack cards={[jobsPro, schedule, inboxPro]} />
         <HorizontalArrow />
-        <ColumnStack cards={[invoicesPro]} />
+        <ColumnStack cards={[invoicesPro, accountingPro]} />
         <Empty />
         <ColumnStack cards={[customersPro, reportsPro, usersPro]} />
       </div>
