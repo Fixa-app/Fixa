@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  BarChart3,
   BookOpen,
   Calendar,
   CalendarCheck,
@@ -42,12 +43,15 @@ const productMenu: ProductColumn[] = [
       { label: "Online boekingen", href: "#features", icon: CalendarCheck },
       { label: "Website & reviews", href: "#features", icon: Star },
       { label: "Reserveren via Google", href: "#features", icon: MapPin },
-      { label: "Service plans", href: "#features", icon: Repeat },
     ],
   },
   {
-    title: "Win opdrachten",
-    items: [{ label: "Offertes", href: "#features", icon: FileText }],
+    title: "Win meer deals",
+    items: [
+      { label: "Offertes", href: "#features", icon: FileText },
+      { label: "Service plans", href: "#features", icon: Repeat },
+      { label: "Communicatie", href: "#features", icon: MessageSquare },
+    ],
   },
   {
     title: "Werk slimmer",
@@ -55,7 +59,6 @@ const productMenu: ProductColumn[] = [
       { label: "Planning", href: "#features", icon: Calendar },
       { label: "Dispatching", href: "#features", icon: Truck },
       { label: "Klanthub", href: "#features", icon: Users },
-      { label: "Communicatie", href: "#features", icon: MessageSquare },
     ],
   },
   {
@@ -65,6 +68,7 @@ const productMenu: ProductColumn[] = [
       { label: "Betalingen", href: "#features", icon: CreditCard },
       { label: "Klantbeheer", href: "#features", icon: UserCog },
       { label: "Boekhoudkoppelingen", href: "#features", icon: BookOpen },
+      { label: "Business dashboard", href: "#features", icon: BarChart3 },
     ],
   },
 ];
