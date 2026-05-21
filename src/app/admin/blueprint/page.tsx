@@ -1,5 +1,8 @@
 import {
+  ArrowDown,
   ArrowRight,
+  Calendar,
+  CalendarCheck,
   FileText,
   Globe,
   Inbox,
@@ -58,9 +61,25 @@ const requestPhase: Phase = {
   name: "Requests",
   icon: Inbox,
   surface: "Pro",
-  description:
-    "Triage incoming work. Qualify, optional intake, decide to quote.",
+  description: "Triage incoming work. Decide whether to quote.",
   statuses: ["New", "Intake scheduled", "Intake done", "Overdue"],
+};
+
+const intakePhase: CardData = {
+  name: "Intakes",
+  icon: CalendarCheck,
+  surface: "Pro",
+  description:
+    "On-location assessments before quoting. Scheduled via Schedule.",
+  statuses: ["Proposed", "Confirmed", "Completed", "Refused"],
+};
+
+const schedulePhase: CardData = {
+  name: "Schedule",
+  icon: Calendar,
+  surface: "Pro",
+  description:
+    "Central calendar for intakes and jobs across all professionals.",
 };
 
 const otherPhases: Phase[] = [
@@ -114,12 +133,13 @@ export default function BlueprintPage() {
 }
 
 function Board() {
+  const [quotePhase, jobPhase, invoicePhase] = otherPhases;
   return (
     <div className="flex items-start gap-3">
       <BetterLeadsBlock />
-      {otherPhases.map((p) => (
-        <PhaseBlock key={p.name} phase={p} />
-      ))}
+      <PhaseBlock phase={quotePhase} />
+      <WorkSmarterBlock phase={jobPhase} />
+      <PhaseBlock phase={invoicePhase} />
     </div>
   );
 }
@@ -136,7 +156,10 @@ function BetterLeadsBlock() {
         </div>
         <Connector />
         <div className="flex items-start">
-          <CardItem card={requestPhase} className="w-[240px]" />
+          <div className="flex w-[240px] flex-col gap-2">
+            <CardItem card={requestPhase} />
+            <CardItem card={intakePhase} />
+          </div>
         </div>
       </div>
     </div>
@@ -154,6 +177,32 @@ function PhaseBlock({ phase }: { phase: Phase }) {
           strokeWidth={1.5}
         />
         <CardItem card={phase} className="w-[240px]" />
+      </div>
+    </div>
+  );
+}
+
+function WorkSmarterBlock({ phase }: { phase: Phase }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <Eyebrow>{phase.category}</Eyebrow>
+      <div className="flex items-start gap-3">
+        <ArrowRight
+          aria-hidden
+          className="mt-12 size-4 shrink-0 text-muted-foreground"
+          strokeWidth={1.5}
+        />
+        <div className="flex w-[240px] flex-col gap-2">
+          <CardItem card={phase} />
+          <div className="flex justify-center">
+            <ArrowDown
+              aria-hidden
+              className="size-4 text-muted-foreground"
+              strokeWidth={1.5}
+            />
+          </div>
+          <CardItem card={schedulePhase} />
+        </div>
       </div>
     </div>
   );
