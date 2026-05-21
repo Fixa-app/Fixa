@@ -13,12 +13,12 @@ import {
   MessageSquare,
   Receipt,
   Repeat,
-  Sparkles,
   Star,
   Truck,
   UserCog,
   Users,
 } from "lucide-react";
+import { FixaAIIcon } from "@/components/icons/fixa-ai-icon";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import {
@@ -36,7 +36,7 @@ import { signOut } from "@/lib/auth/actions";
 type ProductMenuItem = {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
   ai?: boolean;
 };
 
@@ -83,7 +83,7 @@ const productMenu: ProductColumn[] = [
 ];
 
 const productMenuFooter: ProductMenuItem[] = [
-  { label: "AI", href: "#features", icon: Sparkles, ai: true },
+  { label: "AI", href: "#features", icon: FixaAIIcon, ai: true },
   { label: "Integraties", href: "#features", icon: Boxes },
 ];
 
