@@ -26,7 +26,6 @@ type CardData = {
 
 /* --------------------------- Cards --------------------------- */
 
-// Pro dashboard
 const newRequestsPro: CardData = {
   name: "New requests",
   icon: PenLine,
@@ -38,8 +37,7 @@ const websitePro: CardData = {
   name: "Website",
   icon: Globe,
   surface: "Pro",
-  description:
-    "Public form on the pro's website that creates a new request.",
+  description: "Public form on the pro's website that creates a new request.",
 };
 
 const requestsPro: CardData = {
@@ -95,7 +93,6 @@ const invoicesPro: CardData = {
   statuses: ["Draft", "Sent", "Late", "Paid"],
 };
 
-// Client hub
 const newRequestsClient: CardData = {
   name: "New requests",
   icon: PenLine,
@@ -135,7 +132,6 @@ const invoicesClient: CardData = {
   statuses: ["Unpaid", "Paid"],
 };
 
-// Online
 const channelsOnline: CardData = {
   name: "Channels",
   icon: Workflow,
@@ -145,14 +141,17 @@ const channelsOnline: CardData = {
 
 /* --------------------------- Layout constants --------------------------- */
 
-// 9 columns: 5 card columns + 4 arrow gap columns
+// 9 columns: 5 card columns (fixed) + 4 arrow gap columns (narrow)
 //   col 1 = New requests
 //   col 3 = Requests / Intakes (Better leads)
 //   col 5 = Quotes (More work)
 //   col 7 = Jobs / Schedule (Work smarter)
 //   col 9 = Invoices (More profits)
-const gridTemplate =
-  "minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)";
+const gridTemplate = "repeat(5, minmax(220px, 1fr))";
+const gridTemplateWithArrows =
+  "minmax(220px, 1fr) 20px minmax(220px, 1fr) 20px minmax(220px, 1fr) 20px minmax(220px, 1fr) 20px minmax(220px, 1fr)";
+
+const CARD_MIN_HEIGHT = 150; // px; chosen so the tallest card content fits without scroll
 
 /* --------------------------- Page --------------------------- */
 
@@ -168,11 +167,13 @@ export default function BlueprintPage() {
         </h1>
       </header>
 
-      <div className="flex flex-col gap-2">
-        <PhaseHeaders />
-        <ProSection />
-        <ClientSection />
-        <OnlineSection />
+      <div className="-mx-6 overflow-x-auto px-6">
+        <div className="flex min-w-[1180px] flex-col gap-2">
+          <PhaseHeaders />
+          <ProSection />
+          <ClientSection />
+          <OnlineSection />
+        </div>
       </div>
     </div>
   );
@@ -183,10 +184,9 @@ export default function BlueprintPage() {
 function PhaseHeaders() {
   return (
     <div
-      className="grid gap-x-4"
-      style={{ gridTemplateColumns: gridTemplate }}
+      className="grid gap-x-2"
+      style={{ gridTemplateColumns: gridTemplateWithArrows }}
     >
-      {/* Better leads spans cols 1-3 (New requests + arrow + Requests col) */}
       <div className="col-span-3">
         <Eyebrow>Better leads</Eyebrow>
       </div>
@@ -205,12 +205,12 @@ function ProSection() {
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Pro dashboard</SurfaceDivider>
       <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: gridTemplate }}
+        className="grid items-start gap-x-2 gap-y-2"
+        style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
         {/* Sub-row 1: primary entities + horizontal arrows */}
         <CardItem card={newRequestsPro} />
-        <HorizontalArrow />
+        <ConvergingConnector />
         <CardItem card={requestsPro} />
         <HorizontalArrow />
         <CardItem card={quotesPro} />
@@ -219,9 +219,8 @@ function ProSection() {
         <HorizontalArrow />
         <CardItem card={invoicesPro} />
 
-        {/* Sub-row 2: below-primary cards (same column as the primary above) */}
+        {/* Sub-row 2: below-primary (col 2 is occupied by the spanning connector) */}
         <CardItem card={websitePro} />
-        <Empty />
         <CardItem card={intakesPro} />
         <Empty />
         <Empty />
@@ -239,8 +238,8 @@ function ClientSection() {
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Client hub</SurfaceDivider>
       <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: gridTemplate }}
+        className="grid items-start gap-x-2 gap-y-2"
+        style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
         <CardItem card={newRequestsClient} />
         <HorizontalArrow />
@@ -261,8 +260,8 @@ function OnlineSection() {
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Online</SurfaceDivider>
       <div
-        className="grid items-start gap-x-4 gap-y-2"
-        style={{ gridTemplateColumns: gridTemplate }}
+        className="grid items-start gap-x-2 gap-y-2"
+        style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
         <CardItem card={channelsOnline} />
         <Empty />
@@ -315,9 +314,37 @@ function HorizontalArrow() {
   );
 }
 
+/**
+ * Spans sub-rows 1 + 2 in column 2 of the Pro section.
+ * Draws a Y-shape that merges New requests (sub-row 1) and Website (sub-row 2)
+ * into a single arrow exiting at sub-row 1's vertical center toward Requests.
+ *
+ * The percentages assume both sub-rows have similar height (CARD_MIN_HEIGHT)
+ * and small gap-y-2 between them. Adjust if rows grow significantly.
+ */
+function ConvergingConnector() {
+  return (
+    <div
+      aria-hidden
+      className="relative"
+      style={{ gridRow: "1 / span 2", gridColumn: 2 }}
+    >
+      <div className="absolute top-[24%] bottom-[24%] left-1/2 w-px -translate-x-1/2 bg-border" />
+      <div className="absolute top-[24%] left-1/2 right-1 h-px bg-border" />
+      <ArrowRight
+        className="absolute top-[24%] right-0 size-4 -translate-y-1/2 text-muted-foreground"
+        strokeWidth={1.5}
+      />
+    </div>
+  );
+}
+
 function CardItem({ card }: { card: CardData }) {
   return (
-    <div className="flex flex-col gap-2 rounded-md border border-border bg-card p-4">
+    <div
+      className="flex flex-col gap-2 rounded-md border border-border bg-card p-4"
+      style={{ minHeight: CARD_MIN_HEIGHT }}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <card.icon className="size-4 text-foreground/70" strokeWidth={2} />
