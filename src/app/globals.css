@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-noto-serif), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-sora), system-ui, -apple-system, sans-serif;
   --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

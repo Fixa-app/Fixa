@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Manrope, Noto_Serif } from "next/font/google";
+import { Geist_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth/admin";
@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const notoSerif = Noto_Serif({
-  variable: "--font-noto-serif",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
 });
 
@@ -40,7 +40,7 @@ export default async function RootLayout({
   return (
     <html
       lang="nl"
-      className={`${manrope.variable} ${geistMono.variable} ${notoSerif.variable} h-full antialiased`}
+      className={`${manrope.variable} ${geistMono.variable} ${sora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {userIsAdmin && user ? <AdminHeader user={user} /> : <SiteHeader />}
