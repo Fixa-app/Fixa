@@ -24,8 +24,8 @@ export function IndustriesCarousel({ cards }: { cards: IndustryCard[] }) {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-end gap-2 px-4">
+    <div className="flex flex-col gap-6 px-4">
+      <div className="flex items-center justify-end gap-2">
         <button
           type="button"
           onClick={() => scroll("prev")}
@@ -45,7 +45,7 @@ export function IndustriesCarousel({ cards }: { cards: IndustryCard[] }) {
       </div>
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {cards.map((card) => (
           <a
