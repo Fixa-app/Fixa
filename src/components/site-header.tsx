@@ -96,7 +96,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
-      <div className="flex items-center justify-between gap-6 rounded-3xl bg-ink/80 py-2 pr-3 pl-5 text-ink-foreground backdrop-blur-md">
+      <div className="flex items-center justify-between gap-6 rounded-3xl bg-ink/80 py-1 pr-3 pl-5 text-ink-foreground backdrop-blur-md">
         <div className="flex items-center gap-6">
           <Link href="/" aria-label="Fixa" className="flex items-center">
             <Image
