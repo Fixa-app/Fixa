@@ -31,7 +31,7 @@ export default function Home() {
 function Hero() {
   return (
     <section className="-mt-[72px] px-4">
-      <div className="relative min-h-[720px] overflow-hidden rounded-3xl sm:min-h-[800px]">
+      <div className="relative min-h-[600px] overflow-hidden rounded-3xl sm:min-h-[680px]">
         <Image
           src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
           alt=""
@@ -41,7 +41,7 @@ function Hero() {
           className="object-cover object-right"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
-        <div className="relative z-10 mx-auto grid h-full max-w-6xl grid-cols-1 gap-12 px-6 pt-[180px] pb-20 sm:pb-28 md:grid-cols-2 md:items-center">
+        <div className="relative z-10 mx-auto grid h-full max-w-6xl grid-cols-1 gap-12 px-6 pt-[160px] pb-16 sm:pb-20 md:grid-cols-2 md:items-center">
           {/* Left: copy */}
           <div className="flex flex-col items-start gap-8 text-left text-white">
             <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
@@ -88,7 +88,7 @@ function PhoneMockup() {
   return (
     <div
       aria-hidden
-      className="relative aspect-[9/19] w-[260px] rounded-[2.75rem] bg-black p-[6px] shadow-2xl ring-1 ring-white/10 lg:w-[300px]"
+      className="relative aspect-[9/19] w-[210px] rounded-[2.5rem] bg-black p-[6px] shadow-2xl ring-1 ring-white/10 lg:w-[240px]"
     >
       <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[2.25rem] bg-cream text-xs font-medium tracking-wider text-cream-foreground/60 uppercase">
         App screenshot
