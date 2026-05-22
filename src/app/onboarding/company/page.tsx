@@ -200,9 +200,8 @@ function CompanyInfoContent() {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              size="sm"
-              onClick={handleBack}
               size="icon"
+              onClick={handleBack}
               className="flex-shrink-0 text-muted-foreground hover:text-foreground"
               aria-label="Go back to file upload"
             >
