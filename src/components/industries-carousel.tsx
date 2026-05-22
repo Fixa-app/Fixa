@@ -6,6 +6,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 export type IndustryCard = {
   name: string;
+  body: string;
   image: string;
 };
 
@@ -24,7 +25,7 @@ export function IndustriesCarousel({ cards }: { cards: IndustryCard[] }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex items-center justify-end gap-2 px-4">
         <button
           type="button"
           onClick={() => scroll("prev")}
@@ -44,25 +45,30 @@ export function IndustriesCarousel({ cards }: { cards: IndustryCard[] }) {
       </div>
       <div
         ref={scrollerRef}
-        className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {cards.map((card) => (
           <a
             key={card.name}
             href="#features"
-            className="group relative aspect-[4/5] w-[280px] flex-shrink-0 snap-start overflow-hidden rounded-2xl transition-transform hover:scale-[1.02] sm:w-[320px]"
+            className="group relative aspect-[4/5] w-[300px] flex-shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[340px]"
           >
             <Image
               src={card.image}
               alt={card.name}
               fill
-              sizes="320px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="340px"
+              className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-            <div className="absolute inset-x-5 bottom-5 flex items-center justify-between text-lg font-semibold text-white">
-              <span>{card.name}</span>
-              <ArrowUpRight className="size-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+            <div className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+              <ArrowUpRight className="size-5" />
+            </div>
+            <div className="absolute inset-x-5 bottom-5 flex flex-col gap-2 text-white">
+              <h3 className="text-2xl font-semibold leading-tight">
+                {card.name}
+              </h3>
+              <p className="text-sm leading-snug text-white/85">{card.body}</p>
             </div>
           </a>
         ))}

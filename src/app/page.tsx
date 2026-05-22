@@ -210,41 +210,49 @@ function Workflow() {
 const industryCards = [
   {
     name: "Loodgieters",
+    body: "Vang noodgevallen op, plan onderhoud en factureer direct vanaf de werkplek.",
     image:
       "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&q=80",
   },
   {
     name: "Elektriciens",
+    body: "Werk slim met digitale werkbonnen, materiaalbeheer en directe oplevering.",
     image:
       "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
   },
   {
     name: "CV & klimaat",
+    body: "Beheer onderhoudscontracten, plan servicebezoeken en houd elke installatie bij.",
     image:
       "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=800&q=80",
   },
   {
     name: "Hoveniers",
+    body: "Plan seizoenswerk, factureer uren en materialen, en blijf groeien zonder admin.",
     image:
       "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80",
   },
   {
     name: "Schoonmaak",
+    body: "Coördineer teams, plan routes en factureer per contract of per oproep.",
     image:
       "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80",
   },
   {
     name: "Klusbedrijf",
+    body: "Van kleine reparatie tot verbouwing — offertes, planning en facturen op één plek.",
     image:
       "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80",
   },
   {
     name: "Schilders",
+    body: "Bereken projecten snel, plan crews en factureer per fase of na oplevering.",
     image:
       "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&q=80",
   },
   {
     name: "Dakdekkers",
+    body: "Beheer projectoffertes, bestel materialen en factureer per fase van het werk.",
     image:
       "https://images.unsplash.com/photo-1592595896551-12b371d546d5?w=800&q=80",
   },
@@ -252,9 +260,9 @@ const industryCards = [
 
 function Industries() {
   return (
-    <section id="industries" className="px-6 py-20 sm:py-24">
-      <div className="mx-auto flex max-w-7xl flex-col gap-10">
-        <div className="flex max-w-2xl flex-col gap-3">
+    <section id="industries" className="py-20 sm:py-24">
+      <div className="flex flex-col gap-10">
+        <div className="flex max-w-2xl flex-col gap-3 px-6 sm:px-8">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Voor vakmensen en servicebedrijven.
           </h2>
