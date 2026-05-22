@@ -111,11 +111,8 @@ export function SiteHeaderBar({
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
-      <div
-        ref={pillRef}
-        className="flex flex-col rounded-3xl bg-ink/80 text-ink-foreground backdrop-blur-md"
-      >
-        <div className="flex items-center justify-between gap-6 py-1 pr-3 pl-5">
+      <div ref={pillRef} className="relative">
+        <div className="flex items-center justify-between gap-6 rounded-3xl bg-ink/70 py-0 pr-3 pl-5 text-ink-foreground backdrop-blur-md">
           <div className="flex items-center gap-6">
             <Link
               href="/"
@@ -202,7 +199,7 @@ export function SiteHeaderBar({
                   </Button>
                 </AuthDialog>
                 <AuthDialog>
-                  <Button className="h-12 rounded-2xl px-6 text-base font-bold">
+                  <Button className="h-12 rounded-xl px-6 text-base font-bold">
                     Begin nu
                   </Button>
                 </AuthDialog>
@@ -211,66 +208,69 @@ export function SiteHeaderBar({
           </div>
         </div>
 
-        {productOpen && (
-          <div
-            id="header-product-menu"
-            className="border-t border-white/10 px-6 py-8"
-          >
-            <div className="mx-auto max-w-6xl">
-              <div className="grid grid-cols-4 gap-10">
-                {productMenu.map((col) => (
-                  <div key={col.title} className="flex flex-col gap-4">
-                    <h3 className="text-xs font-bold tracking-widest text-ink-foreground/60 uppercase">
-                      {col.title}
-                    </h3>
-                    <ul className="flex flex-col gap-1">
-                      {col.items.map((item) => (
-                        <li key={item.label}>
-                          <Link
-                            href={item.href}
-                            onClick={closeMenu}
-                            className="flex items-center gap-3 rounded-lg p-2 text-base font-bold text-ink-foreground transition-colors hover:bg-white/10"
-                          >
-                            <item.icon
-                              className="size-5 text-ink-foreground"
-                              strokeWidth={2}
-                            />
-                            <span>{item.label}</span>
-                            {item.ai && (
-                              <span className="inline-flex items-center rounded-full border border-violet-300/60 px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap text-violet-300 uppercase">
-                                Assist AI
-                              </span>
-                            )}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 flex items-center gap-6 border-t border-white/10 pt-4">
-                {productMenuFooter.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={closeMenu}
-                    className="flex items-center gap-2 rounded-lg p-2 text-base font-bold text-ink-foreground transition-colors hover:bg-white/10"
-                  >
-                    <item.icon
-                      className={
-                        item.ai
-                          ? "size-5 text-violet-300"
-                          : "size-5 text-ink-foreground"
-                      }
-                      strokeWidth={2}
-                    />
-                    <span>{item.label}</span>
-                  </Link>
-                ))}
-              </div>
+        <div
+          id="header-product-menu"
+          aria-hidden={!productOpen}
+          className={`absolute top-full right-0 left-0 mt-2 origin-top rounded-3xl bg-ink/70 text-ink-foreground backdrop-blur-md transition-all duration-300 ease-out ${
+            productOpen
+              ? "translate-y-0 opacity-100"
+              : "pointer-events-none -translate-y-3 opacity-0"
+          }`}
+        >
+          <div className="mx-auto max-w-6xl px-6 py-8">
+            <div className="grid grid-cols-4 gap-10">
+              {productMenu.map((col) => (
+                <div key={col.title} className="flex flex-col gap-4">
+                  <h3 className="text-xs font-bold tracking-widest text-ink-foreground/60 uppercase">
+                    {col.title}
+                  </h3>
+                  <ul className="flex flex-col gap-1">
+                    {col.items.map((item) => (
+                      <li key={item.label}>
+                        <Link
+                          href={item.href}
+                          onClick={closeMenu}
+                          className="flex items-center gap-3 rounded-lg p-2 text-base font-bold text-ink-foreground transition-colors hover:bg-white/10"
+                        >
+                          <item.icon
+                            className="size-5 text-ink-foreground"
+                            strokeWidth={2}
+                          />
+                          <span>{item.label}</span>
+                          {item.ai && (
+                            <span className="inline-flex items-center rounded-full border border-violet-300/60 px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap text-violet-300 uppercase">
+                              Assist AI
+                            </span>
+                          )}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex items-center gap-6 border-t border-white/10 pt-4">
+              {productMenuFooter.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={closeMenu}
+                  className="flex items-center gap-2 rounded-lg p-2 text-base font-bold text-ink-foreground transition-colors hover:bg-white/10"
+                >
+                  <item.icon
+                    className={
+                      item.ai
+                        ? "size-5 text-violet-300"
+                        : "size-5 text-ink-foreground"
+                    }
+                    strokeWidth={2}
+                  />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );
