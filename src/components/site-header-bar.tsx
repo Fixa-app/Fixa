@@ -94,7 +94,9 @@ export function SiteHeaderBar({
   const pillRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const hasHero = pathname === "/";
-  const isTransparent = hasHero && !scrolled && !productOpen;
+  const overHero = hasHero && !scrolled;
+  const isLight = overHero && productOpen;
+  const isTransparent = overHero && !productOpen;
 
   useEffect(() => {
     if (!hasHero) {
@@ -127,14 +129,31 @@ export function SiteHeaderBar({
 
   const closeMenu = () => setProductOpen(false);
 
+  const txtBase = isLight ? "text-foreground" : "text-ink-foreground";
+  const txtMuted = isLight ? "text-foreground/60" : "text-ink-foreground/60";
+  const txtHover = isLight
+    ? "hover:text-foreground/70"
+    : "hover:text-ink-foreground/70";
+  const itemHover = isLight ? "hover:bg-foreground/5" : "hover:bg-white/10";
+  const dividerBorder = isLight ? "border-border" : "border-white/10";
+  const aiBadge = isLight
+    ? "border-violet-400/50 text-violet-600"
+    : "border-violet-300/60 text-violet-300";
+  const aiIconColor = isLight ? "text-violet-500" : "text-violet-300";
+
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
-      <div ref={pillRef} className="relative">
-        <div
-          className={`flex items-center justify-between gap-6 rounded-3xl py-0 pr-3 pl-5 text-ink-foreground transition-colors duration-300 ${
-            isTransparent ? "bg-transparent" : "bg-ink/70 backdrop-blur-md"
-          }`}
-        >
+      <div
+        ref={pillRef}
+        className={`flex flex-col overflow-hidden rounded-3xl transition-colors duration-300 ${txtBase} ${
+          isLight
+            ? "bg-background"
+            : isTransparent
+              ? "bg-transparent"
+              : "bg-ink/70 backdrop-blur-md"
+        }`}
+      >
+        <div className="flex items-center justify-between gap-6 py-0 pr-3 pl-5">
           <div className="flex items-center gap-6">
             <Link
               href="/"
@@ -148,14 +167,16 @@ export function SiteHeaderBar({
                 width={80}
                 height={80}
                 priority
-                className="h-18 w-auto invert"
+                className={`h-18 w-auto transition-[filter] duration-300 ${
+                  isLight ? "" : "invert"
+                }`}
               />
             </Link>
             <nav className="hidden items-center gap-1 md:flex">
               <a
                 href="#industries"
                 onClick={closeMenu}
-                className="px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
+                className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
               >
                 Voor wie
               </a>
@@ -164,7 +185,7 @@ export function SiteHeaderBar({
                 aria-expanded={productOpen}
                 aria-controls="header-product-menu"
                 onClick={() => setProductOpen((v) => !v)}
-                className="flex items-center gap-1 px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
+                className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
               >
                 Product
                 <ChevronDown
@@ -175,7 +196,7 @@ export function SiteHeaderBar({
               <Link
                 href="/pricing"
                 onClick={closeMenu}
-                className="px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
+                className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
               >
                 Prijzen
               </Link>
@@ -183,7 +204,7 @@ export function SiteHeaderBar({
                 <Link
                   href="/admin"
                   onClick={closeMenu}
-                  className="px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
+                  className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
                 >
                   Admin
                 </Link>
@@ -194,7 +215,7 @@ export function SiteHeaderBar({
             {userEmail ? (
               <>
                 <span
-                  className="hidden max-w-[220px] truncate text-sm text-ink-foreground/70 sm:inline"
+                  className={`hidden max-w-[220px] truncate text-sm sm:inline ${txtMuted}`}
                   title={userEmail}
                 >
                   {userEmail}
@@ -204,7 +225,11 @@ export function SiteHeaderBar({
                     variant="ghost"
                     size="sm"
                     type="submit"
-                    className="text-ink-foreground hover:bg-white/10 hover:text-ink-foreground"
+                    className={`${txtBase} ${itemHover} ${
+                      isLight
+                        ? "hover:text-foreground"
+                        : "hover:text-ink-foreground"
+                    }`}
                   >
                     Uitloggen
                   </Button>
@@ -215,7 +240,7 @@ export function SiteHeaderBar({
                 <AuthDialog>
                   <Button
                     variant="ghost"
-                    className="text-base font-bold text-ink-foreground hover:bg-transparent hover:text-ink-foreground/70"
+                    className={`text-base font-bold hover:bg-transparent ${txtBase} ${txtHover}`}
                   >
                     Inloggen
                   </Button>
@@ -233,17 +258,15 @@ export function SiteHeaderBar({
         <div
           id="header-product-menu"
           aria-hidden={!productOpen}
-          className={`absolute top-full right-0 left-0 mt-2 origin-top rounded-3xl bg-ink/70 text-ink-foreground backdrop-blur-md transition-all duration-300 ease-out ${
-            productOpen
-              ? "translate-y-0 opacity-100"
-              : "pointer-events-none -translate-y-3 opacity-0"
+          className={`overflow-hidden transition-[max-height] duration-300 ease-out ${
+            productOpen ? "max-h-[700px]" : "max-h-0"
           }`}
         >
-          <div className="mx-auto max-w-6xl px-6 py-8">
+          <div className={`mx-auto max-w-6xl border-t px-6 py-8 ${dividerBorder}`}>
             <div className="grid grid-cols-4 gap-10">
               {productMenu.map((col) => (
                 <div key={col.title} className="flex flex-col gap-4">
-                  <h3 className="text-xs font-bold tracking-widest text-ink-foreground/60 uppercase">
+                  <h3 className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}>
                     {col.title}
                   </h3>
                   <ul className="flex flex-col gap-1">
@@ -252,15 +275,14 @@ export function SiteHeaderBar({
                         <Link
                           href={item.href}
                           onClick={closeMenu}
-                          className="flex items-center gap-3 rounded-lg p-2 text-base font-bold text-ink-foreground transition-colors hover:bg-white/10"
+                          className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
                         >
-                          <item.icon
-                            className="size-5 text-ink-foreground"
-                            strokeWidth={2}
-                          />
+                          <item.icon className="size-5" strokeWidth={2} />
                           <span>{item.label}</span>
                           {item.ai && (
-                            <span className="inline-flex items-center rounded-full border border-violet-300/60 px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap text-violet-300 uppercase">
+                            <span
+                              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap uppercase ${aiBadge}`}
+                            >
                               Assist AI
                             </span>
                           )}
@@ -271,20 +293,16 @@ export function SiteHeaderBar({
                 </div>
               ))}
             </div>
-            <div className="mt-6 flex items-center gap-6 border-t border-white/10 pt-4">
+            <div className={`mt-6 flex items-center gap-6 border-t pt-4 ${dividerBorder}`}>
               {productMenuFooter.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
                   onClick={closeMenu}
-                  className="flex items-center gap-2 rounded-lg p-2 text-base font-bold text-ink-foreground transition-colors hover:bg-white/10"
+                  className={`flex items-center gap-2 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
                 >
                   <item.icon
-                    className={
-                      item.ai
-                        ? "size-5 text-violet-300"
-                        : "size-5 text-ink-foreground"
-                    }
+                    className={`size-5 ${item.ai ? aiIconColor : ""}`}
                     strokeWidth={2}
                   />
                   <span>{item.label}</span>
