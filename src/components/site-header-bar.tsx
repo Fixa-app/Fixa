@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   BarChart3,
   BookOpen,
@@ -89,7 +90,24 @@ export function SiteHeaderBar({
   userIsAdmin: boolean;
 }) {
   const [productOpen, setProductOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pillRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const hasHero = pathname === "/";
+  const isTransparent = hasHero && !scrolled && !productOpen;
+
+  useEffect(() => {
+    if (!hasHero) {
+      setScrolled(true);
+      return;
+    }
+    const onScroll = () => {
+      setScrolled(window.scrollY > window.innerHeight * 0.6);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [hasHero]);
 
   useEffect(() => {
     if (!productOpen) return;
@@ -112,7 +130,11 @@ export function SiteHeaderBar({
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
       <div ref={pillRef} className="relative">
-        <div className="flex items-center justify-between gap-6 rounded-3xl bg-ink/70 py-0 pr-3 pl-5 text-ink-foreground backdrop-blur-md">
+        <div
+          className={`flex items-center justify-between gap-6 rounded-3xl py-0 pr-3 pl-5 text-ink-foreground transition-colors duration-300 ${
+            isTransparent ? "bg-transparent" : "bg-ink/70 backdrop-blur-md"
+          }`}
+        >
           <div className="flex items-center gap-6">
             <Link
               href="/"

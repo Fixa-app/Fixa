@@ -30,8 +30,8 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="-mt-[88px] px-4">
-      <div className="relative min-h-[720px] overflow-hidden rounded-3xl px-6 pt-[200px] pb-24 sm:min-h-[800px] sm:pb-32">
+    <section className="-mt-[72px] px-4">
+      <div className="relative min-h-[720px] overflow-hidden rounded-3xl px-6 pt-[180px] pb-24 sm:min-h-[800px] sm:pb-32">
         <Image
           src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=2400&q=80"
           alt=""
