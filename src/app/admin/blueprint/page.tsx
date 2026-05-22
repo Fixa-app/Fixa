@@ -2,17 +2,22 @@ import {
   ArrowRight,
   BarChart3,
   Bell,
+  BellRing,
   BookOpen,
   Calendar,
   CalendarCheck,
   ClipboardList,
+  CreditCard,
   FileText,
   Globe,
   Inbox,
   type LucideIcon,
+  MessageSquare,
   Plus,
   Receipt,
   Repeat,
+  Search,
+  User,
   UserCog,
   Users,
   Workflow,
@@ -226,14 +231,43 @@ const usersPro: CardData = {
   ],
 };
 
+const findProClient: CardData = {
+  name: "Find a pro",
+  icon: Search,
+  surface: "Client",
+  description:
+    "Searchable database of professionals — filter by trade, location, availability, rating.",
+  userStories: [
+    "As a client, I want to search for pros by trade and city so I can shortlist quickly.",
+    "As a client, I want to see ratings and recent work before reaching out.",
+    "As a client, I want to save pros I'm considering for later.",
+  ],
+};
+
 const newRequestsClient: CardData = {
-  name: "New requests",
+  name: "New request",
   icon: Plus,
   surface: "Client",
-  description: "Client submits a new request from their portal.",
+  description:
+    "Submit a new request — to a specific pro or open to multiple pros.",
   userStories: [
     "As a client, I want to submit a request from my account without retyping contact info.",
     "As a client, I want to attach photos showing the problem.",
+    "As a client, I want to send the same request to multiple pros to compare.",
+  ],
+};
+
+const quotesClient: CardData = {
+  name: "Quotes",
+  icon: FileText,
+  surface: "Client",
+  description:
+    "Quotes I've received — pending decisions, accepted, declined, expired.",
+  statuses: ["Pending", "Accepted", "Declined", "Expired"],
+  userStories: [
+    "As a client, I want to compare quotes side-by-side from different pros.",
+    "As a client, I want to accept, request changes, or decline a quote in one click.",
+    "As a client, I want to keep declined quotes around for reference without polluting my active work.",
   ],
 };
 
@@ -242,20 +276,74 @@ const projectsClient: CardData = {
   icon: ClipboardList,
   surface: "Client",
   description:
-    "One timeline per engagement. Covers everything from request to paid invoice, with stage updates and actions in one place.",
-  statuses: [
-    "Request",
-    "Quote",
-    "Scheduled",
-    "In progress",
-    "Invoiced",
-    "Paid",
-  ],
+    "Committed work — accepted quotes through to paid invoices. All documents (quote, contract, invoice) live inside the project.",
+  statuses: ["Scheduled", "In progress", "Invoiced", "Paid", "Closed"],
   userStories: [
-    "As a client, I want to see all the work being done for me on a single page.",
-    "As a client, I want to respond to a quote (accept, ask changes, decline) from this view.",
+    "As a client, I want to see all active work on one page.",
     "As a client, I want to see when the pro is coming and any updates from them.",
+    "As a client, I want to find the quote, contract, and invoice for a project without searching my email.",
     "As a client, I want to pay invoices without leaving the platform.",
+  ],
+};
+
+const inboxClient: CardData = {
+  name: "Inbox",
+  icon: MessageSquare,
+  surface: "Client",
+  description: "Messages from pros and system notifications in one place.",
+  statuses: ["Unread", "Read", "Archived"],
+  userStories: [
+    "As a client, I want all pro/system messages in one inbox so I don't miss updates.",
+    "As a client, I want to reply to a pro without switching to email.",
+    "As a client, I want unread counts so I know what needs attention.",
+  ],
+};
+
+const servicePlansClient: CardData = {
+  name: "Service plans",
+  icon: Repeat,
+  surface: "Client",
+  description: "Recurring service contracts I'm subscribed to.",
+  statuses: ["Active", "Paused", "Cancelled"],
+  userStories: [
+    "As a client, I want to see what's covered by my service plan and when the next visit is.",
+    "As a client, I want to pause a plan without cancelling (e.g. moving house).",
+    "As a client, I want to see what I've paid against the plan year-to-date.",
+  ],
+};
+
+const profileClient: CardData = {
+  name: "Profile",
+  icon: User,
+  surface: "Client",
+  description: "Name, contact info, language preference.",
+  userStories: [
+    "As a client, I want to update my contact info once and have it apply everywhere.",
+    "As a client, I want to choose the language Fixa talks to me in.",
+  ],
+};
+
+const paymentMethodsClient: CardData = {
+  name: "Payment methods",
+  icon: CreditCard,
+  surface: "Client",
+  description: "Cards, bank accounts, autopay settings.",
+  userStories: [
+    "As a client, I want to save a payment method so I can pay invoices in one click.",
+    "As a client, I want to enable autopay for service plans.",
+    "As a client, I want to remove an old card without affecting active subscriptions.",
+  ],
+};
+
+const notificationsClient: CardData = {
+  name: "Notifications",
+  icon: BellRing,
+  surface: "Client",
+  description: "Channel preferences — email, push, SMS — per event type.",
+  userStories: [
+    "As a client, I want to mute marketing emails but keep job updates.",
+    "As a client, I want SMS reminders the day before a pro arrives.",
+    "As a client, I want to turn off notifications during quiet hours.",
   ],
 };
 
@@ -330,6 +418,25 @@ function PhaseHeaders() {
   );
 }
 
+function ClientPhaseHeaders() {
+  return (
+    <div
+      className="grid gap-x-2"
+      style={{ gridTemplateColumns: gridTemplateWithArrows }}
+    >
+      <Eyebrow>Plan</Eyebrow>
+      <div />
+      <Eyebrow>Manage</Eyebrow>
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <Eyebrow>Account</Eyebrow>
+    </div>
+  );
+}
+
 function ProSection() {
   return (
     <section className="flex flex-col gap-3">
@@ -359,15 +466,24 @@ function ClientSection() {
   return (
     <section className="flex flex-col gap-3">
       <SurfaceDivider>Client hub</SurfaceDivider>
+      <ClientPhaseHeaders />
       <div
         className="grid items-start gap-x-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
-        <ColumnStack cards={[newRequestsClient]} />
+        <ColumnStack cards={[findProClient, newRequestsClient]} />
         <HorizontalArrow />
-        <div className="col-span-7">
-          <CardItem card={projectsClient} />
-        </div>
+        <ColumnStack
+          cards={[quotesClient, projectsClient, inboxClient, servicePlansClient]}
+        />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <Empty />
+        <ColumnStack
+          cards={[profileClient, paymentMethodsClient, notificationsClient]}
+        />
       </div>
     </section>
   );
