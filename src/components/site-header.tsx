@@ -102,10 +102,10 @@ export async function SiteHeader() {
             <Image
               src="/fixa-logo.svg"
               alt="Fixa"
-              width={64}
-              height={64}
+              width={80}
+              height={80}
               priority
-              className="h-14 w-auto invert"
+              className="h-18 w-auto invert"
             />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
