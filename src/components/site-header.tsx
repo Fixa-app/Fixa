@@ -121,12 +121,12 @@ export async function SiteHeader() {
                   <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold text-ink-foreground hover:bg-transparent hover:text-ink-foreground/70 focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
                     Product
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="w-screen bg-background shadow-md">
+                  <NavigationMenuContent className="w-screen bg-ink/80 text-ink-foreground backdrop-blur-md">
                     <div className="mx-auto max-w-6xl">
                       <div className="grid grid-cols-4 gap-10 px-6 py-10">
                         {productMenu.map((col) => (
                           <div key={col.title} className="flex flex-col gap-4">
-                            <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+                            <h3 className="text-xs font-bold tracking-widest text-ink-foreground/60 uppercase">
                               {col.title}
                             </h3>
                             <ul className="flex flex-col gap-1">
@@ -134,15 +134,15 @@ export async function SiteHeader() {
                                 <li key={item.label}>
                                   <NavigationMenuLink
                                     href={item.href}
-                                    className="gap-3 text-base font-bold"
+                                    className="gap-3 text-base font-bold text-ink-foreground hover:bg-white/10 hover:text-ink-foreground focus:bg-white/10 focus:text-ink-foreground"
                                   >
                                     <item.icon
-                                      className="size-5 text-foreground"
+                                      className="size-5 text-ink-foreground"
                                       strokeWidth={2}
                                     />
                                     <span>{item.label}</span>
                                     {item.ai && (
-                                      <span className="inline-flex items-center rounded-full border border-violet-300 px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap text-violet-600 uppercase">
+                                      <span className="inline-flex items-center rounded-full border border-violet-300/60 px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap text-violet-300 uppercase">
                                         Assist AI
                                       </span>
                                     )}
@@ -153,18 +153,18 @@ export async function SiteHeader() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center gap-8 border-t border-border px-6 py-4">
+                      <div className="flex items-center gap-8 border-t border-white/10 px-6 py-4">
                         {productMenuFooter.map((item) => (
                           <NavigationMenuLink
                             key={item.label}
                             href={item.href}
-                            className="w-auto gap-2 text-base font-bold"
+                            className="w-auto gap-2 text-base font-bold text-ink-foreground hover:bg-white/10 hover:text-ink-foreground focus:bg-white/10 focus:text-ink-foreground"
                           >
                             <item.icon
                               className={
                                 item.ai
-                                  ? "size-5 text-violet-500"
-                                  : "size-5 text-foreground"
+                                  ? "size-5 text-violet-300"
+                                  : "size-5 text-ink-foreground"
                               }
                               strokeWidth={2}
                             />
