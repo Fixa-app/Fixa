@@ -1,9 +1,15 @@
 import {
   ArrowRight,
+  BarChart3,
+  BookOpen,
   Calendar,
+  CalendarCheck,
   FileText,
-  Inbox,
+  MapPin,
+  MessageSquare,
   Receipt,
+  Repeat,
+  Star,
   Users,
   Wrench,
 } from "lucide-react";
@@ -12,6 +18,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
+import { ProductTabs, type ProductPhase } from "@/components/product-tabs";
 
 export default function Home() {
   return (
@@ -19,7 +26,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Industries />
-        <Features />
+        <Product />
         <Workflow />
         <CTABand />
       </main>
@@ -97,67 +104,109 @@ function PhoneMockup() {
   );
 }
 
-const features = [
+const productPhases: ProductPhase[] = [
   {
-    icon: Inbox,
-    title: "Vang elke aanvraag op",
-    body: "Online formulieren, handmatige invoer of self-service via de Klanthub. Niets glipt door je vingers.",
+    key: "leads",
+    label: "Betere aanvragen",
+    features: [
+      {
+        name: "Online boekingen",
+        icon: CalendarCheck,
+        body: "Klanten boeken zelf via je website of agenda. Direct ingepland, geen heen-en-weer.",
+      },
+      {
+        name: "Website & reviews",
+        icon: Star,
+        body: "Een professionele bedrijfspagina met reviews die nieuwe klanten over de streep trekken.",
+      },
+      {
+        name: "Reserveren via Google",
+        icon: MapPin,
+        body: "Verschijn met een 'Reserveer'-knop in Google. Aanvragen landen automatisch in je inbox.",
+      },
+    ],
   },
   {
-    icon: Calendar,
-    title: "Plan intakes",
-    body: "Stel tijden voor, krijg bevestiging en kom voorbereid ter plaatse aan.",
+    key: "sales",
+    label: "Meer werk",
+    features: [
+      {
+        name: "Offertes",
+        icon: FileText,
+        body: "Stel offertes op met line items, deel ze digitaal, zie wanneer ze gelezen worden.",
+      },
+      {
+        name: "Service plans",
+        icon: Repeat,
+        body: "Terugkerende contracten voor onderhoud. Voorspelbare omzet, automatische werkbonnen.",
+      },
+      {
+        name: "Communicatie",
+        icon: MessageSquare,
+        body: "Eén inbox voor klanten, leveranciers en team. Stop met wisselen tussen apps.",
+      },
+    ],
   },
   {
-    icon: FileText,
-    title: "Stuur offertes die werken",
-    body: "Interactieve offertes met upsell-regels. Klanten accepteren, weigeren of vragen aanpassingen in één klik.",
+    key: "operations",
+    label: "Slimmer werken",
+    features: [
+      {
+        name: "Jobs",
+        icon: Wrench,
+        body: "Plan, dispatch en voer werk uit. Van werkbon tot afgeronde klus zonder papier.",
+      },
+      {
+        name: "Schedule",
+        icon: Calendar,
+        body: "Eén kalender voor intakes en jobs. Drag-and-drop om snel te herplannen.",
+      },
+      {
+        name: "Klanthub",
+        icon: Users,
+        body: "Klanten zien zelf wat er speelt — minder belletjes, meer vertrouwen.",
+      },
+    ],
   },
   {
-    icon: Wrench,
-    title: "Voer het werk uit",
-    body: "Bestel materialen, stem af met collega's en deel de planning met de klant — allemaal op één plek.",
-  },
-  {
-    icon: Receipt,
-    title: "Factureer en word betaald",
-    body: "Deelbetalingen, automatische herinneringen en een betaalstatus die realtime bijwerkt.",
-  },
-  {
-    icon: Users,
-    title: "Klanthub",
-    body: "Je klanten zien wat er speelt en wanneer — zonder dat jij hoeft te bellen, sms'en of mailen.",
+    key: "financial",
+    label: "Meer winst",
+    features: [
+      {
+        name: "Facturen",
+        icon: Receipt,
+        body: "Genereer facturen vanuit afgeronde jobs. Automatische herinneringen tot je betaald bent.",
+      },
+      {
+        name: "Accounting",
+        icon: BookOpen,
+        body: "Sync naar je boekhouder zonder dubbel werk. Categorieën, btw en betalingen kloppen.",
+      },
+      {
+        name: "Reports",
+        icon: BarChart3,
+        body: "Omzet, marge en time-to-paid in één dashboard. Zie wat werkt.",
+      },
+    ],
   },
 ];
 
-function Features() {
+function Product() {
   return (
-    <section
-      id="features"
-      className="border-t border-border bg-muted/20 px-6 py-20 sm:py-24"
-    >
-      <div className="mx-auto flex max-w-6xl flex-col gap-12">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
-            Eén plek voor alles tussen het telefoontje en de betaling.
+    <section id="product" className="py-20 sm:py-24">
+      <div className="flex flex-col gap-10 px-4">
+        <div className="flex flex-col gap-3 px-2 sm:px-4">
+          <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+            Product
+          </p>
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+            Eén flow voor je hele vakbedrijf.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
-            Fixa vervangt de mailtjes, spreadsheets en notitieboekjes waarmee
-            vakbedrijven nu hun werk bijhouden.
+            Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="flex flex-col gap-3 rounded-lg border border-border bg-background p-6"
-            >
-              <f.icon className="size-6 text-foreground/80" />
-              <h3 className="text-base font-semibold">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.body}</p>
-            </div>
-          ))}
-        </div>
+        <ProductTabs phases={productPhases} />
       </div>
     </section>
   );
