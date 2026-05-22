@@ -3,15 +3,9 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Drawer } from "vaul";
 
 type CompanyData = {
   companyName: string;
@@ -57,7 +51,7 @@ function CompanyInfoContent() {
       : mockParsedData
   );
 
-  const [editingGroup, setEditingGroup] = useState<string | null>(null);
+  const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [tempData, setTempData] = useState<Partial<CompanyData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -87,11 +81,11 @@ function CompanyInfoContent() {
       setTempData({ companyName: formData.companyName });
     }
     setErrors({});
-    setEditingGroup(group);
+    setOpenDrawer(group);
   };
 
-  const closeEdit = () => {
-    setEditingGroup(null);
+  const closeDrawer = () => {
+    setOpenDrawer(null);
     setTempData({});
     setErrors({});
   };
@@ -99,7 +93,7 @@ function CompanyInfoContent() {
   const validateAndSave = () => {
     const newErrors: Record<string, string> = {};
 
-    if (editingGroup === "contact") {
+    if (openDrawer === "contact") {
       // Validate phone
       const phone = tempData.phone || "";
       if (phone && !/^\+?[\d\s-]{8,}$/.test(phone)) {
@@ -113,7 +107,7 @@ function CompanyInfoContent() {
       }
     }
 
-    if (editingGroup === "vat-iban") {
+    if (openDrawer === "vat-iban") {
       // Basic IBAN validation (NL format)
       const iban = tempData.iban || "";
       if (iban && !/^NL\d{2}\s?[A-Z]{4}\s?\d{10}$/.test(iban.replace(/\s/g, ""))) {
@@ -128,7 +122,7 @@ function CompanyInfoContent() {
 
     // Save to form data
     setFormData((prev) => ({ ...prev, ...tempData }));
-    closeEdit();
+    closeDrawer();
   };
 
   const updateTempField = (field: keyof CompanyData, value: string) => {
@@ -155,20 +149,31 @@ function CompanyInfoContent() {
     const isEmpty = !previewText;
 
     return (
-      <div
-        className="flex items-center gap-3 rounded-lg border border-border bg-muted/20 p-4 transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
+      <button
+        onClick={() => openEdit(groupKey)}
+        className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
         style={{
           animationDelay: `${["name", "address", "contact", "kvk", "vat-iban"].indexOf(groupKey) * 100}ms`,
           animationDuration: "300ms",
           animationFillMode: "backwards",
         }}
+        aria-label={isEmpty ? `Add ${label.toLowerCase()}` : `View ${label.toLowerCase()}`}
       >
-        {/* Status icon */}
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-background">
-          {isDetected && !isEmpty ? (
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-semibold text-foreground">
+            {label}
+          </h3>
+          <p className="mt-1 truncate text-sm text-muted-foreground">
+            {previewText || "Not detected"}
+          </p>
+        </div>
+
+        {/* Action icon - only show plus for empty items */}
+        {isEmpty && (
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
             <svg
-              className="h-5 w-5 text-primary animate-in zoom-in"
-              style={{ animationDuration: "400ms" }}
+              className="h-5 w-5 text-foreground"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -176,35 +181,13 @@ function CompanyInfoContent() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
+                strokeWidth={2.5}
+                d="M12 4v16m8-8H4"
               />
             </svg>
-          ) : (
-            <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/40" />
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <Label className="text-sm font-medium text-foreground">{label}</Label>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">
-            {previewText || (
-              <span className="italic text-muted-foreground/70">Not detected</span>
-            )}
-          </p>
-        </div>
-
-        {/* View/Add button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => openEdit(groupKey)}
-          aria-label={isEmpty ? `Add ${label.toLowerCase()}` : `View ${label.toLowerCase()}`}
-        >
-          {isEmpty ? "Add" : "View"}
-        </Button>
-      </div>
+          </div>
+        )}
+      </button>
     );
   };
 
@@ -219,11 +202,12 @@ function CompanyInfoContent() {
               variant="ghost"
               size="sm"
               onClick={handleBack}
+              size="icon"
               className="flex-shrink-0 text-muted-foreground hover:text-foreground"
               aria-label="Go back to file upload"
             >
               <svg
-                className="mr-1 h-4 w-4"
+                className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -235,7 +219,6 @@ function CompanyInfoContent() {
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              Back
             </Button>
 
             <div className="flex flex-1 items-center justify-between">
@@ -248,82 +231,71 @@ function CompanyInfoContent() {
             </div>
           </div>
 
-          {/* Main card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-display text-2xl">
-                Your company info
-              </CardTitle>
-              {!isManual && (
+          {/* Title */}
+          <h1 className="font-display text-3xl font-bold">Your company info</h1>
+
+          {/* Items as separate cards */}
+          <div className="space-y-4">
+            {/* Fallback message if nothing detected */}
+            {isManual && Object.values(formData).every((val) => !val) && (
+              <div className="rounded-lg border border-muted bg-muted/20 p-4">
                 <p className="text-sm text-muted-foreground">
-                  We've extracted this information from your upload. Review and
-                  edit if needed.
+                  Couldn't detect anything this time. No worries, you can fill
+                  it in manually or{" "}
+                  <button
+                    onClick={handleBack}
+                    className="underline underline-offset-2 hover:text-foreground"
+                  >
+                    give the upload another go
+                  </button>
+                  .
                 </p>
-              )}
-            </CardHeader>
+              </div>
+            )}
 
-            <CardContent className="space-y-3">
-              {/* Fallback message if nothing detected */}
-              {isManual && Object.values(formData).every((val) => !val) && (
-                <div className="mb-4 rounded-lg border border-muted bg-muted/20 p-4">
-                  <p className="text-sm text-muted-foreground">
-                    Couldn't detect anything this time. No worries, you can fill
-                    it in manually or{" "}
-                    <button
-                      onClick={handleBack}
-                      className="underline underline-offset-2 hover:text-foreground"
-                    >
-                      give the upload another go
-                    </button>
-                    .
-                  </p>
-                </div>
-              )}
+            <CompanyGroup
+              label="Company"
+              groupKey="name"
+              isDetected={!isManual}
+              previewText={formData.companyName}
+            />
 
-              <CompanyGroup
-                label="Company name"
-                groupKey="name"
-                isDetected={!isManual}
-                previewText={formData.companyName}
-              />
+            <CompanyGroup
+              label="Address"
+              groupKey="address"
+              isDetected={!isManual}
+              previewText={formData.address}
+            />
 
-              <CompanyGroup
-                label="Address"
-                groupKey="address"
-                isDetected={!isManual}
-                previewText={formData.address}
-              />
+            <CompanyGroup
+              label="Contact details"
+              groupKey="contact"
+              isDetected={!isManual}
+              previewText={
+                formData.phone || formData.email
+                  ? `${formData.phone}${formData.phone && formData.email ? ", " : ""}${formData.email}`
+                  : ""
+              }
+            />
 
-              <CompanyGroup
-                label="Contact details"
-                groupKey="contact"
-                isDetected={!isManual}
-                previewText={
-                  formData.phone || formData.email
-                    ? `${formData.phone}${formData.phone && formData.email ? ", " : ""}${formData.email}`
-                    : ""
-                }
-              />
+            <CompanyGroup
+              label="Chamber of Commerce number"
+              groupKey="kvk"
+              isDetected={false}
+              previewText={formData.kvkNumber}
+            />
 
-              <CompanyGroup
-                label="Chamber of Commerce number"
-                groupKey="kvk"
-                isDetected={false}
-                previewText={formData.kvkNumber}
-              />
-
-              <CompanyGroup
-                label="VAT number and IBAN"
-                groupKey="vat-iban"
-                isDetected={!isManual}
-                previewText={
-                  formData.vatNumber || formData.iban
-                    ? `${formData.vatNumber}${formData.vatNumber && formData.iban ? ", " : ""}${formData.iban}`
-                    : ""
-                }
-              />
-            </CardContent>
-          </Card>
+            <CompanyGroup
+              label="VAT number and IBAN"
+              groupKey="vat-iban"
+              isDetected={!isManual}
+              previewText={
+                formData.vatNumber || formData.iban
+                  ? `${formData.vatNumber}${formData.vatNumber && formData.iban ? ", " : ""}${formData.iban}`
+                  : ""
+              }
+            />
+          </div>
 
           {/* Help text */}
           <p className="text-center text-sm text-muted-foreground">
@@ -346,175 +318,205 @@ function CompanyInfoContent() {
         </div>
       </div>
 
-      {/* Edit Modals */}
+      {/* Bottom Sheet Drawers */}
       {/* Company Name */}
-      <Dialog open={editingGroup === "name"} onOpenChange={closeEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Company name</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="company-name">Company name</Label>
-              <Input
-                id="company-name"
-                value={tempData.companyName || ""}
-                onChange={(e) => updateTempField("companyName", e.target.value)}
-                placeholder="Your company name"
-              />
+      <Drawer.Root open={openDrawer === "name"} onOpenChange={(open) => !open && closeDrawer()}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Drawer.Title className="mb-6 font-display text-xl font-semibold">
+                Company name
+              </Drawer.Title>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="company-name">Company name</Label>
+                  <Input
+                    id="company-name"
+                    value={tempData.companyName || ""}
+                    onChange={(e) => updateTempField("companyName", e.target.value)}
+                    placeholder="Your company name"
+                  />
+                </div>
+                <div className="flex gap-3 pb-safe">
+                  <Button variant="outline" onClick={closeDrawer} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button onClick={validateAndSave} className="flex-1">
+                    Save
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={closeEdit} className="flex-1">
-                Cancel
-              </Button>
-              <Button onClick={validateAndSave} className="flex-1">
-                Save
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
 
       {/* Address */}
-      <Dialog open={editingGroup === "address"} onOpenChange={closeEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Address</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="address">Street, postal code, city</Label>
-              <Input
-                id="address"
-                value={tempData.address || ""}
-                onChange={(e) => updateTempField("address", e.target.value)}
-                placeholder="Hoofdstraat 123, 1012 AB Amsterdam"
-              />
+      <Drawer.Root open={openDrawer === "address"} onOpenChange={(open) => !open && closeDrawer()}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Drawer.Title className="mb-6 font-display text-xl font-semibold">
+                Address
+              </Drawer.Title>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="address">Street, postal code, city</Label>
+                  <Input
+                    id="address"
+                    value={tempData.address || ""}
+                    onChange={(e) => updateTempField("address", e.target.value)}
+                    placeholder="Hoofdstraat 123, 1012 AB Amsterdam"
+                  />
+                </div>
+                <div className="flex gap-3 pb-safe">
+                  <Button variant="outline" onClick={closeDrawer} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button onClick={validateAndSave} className="flex-1">
+                    Save
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={closeEdit} className="flex-1">
-                Cancel
-              </Button>
-              <Button onClick={validateAndSave} className="flex-1">
-                Save
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
 
       {/* Contact Details */}
-      <Dialog open={editingGroup === "contact"} onOpenChange={closeEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Contact details</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={tempData.phone || ""}
-                onChange={(e) => updateTempField("phone", e.target.value)}
-                placeholder="+31 6 12345678"
-              />
-              {errors.phone && (
-                <p className="mt-1 text-sm text-destructive">{errors.phone}</p>
-              )}
+      <Drawer.Root open={openDrawer === "contact"} onOpenChange={(open) => !open && closeDrawer()}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Drawer.Title className="mb-6 font-display text-xl font-semibold">
+                Contact details
+              </Drawer.Title>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={tempData.phone || ""}
+                    onChange={(e) => updateTempField("phone", e.target.value)}
+                    placeholder="+31 6 12345678"
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-destructive">{errors.phone}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={tempData.email || ""}
+                    onChange={(e) => updateTempField("email", e.target.value)}
+                    placeholder="your@email.com"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-destructive">{errors.email}</p>
+                  )}
+                </div>
+                <div className="flex gap-3 pb-safe">
+                  <Button variant="outline" onClick={closeDrawer} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button onClick={validateAndSave} className="flex-1">
+                    Save
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={tempData.email || ""}
-                onChange={(e) => updateTempField("email", e.target.value)}
-                placeholder="your@email.com"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-destructive">{errors.email}</p>
-              )}
-            </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={closeEdit} className="flex-1">
-                Cancel
-              </Button>
-              <Button onClick={validateAndSave} className="flex-1">
-                Save
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
 
       {/* KVK */}
-      <Dialog open={editingGroup === "kvk"} onOpenChange={closeEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Chamber of Commerce number</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="kvk">KVK number</Label>
-              <Input
-                id="kvk"
-                value={tempData.kvkNumber || ""}
-                onChange={(e) => updateTempField("kvkNumber", e.target.value)}
-                placeholder="12345678"
-              />
+      <Drawer.Root open={openDrawer === "kvk"} onOpenChange={(open) => !open && closeDrawer()}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Drawer.Title className="mb-6 font-display text-xl font-semibold">
+                Chamber of Commerce number
+              </Drawer.Title>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="kvk">KVK number</Label>
+                  <Input
+                    id="kvk"
+                    value={tempData.kvkNumber || ""}
+                    onChange={(e) => updateTempField("kvkNumber", e.target.value)}
+                    placeholder="12345678"
+                  />
+                </div>
+                <div className="flex gap-3 pb-safe">
+                  <Button variant="outline" onClick={closeDrawer} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button onClick={validateAndSave} className="flex-1">
+                    Save
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={closeEdit} className="flex-1">
-                Cancel
-              </Button>
-              <Button onClick={validateAndSave} className="flex-1">
-                Save
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
 
       {/* VAT & IBAN */}
-      <Dialog open={editingGroup === "vat-iban"} onOpenChange={closeEdit}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>VAT number and IBAN</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="vat">VAT number</Label>
-              <Input
-                id="vat"
-                value={tempData.vatNumber || ""}
-                onChange={(e) => updateTempField("vatNumber", e.target.value)}
-                placeholder="NL123456789B01"
-              />
+      <Drawer.Root open={openDrawer === "vat-iban"} onOpenChange={(open) => !open && closeDrawer()}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Drawer.Title className="mb-6 font-display text-xl font-semibold">
+                VAT number and IBAN
+              </Drawer.Title>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="vat">VAT number</Label>
+                  <Input
+                    id="vat"
+                    value={tempData.vatNumber || ""}
+                    onChange={(e) => updateTempField("vatNumber", e.target.value)}
+                    placeholder="NL123456789B01"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="iban">IBAN</Label>
+                  <Input
+                    id="iban"
+                    value={tempData.iban || ""}
+                    onChange={(e) => updateTempField("iban", e.target.value)}
+                    placeholder="NL12 ABNA 0123 4567 89"
+                  />
+                  {errors.iban && (
+                    <p className="text-sm text-destructive">{errors.iban}</p>
+                  )}
+                </div>
+                <div className="flex gap-3 pb-safe">
+                  <Button variant="outline" onClick={closeDrawer} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button onClick={validateAndSave} className="flex-1">
+                    Save
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="iban">IBAN</Label>
-              <Input
-                id="iban"
-                value={tempData.iban || ""}
-                onChange={(e) => updateTempField("iban", e.target.value)}
-                placeholder="NL12 ABNA 0123 4567 89"
-              />
-              {errors.iban && (
-                <p className="mt-1 text-sm text-destructive">{errors.iban}</p>
-              )}
-            </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={closeEdit} className="flex-1">
-                Cancel
-              </Button>
-              <Button onClick={validateAndSave} className="flex-1">
-                Save
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </>
   );
 }
