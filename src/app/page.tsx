@@ -36,7 +36,7 @@ function Hero() {
           Pre-launch
         </span>
         <h1 className="font-display font-medium text-5xl leading-[1.05] tracking-tight sm:text-7xl">
-          Run je vakbedrijf vanuit één workflow.
+          Minder papierwerk, meer vakwerk.
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
           Fixa brengt aanvragen, intakes, offertes, werk en facturen samen in
