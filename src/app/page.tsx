@@ -31,48 +31,69 @@ export default function Home() {
 function Hero() {
   return (
     <section className="-mt-[72px] px-4">
-      <div className="relative min-h-[720px] overflow-hidden rounded-3xl px-6 pt-[180px] pb-24 sm:min-h-[800px] sm:pb-32">
+      <div className="relative min-h-[720px] overflow-hidden rounded-3xl sm:min-h-[800px]">
         <Image
-          src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=2400&q=80"
+          src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
           alt=""
           fill
           priority
           sizes="(min-width: 768px) calc(100vw - 32px), 100vw"
-          className="object-cover"
+          className="object-cover object-right"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-8 text-center text-white">
-          <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
-            Pre-launch
-          </span>
-          <h1 className="font-display text-5xl leading-[1.05] font-bold tracking-tight sm:text-7xl">
-            Minder papierwerk,
-            <br />
-            meer vakwerk.
-          </h1>
-          <p className="max-w-2xl text-lg text-white/85 sm:text-xl">
-            Fixa brengt aanvragen, intakes, offertes, werk en facturen samen in
-            één voorspelbare flow — zodat je meer tijd hebt voor je vak en
-            minder voor administratie.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <AuthDialog>
-              <Button className="h-12 rounded-xl px-6 text-base font-bold">
-                Boek een demo
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
+        <div className="relative z-10 mx-auto grid h-full max-w-6xl grid-cols-1 gap-12 px-6 pt-[180px] pb-20 sm:pb-28 md:grid-cols-2 md:items-center">
+          {/* Left: copy */}
+          <div className="flex flex-col items-start gap-8 text-left text-white">
+            <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
+              Pre-launch
+            </span>
+            <h1 className="font-display text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              Minder papierwerk,
+              <br />
+              meer vakwerk.
+            </h1>
+            <p className="max-w-lg text-lg text-white/85 sm:text-xl">
+              Fixa brengt aanvragen, intakes, offertes, werk en facturen samen
+              in één voorspelbare flow — zodat je meer tijd hebt voor je vak en
+              minder voor administratie.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <AuthDialog>
+                <Button className="h-12 rounded-xl px-6 text-base font-bold">
+                  Boek een demo
+                </Button>
+              </AuthDialog>
+              <Button
+                variant="outline"
+                className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                nativeButton={false}
+                render={<a href="#workflow" />}
+              >
+                Aan de slag
               </Button>
-            </AuthDialog>
-            <Button
-              variant="outline"
-              className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
-              nativeButton={false}
-              render={<a href="#workflow" />}
-            >
-              Aan de slag
-            </Button>
+            </div>
+          </div>
+
+          {/* Right: phone mockup as hero element */}
+          <div className="hidden items-center justify-center md:flex">
+            <PhoneMockup />
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function PhoneMockup() {
+  return (
+    <div
+      aria-hidden
+      className="relative aspect-[9/19] w-[260px] rounded-[2.75rem] bg-black p-[6px] shadow-2xl ring-1 ring-white/10 lg:w-[300px]"
+    >
+      <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[2.25rem] bg-cream text-xs font-medium tracking-wider text-cream-foreground/60 uppercase">
+        App screenshot
+      </div>
+    </div>
   );
 }
 
