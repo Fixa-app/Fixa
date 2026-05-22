@@ -30,44 +30,46 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="relative -mt-[88px] min-h-[720px] overflow-hidden px-6 pt-[200px] pb-24 sm:min-h-[800px] sm:pb-32">
-      <Image
-        src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=2400&q=80"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-8 text-center text-white">
-        <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
-          Pre-launch
-        </span>
-        <h1 className="font-display text-5xl leading-[1.05] font-bold tracking-tight sm:text-7xl">
-          Minder papierwerk,
-          <br />
-          meer vakwerk.
-        </h1>
-        <p className="max-w-2xl text-lg text-white/85 sm:text-xl">
-          Fixa brengt aanvragen, intakes, offertes, werk en facturen samen in
-          één voorspelbare flow — zodat je meer tijd hebt voor je vak en minder
-          voor administratie.
-        </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <AuthDialog>
-            <Button className="h-12 rounded-xl px-6 text-base font-bold">
-              Boek een demo
+    <section className="-mt-[88px] px-4">
+      <div className="relative min-h-[720px] overflow-hidden rounded-3xl px-6 pt-[200px] pb-24 sm:min-h-[800px] sm:pb-32">
+        <Image
+          src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=2400&q=80"
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 768px) calc(100vw - 32px), 100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-8 text-center text-white">
+          <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
+            Pre-launch
+          </span>
+          <h1 className="font-display text-5xl leading-[1.05] font-bold tracking-tight sm:text-7xl">
+            Minder papierwerk,
+            <br />
+            meer vakwerk.
+          </h1>
+          <p className="max-w-2xl text-lg text-white/85 sm:text-xl">
+            Fixa brengt aanvragen, intakes, offertes, werk en facturen samen in
+            één voorspelbare flow — zodat je meer tijd hebt voor je vak en
+            minder voor administratie.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <AuthDialog>
+              <Button className="h-12 rounded-xl px-6 text-base font-bold">
+                Boek een demo
+              </Button>
+            </AuthDialog>
+            <Button
+              variant="outline"
+              className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+              nativeButton={false}
+              render={<a href="#workflow" />}
+            >
+              Aan de slag
             </Button>
-          </AuthDialog>
-          <Button
-            variant="outline"
-            className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
-            nativeButton={false}
-            render={<a href="#workflow" />}
-          >
-            Aan de slag
-          </Button>
+          </div>
         </div>
       </div>
     </section>
