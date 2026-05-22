@@ -471,7 +471,7 @@ function ClientSection() {
         className="grid items-start gap-x-2"
         style={{ gridTemplateColumns: gridTemplateWithArrows }}
       >
-        <ColumnStack cards={[findProClient, newRequestsClient]} />
+        <ColumnStack cards={[newRequestsClient, findProClient]} />
         <HorizontalArrow />
         <ColumnStack cards={[quotesClient, servicePlansClient]} />
         <HorizontalArrow />
