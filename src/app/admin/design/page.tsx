@@ -53,7 +53,7 @@ export default function DesignPage() {
       <Section
         eyebrow="04"
         title="Typography"
-        description="Three fonts: Noto Serif for editorial moments, Manrope for everything else, Geist Mono for technical content."
+        description="Three fonts: Sora for headings, Manrope for body and nav, Geist Mono for technical content."
       >
         <TypeScale />
       </Section>
@@ -159,10 +159,10 @@ const stackItems = [
   { label: "Components", value: "shadcn/ui (base-nova style)" },
   { label: "Primitives", value: "Base UI (@base-ui/react)" },
   { label: "Icons", value: "lucide-react" },
-  { label: "Display font", value: "Noto Serif (headlines)" },
+  { label: "Display font", value: "Sora (headings)" },
   { label: "Sans font", value: "Manrope (body + nav)" },
   { label: "Mono font", value: "Geist Mono" },
-  { label: "Brand color", value: "Blue (--primary)" },
+  { label: "Brand color", value: "Saffron (--primary)" },
   { label: "Theme", value: "Light + dark via CSS variables" },
 ];
 
@@ -253,25 +253,94 @@ const colorTokens = [
 
 function ColorPalette() {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-      {colorTokens.map((token) => (
-        <div key={token.name} className="flex flex-col gap-2">
-          <div
-            aria-hidden
-            className="h-20 w-full rounded-xl border border-border"
-            style={{ background: `var(--${token.name})` }}
-          />
-          <div className="flex flex-col gap-0.5">
-            <code className="text-xs font-semibold">--{token.name}</code>
-            <span className="text-xs text-muted-foreground">
-              {token.description}
-            </span>
+    <div className="flex flex-col gap-10">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {colorTokens.map((token) => (
+          <div key={token.name} className="flex flex-col gap-2">
+            <div
+              aria-hidden
+              className="h-20 w-full rounded-xl border border-border"
+              style={{ background: `var(--${token.name})` }}
+            />
+            <div className="flex flex-col gap-0.5">
+              <code className="text-xs font-semibold">--{token.name}</code>
+              <span className="text-xs text-muted-foreground">
+                {token.description}
+              </span>
+            </div>
           </div>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+            Brand surfaces
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Named brand colors for marketing sections. Each ships with a paired
+            foreground token — use them together (bg-ink + text-ink-foreground).
+          </p>
         </div>
-      ))}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+          {brandSurfaces.map((s) => (
+            <div key={s.name} className="flex flex-col gap-2">
+              <div
+                className="flex h-28 w-full items-end justify-between rounded-xl border border-border p-3"
+                style={{
+                  background: `var(--${s.name})`,
+                  color: `var(--${s.name}-foreground)`,
+                }}
+              >
+                <span className="text-sm font-semibold">Aa</span>
+                <code className="font-mono text-[10px] tracking-tight uppercase opacity-80">
+                  {s.hex}
+                </code>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <code className="text-xs font-semibold">--{s.name}</code>
+                <span className="text-xs text-muted-foreground">{s.use}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
+
+const brandSurfaces = [
+  {
+    name: "cream",
+    hex: "#F5EDDC",
+    use: "Card-like sections, lifted from page background",
+  },
+  {
+    name: "ink",
+    hex: "#1F1A14",
+    use: "Dark sections, full-bleed bands, text on light surfaces",
+  },
+  {
+    name: "oxblood",
+    hex: "#661B1A",
+    use: "Accent panels, premium / editorial moments",
+  },
+  {
+    name: "teal",
+    hex: "#2F6B7A",
+    use: "Cool counterpoint — info badges, secondary CTAs",
+  },
+  {
+    name: "sage",
+    hex: "#8FA68E",
+    use: "Soft accent — bridges yellow and teal, organic feel",
+  },
+  {
+    name: "saffron",
+    hex: "#F5C842",
+    use: "Same as --primary. Hero accents, energetic highlights",
+  },
+];
 
 /* ----------------------------- Typography ----------------------------- */
 
