@@ -224,7 +224,10 @@ export async function SiteHeader() {
                 </Button>
               </AuthDialog>
               <AuthDialog>
-                <Button className="rounded-2xl px-5 text-base font-bold">
+                <Button
+                  size="lg"
+                  className="rounded-2xl px-6 text-base font-bold"
+                >
                   Begin nu
                 </Button>
               </AuthDialog>
