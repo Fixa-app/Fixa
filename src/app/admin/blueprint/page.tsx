@@ -426,9 +426,9 @@ function ClientPhaseHeaders() {
     >
       <Eyebrow>Plan</Eyebrow>
       <div />
-      <Eyebrow>Manage</Eyebrow>
+      <Eyebrow>Decide</Eyebrow>
       <div />
-      <div />
+      <Eyebrow>Track</Eyebrow>
       <div />
       <div />
       <div />
@@ -473,11 +473,9 @@ function ClientSection() {
       >
         <ColumnStack cards={[findProClient, newRequestsClient]} />
         <HorizontalArrow />
-        <ColumnStack
-          cards={[quotesClient, projectsClient, inboxClient, servicePlansClient]}
-        />
-        <Empty />
-        <Empty />
+        <ColumnStack cards={[quotesClient, servicePlansClient]} />
+        <HorizontalArrow />
+        <ColumnStack cards={[projectsClient, inboxClient]} />
         <Empty />
         <Empty />
         <Empty />
