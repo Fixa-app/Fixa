@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  ArrowUpRight,
   Calendar,
   FileText,
   Inbox,
@@ -12,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
+import { IndustriesCarousel } from "@/components/industries-carousel";
 
 export default function Home() {
   return (
@@ -252,42 +252,18 @@ const industryCards = [
 
 function Industries() {
   return (
-    <section
-      id="industries"
-      className="border-t border-border bg-muted/20 px-6 py-20 sm:py-24"
-    >
+    <section id="industries" className="px-6 py-20 sm:py-24">
       <div className="mx-auto flex max-w-7xl flex-col gap-10">
         <div className="flex max-w-2xl flex-col gap-3">
-          <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
-            Voor welke vakbedrijven?
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+            Voor vakmensen en servicebedrijven.
           </h2>
           <p className="text-muted-foreground">
-            Gebouwd voor iedereen die ter plaatse komt en zelf offertes,
-            planning en facturen regelt.
+            Of je als ZZP&apos;er solo werkt of een team aanstuurt — Fixa past
+            zich aan jouw werkwijze aan.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {industryCards.map((industry) => (
-            <a
-              key={industry.name}
-              href="#features"
-              className="group relative aspect-[4/5] overflow-hidden rounded-2xl transition-transform hover:scale-[1.02]"
-            >
-              <Image
-                src={industry.image}
-                alt={industry.name}
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute inset-x-5 bottom-5 flex items-center justify-between text-lg font-semibold text-white">
-                <span>{industry.name}</span>
-                <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </div>
-            </a>
-          ))}
-        </div>
+        <IndustriesCarousel cards={industryCards} />
       </div>
     </section>
   );
