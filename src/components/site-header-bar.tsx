@@ -202,10 +202,7 @@ export function SiteHeaderBar({
                   </Button>
                 </AuthDialog>
                 <AuthDialog>
-                  <Button
-                    size="lg"
-                    className="rounded-2xl px-6 text-base font-bold"
-                  >
+                  <Button className="h-12 rounded-2xl px-6 text-base font-bold">
                     Begin nu
                   </Button>
                 </AuthDialog>
