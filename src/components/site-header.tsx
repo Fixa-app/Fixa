@@ -95,30 +95,30 @@ export async function SiteHeader() {
   const userIsAdmin = await isAdmin(user);
 
   return (
-    <header className="relative z-50 border-b border-border bg-background">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-8">
+    <header className="relative z-50 px-4 pt-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-full bg-ink py-2 pr-3 pl-5 text-ink-foreground">
+        <div className="flex items-center gap-6">
           <Link href="/" aria-label="Fixa" className="flex items-center">
             <Image
               src="/fixa-logo.svg"
               alt="Fixa"
-              width={48}
-              height={48}
+              width={64}
+              height={64}
               priority
-              className="h-12 w-auto"
+              className="h-14 w-auto invert"
             />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             <a
               href="#industries"
-              className="px-2 text-base font-bold text-foreground hover:text-foreground/70"
+              className="px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
             >
               Voor wie
             </a>
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold hover:bg-transparent focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
+                  <NavigationMenuTrigger className="h-auto bg-transparent px-2 text-base font-bold text-ink-foreground hover:bg-transparent hover:text-ink-foreground/70 focus:bg-transparent data-popup-open:bg-transparent data-popup-open:hover:bg-transparent">
                     Product
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="w-screen bg-background shadow-md">
@@ -179,14 +179,14 @@ export async function SiteHeader() {
             </NavigationMenu>
             <Link
               href="/pricing"
-              className="px-2 text-base font-bold text-foreground hover:text-foreground/70"
+              className="px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
             >
               Prijzen
             </Link>
             {userIsAdmin && (
               <Link
                 href="/admin"
-                className="px-2 text-base font-bold text-foreground hover:text-foreground/70"
+                className="px-2 text-base font-bold text-ink-foreground hover:text-ink-foreground/70"
               >
                 Admin
               </Link>
@@ -197,13 +197,18 @@ export async function SiteHeader() {
           {user ? (
             <>
               <span
-                className="hidden max-w-[220px] truncate text-sm text-muted-foreground sm:inline"
+                className="hidden max-w-[220px] truncate text-sm text-ink-foreground/70 sm:inline"
                 title={user.email ?? undefined}
               >
                 {user.email}
               </span>
               <form action={signOut}>
-                <Button variant="ghost" size="sm" type="submit">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="submit"
+                  className="text-ink-foreground hover:bg-white/10 hover:text-ink-foreground"
+                >
                   Uitloggen
                 </Button>
               </form>
@@ -213,7 +218,7 @@ export async function SiteHeader() {
               <AuthDialog>
                 <Button
                   variant="ghost"
-                  className="text-base font-bold hover:bg-transparent hover:text-foreground/70"
+                  className="text-base font-bold text-ink-foreground hover:bg-transparent hover:text-ink-foreground/70"
                 >
                   Inloggen
                 </Button>
