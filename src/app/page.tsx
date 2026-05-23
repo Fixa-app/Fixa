@@ -25,18 +25,17 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="-mt-[72px] px-4">
-      <div className="relative mx-auto min-h-[600px] w-full max-w-7xl overflow-hidden rounded-3xl sm:min-h-[680px]">
-        <Image
-          src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
-          alt=""
-          fill
-          priority
-          sizes="(min-width: 768px) calc(100vw - 32px), 100vw"
-          className="object-cover object-right"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
-        <div className="relative z-10 mx-auto grid h-full max-w-6xl grid-cols-1 gap-12 px-6 pt-[160px] pb-16 sm:pb-20 md:grid-cols-2 md:items-center">
+    <section className="relative -mt-[88px] min-h-[600px] overflow-hidden sm:min-h-[680px]">
+      <Image
+        src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-right"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
+      <div className="relative z-10 mx-auto grid w-full max-w-[1536px] grid-cols-1 gap-12 px-4 pt-[160px] pb-16 sm:px-6 sm:pb-20 md:grid-cols-2 md:items-center">
           {/* Left: copy */}
           <div className="flex flex-col items-start gap-8 text-left text-white">
             <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
@@ -74,7 +73,6 @@ function Hero() {
             <PhoneMockup />
           </div>
         </div>
-      </div>
     </section>
   );
 }
@@ -95,7 +93,7 @@ function PhoneMockup() {
 function Product() {
   return (
     <section id="product" className="py-20 sm:py-24">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-12 px-4">
         <div className="flex flex-col gap-3">
           <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
             Product
@@ -127,7 +125,7 @@ const workflowSteps = [
 function Workflow() {
   return (
     <section id="workflow" className="px-4 py-20 sm:py-24">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-12">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
           <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
             Van eerste telefoontje tot laatste factuur.
@@ -212,7 +210,7 @@ function Industries() {
   return (
     <section id="industries" className="py-20 sm:py-24">
       <div className="flex flex-col gap-10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4">
+        <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-3 px-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Voor vakmensen en servicebedrijven.
           </h2>
@@ -231,7 +229,7 @@ function Referrals() {
   return (
     <section id="referrals" className="py-20 sm:py-24">
       <div className="flex flex-col gap-10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4">
+        <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-3 px-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Vakmensen aan het woord.
           </h2>
@@ -271,7 +269,7 @@ function CTABand() {
 function SiteFooter() {
   return (
     <footer className="border-t border-border px-4 py-10">
-      <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
         <span>© {new Date().getFullYear()} Fixa</span>
         <div className="flex items-center gap-6">
           <Link href="/plan" className="hover:text-foreground">
