@@ -141,19 +141,23 @@ export function SiteHeaderBar({
     : "border-violet-300/60 text-violet-300";
   const aiIconColor = isLight ? "text-violet-500" : "text-violet-300";
 
+  const surfaceClasses = isLight
+    ? "bg-background"
+    : isTransparent
+      ? "bg-transparent"
+      : "bg-ink/70 backdrop-blur-md";
+
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
       <div
         ref={pillRef}
-        className={`mx-auto flex w-full max-w-7xl flex-col overflow-hidden rounded-3xl transition-colors duration-300 ${txtBase} ${
-          isLight
-            ? "bg-background"
-            : isTransparent
-              ? "bg-transparent"
-              : "bg-ink/70 backdrop-blur-md"
-        }`}
+        className="relative mx-auto w-full max-w-7xl"
       >
-        <div className="flex items-center justify-between gap-6 py-0 pr-3 pl-5">
+        <div
+          className={`flex items-center justify-between gap-6 py-0 pr-3 pl-5 transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
+            productOpen ? "rounded-t-3xl" : "rounded-3xl"
+          }`}
+        >
           <div className="flex items-center gap-6">
             <Link
               href="/"
@@ -258,8 +262,10 @@ export function SiteHeaderBar({
         <div
           id="header-product-menu"
           aria-hidden={!productOpen}
-          className={`overflow-hidden transition-[max-height] duration-300 ease-out ${
-            productOpen ? "max-h-[700px]" : "max-h-0"
+          className={`absolute top-full right-0 left-0 origin-top overflow-hidden rounded-b-3xl transition-all duration-300 ease-out ${txtBase} ${surfaceClasses} ${
+            productOpen
+              ? "translate-y-0 opacity-100"
+              : "pointer-events-none -translate-y-2 opacity-0"
           }`}
         >
           <div className={`mx-auto max-w-6xl border-t px-6 py-8 ${dividerBorder}`}>
