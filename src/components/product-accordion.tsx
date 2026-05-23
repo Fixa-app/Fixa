@@ -114,8 +114,8 @@ export function ProductAccordion() {
     allFeatures.find((f) => f.key === activeKey) ?? allFeatures[0];
 
   return (
-    <div className="grid gap-10 md:grid-cols-2 md:items-start md:gap-16">
-      <div className="flex flex-col gap-10">
+    <div className="grid gap-10 md:grid-cols-2 md:items-start md:gap-6">
+      <div className="flex aspect-square flex-col gap-10 overflow-y-auto rounded-3xl bg-[#E4E2DB] p-8 md:p-10">
         {groups.map((group) => (
           <div key={group.key} className="flex flex-col gap-3">
             <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
