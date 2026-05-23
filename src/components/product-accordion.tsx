@@ -121,7 +121,7 @@ export function ProductAccordion() {
             <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
               {group.label}
             </h3>
-            <div className="flex flex-col divide-y divide-border border-y border-border">
+            <div className="flex flex-col">
               {group.features.map((feature) => {
                 const open = activeKey === feature.key;
                 return (
