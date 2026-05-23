@@ -26,7 +26,7 @@ export default function Home() {
 function Hero() {
   return (
     <section className="-mt-[72px] px-4">
-      <div className="relative min-h-[600px] overflow-hidden rounded-3xl sm:min-h-[680px]">
+      <div className="relative mx-auto min-h-[600px] w-full max-w-7xl overflow-hidden rounded-3xl sm:min-h-[680px]">
         <Image
           src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
           alt=""
@@ -126,8 +126,8 @@ const workflowSteps = [
 
 function Workflow() {
   return (
-    <section id="workflow" className="px-6 py-20 sm:py-24">
-      <div className="mx-auto flex max-w-6xl flex-col gap-12">
+    <section id="workflow" className="px-4 py-20 sm:py-24">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-12">
         <div className="flex flex-col items-center gap-3 text-center">
           <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
             Van eerste telefoontje tot laatste factuur.
@@ -212,7 +212,7 @@ function Industries() {
   return (
     <section id="industries" className="py-20 sm:py-24">
       <div className="flex flex-col gap-10">
-        <div className="flex flex-col gap-3 px-6 sm:px-8">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Voor vakmensen en servicebedrijven.
           </h2>
@@ -231,7 +231,7 @@ function Referrals() {
   return (
     <section id="referrals" className="py-20 sm:py-24">
       <div className="flex flex-col gap-10">
-        <div className="flex flex-col gap-3 px-6 sm:px-8">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Vakmensen aan het woord.
           </h2>
@@ -270,8 +270,8 @@ function CTABand() {
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-border px-6 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
+    <footer className="border-t border-border px-4 py-10">
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
         <span>© {new Date().getFullYear()} Fixa</span>
         <div className="flex items-center gap-6">
           <Link href="/plan" className="hover:text-foreground">
