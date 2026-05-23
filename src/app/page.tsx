@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
 import { ProductAccordion } from "@/components/product-accordion";
-import { ReferralsCarousel } from "@/components/referrals-carousel";
+import { ReferralsCards } from "@/components/referrals-cards";
 
 export default function Home() {
   return (
@@ -240,7 +240,7 @@ function Referrals() {
             oplevert.
           </p>
         </div>
-        <ReferralsCarousel />
+        <ReferralsCards />
       </div>
     </section>
   );
