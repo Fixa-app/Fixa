@@ -149,15 +149,13 @@ export function SiteHeaderBar({
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
-      <div
-        ref={pillRef}
-        className="relative mx-auto w-full max-w-[1536px]"
-      >
+      <div ref={pillRef} className="relative">
         <div
-          className={`flex items-center justify-between gap-6 py-0 pr-3 pl-5 transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
+          className={`transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
             productOpen ? "rounded-t-3xl" : "rounded-3xl"
           }`}
         >
+          <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between gap-6 py-0 pr-3 pl-5">
           <div className="flex items-center gap-6">
             <Link
               href="/"
@@ -257,6 +255,7 @@ export function SiteHeaderBar({
               </>
             )}
           </div>
+          </div>
         </div>
 
         <div
@@ -268,7 +267,7 @@ export function SiteHeaderBar({
               : "pointer-events-none -translate-y-2 opacity-0"
           }`}
         >
-          <div className={`border-t px-6 py-8 ${dividerBorder}`}>
+          <div className={`mx-auto w-full max-w-[1536px] border-t px-6 py-8 ${dividerBorder}`}>
             <div className="grid grid-cols-4 gap-10">
               {productMenu.map((col) => (
                 <div key={col.title} className="flex flex-col gap-4">
