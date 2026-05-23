@@ -211,15 +211,11 @@ const industryCards = [
 function Industries() {
   return (
     <section id="industries" className="py-20 sm:py-24">
-      <div className="flex flex-col gap-10">
-        <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-3 px-4">
+      <div className="flex flex-col gap-4">
+        <div className="mx-auto w-full max-w-[1536px] px-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Voor vakmensen en servicebedrijven.
           </h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Of je als ZZP&apos;er solo werkt of een team aanstuurt — Fixa past
-            zich aan jouw werkwijze aan.
-          </p>
         </div>
         <IndustriesCarousel cards={industryCards} />
       </div>
