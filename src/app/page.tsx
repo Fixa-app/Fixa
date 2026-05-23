@@ -101,7 +101,7 @@ function Product() {
             Product
           </p>
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-            Eén flow voor je hele vakbedrijf.
+            Eén systeem, van aanvraag tot betaling.
           </h2>
           <p className="max-w-2xl text-muted-foreground">
             Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
