@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -15,6 +14,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
+import { mockupByKey } from "@/components/product-mockups";
 
 type Feature = {
   key: string;
@@ -22,7 +22,6 @@ type Feature = {
   icon: LucideIcon;
   body: string;
   href: string;
-  image: string;
 };
 
 type Group = {
@@ -42,8 +41,6 @@ const groups: Group[] = [
         icon: CalendarCheck,
         body: "Klanten boeken zelf een intake-afspraak via je website. Direct in je agenda, geen heen-en-weer.",
         href: "#",
-        image:
-          "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1400&q=80",
       },
       {
         key: "quotes",
@@ -51,8 +48,6 @@ const groups: Group[] = [
         icon: FileText,
         body: "Stel offertes op met line items, deel ze digitaal en zie wanneer ze gelezen worden.",
         href: "#",
-        image:
-          "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1400&q=80",
       },
     ],
   },
@@ -66,8 +61,6 @@ const groups: Group[] = [
         icon: Calendar,
         body: "Plan jobs over je hele team. Drag-and-drop in een week- of maandweergave.",
         href: "#",
-        image:
-          "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=1400&q=80",
       },
       {
         key: "schedule",
@@ -75,8 +68,6 @@ const groups: Group[] = [
         icon: Clock,
         body: "Stuur je crews aan met routes, materialen en klantinfo direct op hun telefoon.",
         href: "#",
-        image:
-          "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=1400&q=80",
       },
     ],
   },
@@ -90,8 +81,6 @@ const groups: Group[] = [
         icon: CreditCard,
         body: "Verstuur betaallinks bij elke factuur. Klanten betalen in één klik via iDEAL of kaart.",
         href: "#",
-        image:
-          "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1400&q=80",
       },
       {
         key: "reports",
@@ -99,8 +88,6 @@ const groups: Group[] = [
         icon: BarChart3,
         body: "Omzet, marge en openstaande facturen in één overzicht. Zie wat werkt.",
         href: "#",
-        image:
-          "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1400&q=80",
       },
     ],
   },
@@ -171,16 +158,18 @@ export function ProductAccordion() {
         ))}
       </div>
 
-      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-cream md:sticky md:top-32">
-        <Image
-          key={activeFeature.key}
-          src={activeFeature.image}
-          alt={activeFeature.name}
-          fill
-          sizes="(min-width: 768px) 50vw, 100vw"
-          priority
-          className="animate-in object-cover duration-500 fade-in"
-        />
+      <div className="relative aspect-square w-full overflow-hidden rounded-3xl md:sticky md:top-32">
+        {(() => {
+          const Mockup = mockupByKey[activeFeature.key];
+          return Mockup ? (
+            <div
+              key={activeFeature.key}
+              className="absolute inset-0 animate-in duration-500 fade-in"
+            >
+              <Mockup />
+            </div>
+          ) : null;
+        })()}
       </div>
     </div>
   );
