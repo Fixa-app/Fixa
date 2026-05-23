@@ -1,24 +1,10 @@
-import {
-  ArrowRight,
-  BarChart3,
-  BookOpen,
-  Calendar,
-  CalendarCheck,
-  FileText,
-  MapPin,
-  MessageSquare,
-  Receipt,
-  Repeat,
-  Star,
-  Users,
-  Wrench,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
-import { ProductTabs, type ProductPhase } from "@/components/product-tabs";
+import { ProductTabs } from "@/components/product-tabs";
 
 export default function Home() {
   return (
@@ -104,93 +90,6 @@ function PhoneMockup() {
   );
 }
 
-const productPhases: ProductPhase[] = [
-  {
-    key: "leads",
-    label: "Betere aanvragen",
-    features: [
-      {
-        name: "Online boekingen",
-        icon: CalendarCheck,
-        body: "Klanten boeken zelf via je website of agenda. Direct ingepland, geen heen-en-weer.",
-      },
-      {
-        name: "Website & reviews",
-        icon: Star,
-        body: "Een professionele bedrijfspagina met reviews die nieuwe klanten over de streep trekken.",
-      },
-      {
-        name: "Reserveren via Google",
-        icon: MapPin,
-        body: "Verschijn met een 'Reserveer'-knop in Google. Aanvragen landen automatisch in je inbox.",
-      },
-    ],
-  },
-  {
-    key: "sales",
-    label: "Meer werk",
-    features: [
-      {
-        name: "Offertes",
-        icon: FileText,
-        body: "Stel offertes op met line items, deel ze digitaal, zie wanneer ze gelezen worden.",
-      },
-      {
-        name: "Service plans",
-        icon: Repeat,
-        body: "Terugkerende contracten voor onderhoud. Voorspelbare omzet, automatische werkbonnen.",
-      },
-      {
-        name: "Communicatie",
-        icon: MessageSquare,
-        body: "Eén inbox voor klanten, leveranciers en team. Stop met wisselen tussen apps.",
-      },
-    ],
-  },
-  {
-    key: "operations",
-    label: "Slimmer werken",
-    features: [
-      {
-        name: "Jobs",
-        icon: Wrench,
-        body: "Plan, dispatch en voer werk uit. Van werkbon tot afgeronde klus zonder papier.",
-      },
-      {
-        name: "Schedule",
-        icon: Calendar,
-        body: "Eén kalender voor intakes en jobs. Drag-and-drop om snel te herplannen.",
-      },
-      {
-        name: "Klanthub",
-        icon: Users,
-        body: "Klanten zien zelf wat er speelt — minder belletjes, meer vertrouwen.",
-      },
-    ],
-  },
-  {
-    key: "financial",
-    label: "Meer winst",
-    features: [
-      {
-        name: "Facturen",
-        icon: Receipt,
-        body: "Genereer facturen vanuit afgeronde jobs. Automatische herinneringen tot je betaald bent.",
-      },
-      {
-        name: "Accounting",
-        icon: BookOpen,
-        body: "Sync naar je boekhouder zonder dubbel werk. Categorieën, btw en betalingen kloppen.",
-      },
-      {
-        name: "Reports",
-        icon: BarChart3,
-        body: "Omzet, marge en time-to-paid in één dashboard. Zie wat werkt.",
-      },
-    ],
-  },
-];
-
 function Product() {
   return (
     <section id="product" className="py-20 sm:py-24">
@@ -206,7 +105,7 @@ function Product() {
             Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
           </p>
         </div>
-        <ProductTabs phases={productPhases} />
+        <ProductTabs />
       </div>
     </section>
   );
