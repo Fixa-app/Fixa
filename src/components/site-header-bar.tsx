@@ -148,12 +148,16 @@ export function SiteHeaderBar({
       : "bg-ink/70 backdrop-blur-md";
 
   return (
-    <header className="sticky top-0 z-50">
-      <div ref={pillRef} className="relative">
+    <header className="sticky top-0 z-50 px-4 pt-4">
+      <div
+        ref={pillRef}
+        className="relative mx-auto w-full max-w-[1536px]"
+      >
         <div
-          className={`transition-colors duration-300 ${txtBase} ${surfaceClasses}`}
+          className={`flex items-center justify-between gap-6 py-0 pr-3 pl-5 transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
+            productOpen ? "rounded-t-3xl" : "rounded-3xl"
+          }`}
         >
-          <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between gap-6 px-4 sm:px-6">
           <div className="flex items-center gap-6">
             <Link
               href="/"
@@ -253,19 +257,18 @@ export function SiteHeaderBar({
               </>
             )}
           </div>
-          </div>
         </div>
 
         <div
           id="header-product-menu"
           aria-hidden={!productOpen}
-          className={`absolute top-full right-0 left-0 origin-top overflow-hidden transition-all duration-300 ease-out ${txtBase} ${surfaceClasses} ${
+          className={`absolute top-full right-0 left-0 origin-top overflow-hidden rounded-b-3xl transition-all duration-300 ease-out ${txtBase} ${surfaceClasses} ${
             productOpen
               ? "translate-y-0 opacity-100"
               : "pointer-events-none -translate-y-2 opacity-0"
           }`}
         >
-          <div className={`mx-auto w-full max-w-[1536px] border-t px-4 py-8 sm:px-6 ${dividerBorder}`}>
+          <div className={`border-t px-6 py-8 ${dividerBorder}`}>
             <div className="grid grid-cols-4 gap-10">
               {productMenu.map((col) => (
                 <div key={col.title} className="flex flex-col gap-4">

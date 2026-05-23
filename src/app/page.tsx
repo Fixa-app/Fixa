@@ -25,17 +25,18 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="relative -mt-[88px] min-h-[600px] overflow-hidden sm:min-h-[680px]">
-      <Image
-        src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-right"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
-      <div className="relative z-10 mx-auto grid w-full max-w-[1536px] grid-cols-1 gap-12 px-4 pt-[160px] pb-16 sm:px-6 sm:pb-20 md:grid-cols-2 md:items-center">
+    <section className="-mt-[72px] px-4">
+      <div className="relative mx-auto min-h-[600px] w-full max-w-[1536px] overflow-hidden rounded-3xl sm:min-h-[680px]">
+        <Image
+          src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 768px) calc(100vw - 32px), 100vw"
+          className="object-cover object-right"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
+        <div className="relative z-10 grid h-full grid-cols-1 gap-12 px-6 pt-[160px] pb-16 sm:pb-20 md:grid-cols-2 md:items-center">
           {/* Left: copy */}
           <div className="flex flex-col items-start gap-8 text-left text-white">
             <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
@@ -73,6 +74,7 @@ function Hero() {
             <PhoneMockup />
           </div>
         </div>
+      </div>
     </section>
   );
 }
