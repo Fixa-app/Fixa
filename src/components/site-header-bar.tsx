@@ -145,7 +145,7 @@ export function SiteHeaderBar({
     <header className="sticky top-0 z-50 px-4 pt-4">
       <div
         ref={pillRef}
-        className={`flex flex-col overflow-hidden rounded-3xl transition-colors duration-300 ${txtBase} ${
+        className={`mx-auto flex w-full max-w-7xl flex-col overflow-hidden rounded-3xl transition-colors duration-300 ${txtBase} ${
           isLight
             ? "bg-background"
             : isTransparent
