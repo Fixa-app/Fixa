@@ -1,0 +1,187 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BarChart3,
+  Calendar,
+  CalendarCheck,
+  Clock,
+  CreditCard,
+  FileText,
+  type LucideIcon,
+  Minus,
+  Plus,
+} from "lucide-react";
+
+type Feature = {
+  key: string;
+  name: string;
+  icon: LucideIcon;
+  body: string;
+  href: string;
+  image: string;
+};
+
+type Group = {
+  key: string;
+  label: string;
+  features: Feature[];
+};
+
+const groups: Group[] = [
+  {
+    key: "leads",
+    label: "Betere leads",
+    features: [
+      {
+        key: "online-intakes",
+        name: "Online intakes",
+        icon: CalendarCheck,
+        body: "Klanten boeken zelf een intake-afspraak via je website. Direct in je agenda, geen heen-en-weer.",
+        href: "#",
+        image:
+          "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1400&q=80",
+      },
+      {
+        key: "quotes",
+        name: "Offertes",
+        icon: FileText,
+        body: "Stel offertes op met line items, deel ze digitaal en zie wanneer ze gelezen worden.",
+        href: "#",
+        image:
+          "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1400&q=80",
+      },
+    ],
+  },
+  {
+    key: "operations",
+    label: "Slimmer werken",
+    features: [
+      {
+        key: "planning",
+        name: "Planning",
+        icon: Calendar,
+        body: "Plan jobs over je hele team. Drag-and-drop in een week- of maandweergave.",
+        href: "#",
+        image:
+          "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=1400&q=80",
+      },
+      {
+        key: "schedule",
+        name: "Schedule",
+        icon: Clock,
+        body: "Stuur je crews aan met routes, materialen en klantinfo direct op hun telefoon.",
+        href: "#",
+        image:
+          "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=1400&q=80",
+      },
+    ],
+  },
+  {
+    key: "financial",
+    label: "Boost profits",
+    features: [
+      {
+        key: "payments",
+        name: "Betalingen",
+        icon: CreditCard,
+        body: "Verstuur betaallinks bij elke factuur. Klanten betalen in één klik via iDEAL of kaart.",
+        href: "#",
+        image:
+          "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1400&q=80",
+      },
+      {
+        key: "reports",
+        name: "Rapporten",
+        icon: BarChart3,
+        body: "Omzet, marge en openstaande facturen in één overzicht. Zie wat werkt.",
+        href: "#",
+        image:
+          "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1400&q=80",
+      },
+    ],
+  },
+];
+
+const allFeatures = groups.flatMap((g) => g.features);
+
+export function ProductAccordion() {
+  const [activeKey, setActiveKey] = useState(allFeatures[0].key);
+  const activeFeature =
+    allFeatures.find((f) => f.key === activeKey) ?? allFeatures[0];
+
+  return (
+    <div className="grid gap-10 md:grid-cols-2 md:items-start md:gap-16">
+      <div className="flex flex-col gap-10">
+        {groups.map((group) => (
+          <div key={group.key} className="flex flex-col gap-3">
+            <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+              {group.label}
+            </h3>
+            <div className="flex flex-col divide-y divide-border border-y border-border">
+              {group.features.map((feature) => {
+                const open = activeKey === feature.key;
+                return (
+                  <div key={feature.key}>
+                    <button
+                      type="button"
+                      onClick={() => setActiveKey(feature.key)}
+                      aria-expanded={open}
+                      className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                    >
+                      <span className="flex items-center gap-3 text-lg font-semibold tracking-tight">
+                        <feature.icon
+                          className="size-5 text-foreground/80"
+                          strokeWidth={2}
+                        />
+                        {feature.name}
+                      </span>
+                      {open ? (
+                        <Minus
+                          className="size-5 text-foreground/60"
+                          strokeWidth={2}
+                        />
+                      ) : (
+                        <Plus
+                          className="size-5 text-foreground/60"
+                          strokeWidth={2}
+                        />
+                      )}
+                    </button>
+                    {open && (
+                      <div className="flex animate-in flex-col gap-3 pb-5 pl-8 duration-300 fade-in">
+                        <p className="text-muted-foreground">{feature.body}</p>
+                        <Link
+                          href={feature.href}
+                          className="inline-flex items-center gap-1.5 text-base font-semibold underline-offset-4 hover:underline"
+                        >
+                          Lees meer
+                          <ArrowRight className="size-4" />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-cream md:sticky md:top-32">
+        <Image
+          key={activeFeature.key}
+          src={activeFeature.image}
+          alt={activeFeature.name}
+          fill
+          sizes="(min-width: 768px) 50vw, 100vw"
+          priority
+          className="animate-in object-cover duration-500 fade-in"
+        />
+      </div>
+    </div>
+  );
+}

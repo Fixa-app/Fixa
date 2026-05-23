@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
-import { ProductCarousel } from "@/components/product-carousel";
+import { ProductAccordion } from "@/components/product-accordion";
 import { ReferralsCarousel } from "@/components/referrals-carousel";
 
 export default function Home() {
@@ -107,7 +107,7 @@ function Product() {
             Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
           </p>
         </div>
-        <ProductCarousel />
+        <ProductAccordion />
       </div>
     </section>
   );
