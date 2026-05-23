@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
-import { ProductTabs } from "@/components/product-tabs";
+import { ProductCarousel } from "@/components/product-carousel";
 
 export default function Home() {
   return (
@@ -105,7 +105,9 @@ function Product() {
             Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
           </p>
         </div>
-        <ProductTabs />
+        <div className="rounded-3xl bg-cream p-8 sm:p-12">
+          <ProductCarousel />
+        </div>
       </div>
     </section>
   );
