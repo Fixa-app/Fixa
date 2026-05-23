@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -9,6 +10,7 @@ type Group = {
   label: string;
   body: string;
   features: { name: string; href: string }[];
+  image: string;
 };
 
 const groups: Group[] = [
@@ -20,6 +22,8 @@ const groups: Group[] = [
       { name: "Online intakes", href: "#" },
       { name: "Offertes", href: "#" },
     ],
+    image:
+      "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1400&q=80",
   },
   {
     key: "operations",
@@ -29,6 +33,8 @@ const groups: Group[] = [
       { name: "Planning", href: "#" },
       { name: "Schedule", href: "#" },
     ],
+    image:
+      "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=1400&q=80",
   },
   {
     key: "financial",
@@ -38,6 +44,8 @@ const groups: Group[] = [
       { name: "Betalingen", href: "#" },
       { name: "Rapporten", href: "#" },
     ],
+    image:
+      "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1400&q=80",
   },
 ];
 
@@ -68,22 +76,70 @@ export function ProductCarousel() {
     return () => cancelAnimationFrame(rafId);
   }, [active]);
 
-  const activeGroup = groups[active];
-
   return (
-    <div className="flex flex-col gap-10">
-      <div className="flex gap-3">
+    <div className="grid gap-10 md:grid-cols-2 md:gap-16 md:items-center">
+      <div className="flex flex-col gap-8 md:gap-10">
         {groups.map((g, i) => (
-          <button
+          <div
             key={g.key}
-            type="button"
             onClick={() => setActive(i)}
-            aria-label={`Bekijk ${g.label}`}
-            className="group flex-1 py-2"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setActive(i);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-pressed={i === active}
+            className={`flex cursor-pointer flex-col gap-3 transition-opacity duration-300 ${
+              i === active ? "opacity-100" : "opacity-40 hover:opacity-70"
+            }`}
           >
-            <div className="h-0.5 w-full overflow-hidden rounded-full bg-foreground/15">
+            <h3 className="font-display text-2xl font-medium tracking-tight sm:text-3xl">
+              {g.label}
+            </h3>
+            <p className="text-muted-foreground">{g.body}</p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {g.features.map((f) => (
+                <li key={f.name}>
+                  <Link
+                    href={f.href}
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline"
+                  >
+                    {f.name}
+                    <ArrowRight className="size-3.5" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-cream">
+        {groups.map((g, i) => (
+          <Image
+            key={g.key}
+            src={g.image}
+            alt={g.label}
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            priority={i === 0}
+            className={`object-cover transition-opacity duration-700 ${
+              i === active ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+        <div className="absolute inset-x-6 bottom-6 flex gap-3">
+          {groups.map((g, i) => (
+            <div
+              key={g.key}
+              className="h-1 flex-1 overflow-hidden rounded-full bg-white/30"
+            >
               <div
-                className="h-full bg-foreground transition-[width] duration-100 ease-linear"
+                className="h-full bg-white transition-[width] duration-100 ease-linear"
                 style={{
                   width:
                     i < active
@@ -94,58 +150,8 @@ export function ProductCarousel() {
                 }}
               />
             </div>
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-16">
-        <div
-          key={`text-${activeGroup.key}`}
-          className="flex animate-in flex-col gap-6 duration-500 fade-in"
-        >
-          <h3 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-            {activeGroup.label}
-          </h3>
-          <p className="text-muted-foreground sm:text-lg">{activeGroup.body}</p>
-          <ul className="flex flex-col gap-3">
-            {activeGroup.features.map((f) => (
-              <li key={f.name}>
-                <Link
-                  href={f.href}
-                  className="inline-flex items-center gap-1.5 text-base font-semibold underline-offset-4 hover:underline"
-                >
-                  {f.name}
-                  <ArrowRight className="size-4" />
-                </Link>
-              </li>
-            ))}
-          </ul>
+          ))}
         </div>
-
-        <div
-          key={`visual-${activeGroup.key}`}
-          className="flex animate-in items-center justify-center duration-500 fade-in"
-        >
-          <PhoneMockup label={activeGroup.label} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PhoneMockup({ label }: { label: string }) {
-  return (
-    <div
-      aria-hidden
-      className="relative aspect-[9/19] w-full max-w-[280px] rounded-[2.75rem] bg-black p-2 shadow-2xl ring-1 ring-black/10"
-    >
-      <div className="flex h-full w-full flex-col items-center justify-center gap-1 rounded-[2.25rem] bg-cream text-cream-foreground">
-        <span className="text-[10px] font-bold tracking-widest text-cream-foreground/50 uppercase">
-          {label}
-        </span>
-        <span className="text-sm font-medium text-cream-foreground/70">
-          App preview
-        </span>
       </div>
     </div>
   );

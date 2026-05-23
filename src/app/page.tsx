@@ -95,8 +95,8 @@ function PhoneMockup() {
 function Product() {
   return (
     <section id="product" className="py-20 sm:py-24">
-      <div className="flex flex-col gap-10 px-4">
-        <div className="flex flex-col gap-3 px-2 sm:px-4">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4">
+        <div className="flex flex-col gap-3">
           <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
             Product
           </p>
@@ -107,9 +107,7 @@ function Product() {
             Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
           </p>
         </div>
-        <div className="rounded-3xl bg-cream p-8 sm:p-12">
-          <ProductCarousel />
-        </div>
+        <ProductCarousel />
       </div>
     </section>
   );
