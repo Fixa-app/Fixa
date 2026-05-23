@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
 import { ProductCarousel } from "@/components/product-carousel";
+import { ReferralsCarousel } from "@/components/referrals-carousel";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <Industries />
         <Product />
         <Workflow />
+        <Referrals />
         <CTABand />
       </main>
       <SiteFooter />
@@ -222,6 +224,25 @@ function Industries() {
           </p>
         </div>
         <IndustriesCarousel cards={industryCards} />
+      </div>
+    </section>
+  );
+}
+
+function Referrals() {
+  return (
+    <section id="referrals" className="py-20 sm:py-24">
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-3 px-6 sm:px-8">
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+            Vakmensen aan het woord.
+          </h2>
+          <p className="max-w-2xl text-muted-foreground">
+            Lees waarom collega&apos;s overstapten en wat het hun bedrijf
+            oplevert.
+          </p>
+        </div>
+        <ReferralsCarousel />
       </div>
     </section>
   );
