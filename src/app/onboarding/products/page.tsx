@@ -259,7 +259,7 @@ function ProductsServicesContent() {
                   <Label htmlFor="item-unit">Unit</Label>
                   <Select
                     value={tempItem.unit || "hour"}
-                    onValueChange={(value) => updateTempField("unit", value)}
+                    onValueChange={(value) => updateTempField("unit", value as string)}
                   >
                     <SelectTrigger id="item-unit">
                       <SelectValue placeholder="Select unit" />
