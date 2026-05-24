@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,30 +21,11 @@ type LineItem = {
   rate: number;
 };
 
-// Mobile detection hook
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  return isMobile;
-}
-
 // Wrapper component for useSearchParams
 function ProductsServicesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isManual = searchParams.get("manual") === "true";
-  const isMobile = useIsMobile();
 
   // Mock AI-parsed data (TODO: Replace with actual AI parsing)
   const mockParsedData: LineItem[] = [
@@ -276,27 +257,28 @@ function ProductsServicesContent() {
 
                 <div className="space-y-2">
                   <Label htmlFor="item-unit">Unit</Label>
-                  {isMobile ? (
-                    // Native select for mobile
-                    <select
-                      id="item-unit"
-                      value={tempItem.unit || "hour"}
-                      onChange={(e) => updateTempField("unit", e.target.value as string)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="hour">per hour</option>
-                      <option value="piece">per piece</option>
-                      <option value="m2">per m²</option>
-                      <option value="meter">per meter</option>
-                      <option value="visit">per visit</option>
-                      <option value="day">per day</option>
-                      <option value="project">per project</option>
-                    </select>
-                  ) : (
-                    // Radix Select for desktop
+                  
+                  {/* Native select for mobile (< 768px) */}
+                  <select
+                    id="item-unit-mobile"
+                    value={tempItem.unit || "hour"}
+                    onChange={(e) => updateTempField("unit", e.target.value as string)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:hidden"
+                  >
+                    <option value="hour">per hour</option>
+                    <option value="piece">per piece</option>
+                    <option value="m2">per m²</option>
+                    <option value="meter">per meter</option>
+                    <option value="visit">per visit</option>
+                    <option value="day">per day</option>
+                    <option value="project">per project</option>
+                  </select>
+
+                  {/* Radix Select for desktop (≥ 768px) */}
+                  <div className="hidden md:block">
                     <Select
                       value={tempItem.unit || "hour"}
-                      onValueChange={(value) => updateTempField("unit", value)}
+                      onValueChange={(value) => updateTempField("unit", value as string)}
                     >
                       <SelectTrigger id="item-unit">
                         <SelectValue placeholder="Select unit" />
@@ -311,7 +293,7 @@ function ProductsServicesContent() {
                         <SelectItem value="project">per project</SelectItem>
                       </SelectContent>
                     </Select>
-                  )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
