@@ -60,7 +60,7 @@ function CompanyInfoContent() {
     console.log("Company data:", formData);
 
     // Navigate to next step (standard text)
-    router.push("/onboarding/text");
+    router.push("/onboarding/products");
   };
 
   const handleBack = () => {
@@ -223,10 +223,10 @@ function CompanyInfoContent() {
             <div className="flex flex-1 items-center justify-between">
               <div className="flex-1">
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                  <div className="h-full w-2/5 bg-primary transition-all" />
+                  <div className="h-full w-2/4 bg-primary transition-all" />
                 </div>
               </div>
-              <span className="ml-4 text-sm text-muted-foreground">2/5</span>
+              <span className="ml-4 text-sm text-muted-foreground">2/4</span>
             </div>
           </div>
 

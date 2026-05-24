@@ -99,10 +99,10 @@ export default function OnboardingUploadPage() {
           <div className="flex flex-1 items-center justify-between">
             <div className="flex-1">
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                <div className="h-full w-1/5 bg-primary transition-all" />
+                <div className="h-full w-1/4 bg-primary transition-all" />
               </div>
             </div>
-            <span className="ml-4 text-sm text-muted-foreground">1/5</span>
+            <span className="ml-4 text-sm text-muted-foreground">1/4</span>
           </div>
         </div>
 
