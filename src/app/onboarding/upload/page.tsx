@@ -19,7 +19,14 @@ export default function OnboardingUploadPage() {
     setError("");
 
     // Validate file type
-    const validTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png", "image/heic"];
+    const validTypes = [
+      "application/pdf",
+      "image/jpeg",
+      "image/jpg", 
+      "image/png",
+      "image/heic",
+      "image/heif"
+    ];
     if (!validTypes.includes(selectedFile.type)) {
       setError("Please upload a PDF, JPG, PNG, or HEIC file");
       return;
@@ -100,33 +107,20 @@ export default function OnboardingUploadPage() {
         </div>
 
         {/* Title */}
-        <div className="space-y-2">
+        <div>
           <h1 className="font-display text-3xl font-bold">
-            Upload a photo of your quote or invoice
+            Let's build your quote template
           </h1>
-          <p className="text-base text-muted-foreground">
-            So we create a template that perfectly suits your business.
-          </p>
         </div>
 
-        {/* Upload zone */}
-        <div className="relative">
-          <input
-            type="file"
-            id="file-upload"
-            className="sr-only"
-            accept=".pdf,.jpg,.jpeg,.png,.heic"
-            onChange={handleFileChange}
-            aria-label="Upload quote or invoice"
-          />
-          <label
-            htmlFor="file-upload"
-            className="flex min-h-[400px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/20 p-12 transition-colors hover:bg-muted/40"
-          >
-            {file ? (
-              <div className="flex flex-col items-center gap-4 text-center">
+        {/* Upload button or file preview */}
+        {file ? (
+          <div className="space-y-4">
+            {/* File preview card */}
+            <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-5">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
                 <svg
-                  className="h-16 w-16 text-primary"
+                  className="h-6 w-6 text-primary"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -138,52 +132,79 @@ export default function OnboardingUploadPage() {
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <div>
-                  <p className="text-base font-medium text-foreground">
-                    {file.name}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
-                </div>
-                <Button variant="outline" size="sm" type="button">
-                  Choose different file
-                </Button>
               </div>
-            ) : (
-              <div className="flex flex-col items-center gap-4 text-center">
-                <svg
-                  className="h-16 w-16 text-muted-foreground"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <div>
-                  <p className="text-base font-medium text-foreground">
-                    Select file
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Supports PDF, jpeg and png
-                  </p>
-                </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-medium text-foreground truncate">
+                  {file.name}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                </p>
               </div>
-            )}
-          </label>
+            </div>
 
-          {/* Error message */}
-          {error && (
-            <p className="mt-3 text-sm text-destructive" role="alert">
-              {error}
-            </p>
-          )}
-        </div>
+            {/* Change file button */}
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full"
+              onClick={() => {
+                setFile(null);
+                setError("");
+              }}
+            >
+              Choose different file
+            </Button>
+          </div>
+        ) : (
+          <div>
+            {/* Upload card */}
+            <input
+              type="file"
+              id="file-upload"
+              className="sr-only"
+              accept="image/*,application/pdf"
+              capture="environment"
+              onChange={handleFileChange}
+              aria-label="Upload quote"
+            />
+            <label
+              htmlFor="file-upload"
+              className="block cursor-pointer"
+            >
+              <div className="flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-xl border border-border bg-card p-12 transition-colors hover:bg-muted/40">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <svg
+                    className="h-8 w-8 text-foreground"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </div>
+                <p className="text-base font-medium text-foreground">
+                  Upload quote
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Supports PDF, JPEG and PNG
+                </p>
+              </div>
+            </label>
+
+            {/* Error message */}
+            {error && (
+              <p className="mt-3 text-sm text-destructive text-center" role="alert">
+                {error}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Sticky footer */}
@@ -195,7 +216,7 @@ export default function OnboardingUploadPage() {
             className="w-full text-muted-foreground hover:text-foreground"
             onClick={handleSkip}
           >
-            Let me skip this step and add manually
+            Or skip and add manually
           </Button>
 
           <Button
