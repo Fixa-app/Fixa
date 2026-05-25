@@ -31,7 +31,7 @@ export function IndustriesCarousel({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-end justify-between gap-6 px-4">
+      <div className="mx-auto flex w-full max-w-[1536px] items-end justify-between gap-6 px-4">
         <div className="flex-1">{headerContent}</div>
         <div className="flex items-center gap-2">
           <button
