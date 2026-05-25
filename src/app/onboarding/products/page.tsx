@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,24 +20,37 @@ function ProductsServicesContent() {
   const searchParams = useSearchParams();
   const isManual = searchParams.get("manual") === "true";
 
-  // Mock AI-parsed data (TODO: Replace with actual AI parsing)
-  const mockParsedData: LineItem[] = [
-    { id: "1", title: "Hourly rate", unit: "hour", rate: 65 },
-    { id: "2", title: "Materials", unit: "piece", rate: 125 },
-    { id: "3", title: "Travel costs", unit: "visit", rate: 35 },
-  ];
+  // Load line items from sessionStorage
+  const loadLineItems = (): LineItem[] => {
+    if (typeof window === 'undefined') return [];
+    
+    const stored = sessionStorage.getItem('onboarding_lineItems');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error('Failed to parse line items:', e);
+      }
+    }
+    return [];
+  };
 
-  const [lineItems, setLineItems] = useState<LineItem[]>(
-    isManual ? [] : mockParsedData
-  );
+  const [lineItems, setLineItems] = useState<LineItem[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  // Load data on mount (client-side only)
+  useEffect(() => {
+    setLineItems(loadLineItems());
+    setMounted(true);
+  }, []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempItem, setTempItem] = useState<Partial<LineItem>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleContinue = async () => {
-    // TODO: Save to database
-    console.log("Line items:", lineItems);
+    // Save to sessionStorage
+    sessionStorage.setItem('onboarding_lineItems', JSON.stringify(lineItems));
 
     // Navigate to next step (template preview)
     router.push("/onboarding/preview");
@@ -188,8 +201,12 @@ function ProductsServicesContent() {
 
           {/* Line items */}
           <div className="space-y-4">
-            {lineItems.length > 0 ? (
-              lineItems.map((item) => <LineItemCard key={item.id} item={item} />)
+            {!mounted ? (
+              <div className="rounded-xl border border-muted bg-muted/20 p-8 text-center">
+                <p className="text-sm text-muted-foreground">Loading...</p>
+              </div>
+            ) : lineItems.length > 0 ? (
+              lineItems.map((item, index) => <LineItemCard key={index} item={item} />)
             ) : (
               <div className="rounded-xl border border-muted bg-muted/20 p-8 text-center">
                 <p className="text-sm text-muted-foreground">

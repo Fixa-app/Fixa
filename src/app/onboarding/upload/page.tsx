@@ -1,232 +1,217 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { parseQuoteWithAI, type ParsedQuoteData } from "@/lib/parse-quote-ai";
 
 export default function OnboardingUploadPage() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Check if we already have parsed data
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasData = sessionStorage.getItem('onboarding_company');
+      if (hasData) {
+        // Show success state if returning from next screens
+        const filename = sessionStorage.getItem('onboarding_filename');
+        if (filename) {
+          setFile(new File([], filename));
+          setSuccess(true);
+        }
+      }
+    }
+  }, []);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
-    // Reset error
-    setError("");
-
-    // Validate file type
-    const validTypes = [
-      "application/pdf",
-      "image/jpeg",
-      "image/jpg", 
-      "image/png",
-      "image/heic",
-      "image/heif"
-    ];
-    if (!validTypes.includes(selectedFile.type)) {
-      setError("Please upload a PDF, JPG, PNG, or HEIC file");
-      return;
-    }
-
-    // Validate file size (5MB)
-    const maxSize = 5 * 1024 * 1024;
-    if (selectedFile.size > maxSize) {
-      setError("File size must be less than 5MB");
-      return;
-    }
-
     setFile(selectedFile);
-  };
-
-  const handleContinue = async () => {
-    if (!file) return;
-
-    setIsUploading(true);
+    setError(null);
+    setSuccess(false);
+    setUploading(true);
 
     try {
-      // TODO: Upload file and call AI parsing API
-      // For now, just navigate to next step
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Parse immediately
+      const parsedData: ParsedQuoteData = await parseQuoteWithAI(selectedFile);
+      
+      console.log('Parsed data:', parsedData);
 
-      // Navigate to company info with parsed data
-      router.push("/onboarding/company");
+      // Store in sessionStorage
+      sessionStorage.setItem('onboarding_company', JSON.stringify(parsedData.company));
+      sessionStorage.setItem('onboarding_lineItems', JSON.stringify(parsedData.lineItems));
+      sessionStorage.setItem('onboarding_standardText', JSON.stringify(parsedData.standardText));
+      sessionStorage.setItem('onboarding_filename', selectedFile.name);
+
+      // Show success
+      setUploading(false);
+      setSuccess(true);
     } catch (err) {
-      setError("Failed to process file. Please try again.");
-      setIsUploading(false);
+      console.error('Parsing error:', err);
+      setError('Failed to parse document. Please try again or skip and add manually.');
+      setUploading(false);
+      setSuccess(false);
+    }
+  };
+
+  const handleContinue = () => {
+    if (success || sessionStorage.getItem('onboarding_company')) {
+      // Data exists, navigate
+      router.push('/onboarding/company?parsed=true');
+    } else {
+      // No file selected, skip to manual
+      handleSkip();
     }
   };
 
   const handleSkip = () => {
-    router.push("/onboarding/company?manual=true");
-  };
-
-  const handleBack = () => {
-    router.push("/");
+    // Clear any previous data
+    sessionStorage.removeItem('onboarding_company');
+    sessionStorage.removeItem('onboarding_lineItems');
+    sessionStorage.removeItem('onboarding_standardText');
+    sessionStorage.removeItem('onboarding_filename');
+    
+    router.push('/onboarding/company?manual=true');
   };
 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Scrollable content */}
-      <div className="flex-1 space-y-8 pb-32">
-        {/* Progress indicator with back button */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleBack}
-            className="flex-shrink-0 text-muted-foreground hover:text-foreground"
-            aria-label="Go back"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </Button>
-
-          <div className="flex flex-1 items-center justify-between">
-            <div className="flex-1">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                <div className="h-full w-1/4 bg-primary transition-all" />
-              </div>
+      <div className="flex-1 space-y-6 pb-32">
+        {/* Progress indicator */}
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div className="h-full w-1/4 bg-primary transition-all" />
             </div>
-            <span className="ml-4 text-sm text-muted-foreground">1/4</span>
           </div>
+          <span className="ml-4 text-sm text-muted-foreground">1/4</span>
         </div>
 
         {/* Title */}
-        <div>
-          <h1 className="font-display text-3xl font-bold">
-            Let's build your quote template
-          </h1>
-        </div>
+        <h1 className="font-display text-3xl font-bold">
+          Let's build your quote template
+        </h1>
 
-        {/* Upload button or file preview */}
-        {file ? (
-          <div className="space-y-4">
-            {/* File preview card */}
-            <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-5">
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
-                <svg
-                  className="h-6 w-6 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
+        {/* Upload card */}
+        <label
+          htmlFor="file-upload"
+          className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 transition-all ${
+            success
+              ? 'border-green-500 bg-green-500/5'
+              : file
+              ? 'border-primary bg-primary/5'
+              : 'border-border bg-card hover:bg-muted/40'
+          }`}
+        >
+          <div className={`flex h-16 w-16 items-center justify-center rounded-full ${
+            uploading ? 'bg-muted' : success ? 'bg-green-500/20' : 'bg-muted'
+          }`}>
+            {uploading ? (
+              <svg
+                className="h-8 w-8 text-foreground animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
                   stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-medium text-foreground truncate">
-                  {file.name}
-                </p>
-                <p className="mt-0.5 text-sm text-muted-foreground">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
-            </div>
-
-            {/* Change file button */}
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full"
-              onClick={() => {
-                setFile(null);
-                setError("");
-              }}
-            >
-              Choose different file
-            </Button>
-          </div>
-        ) : (
-          <div>
-            {/* Upload card */}
-            <input
-              type="file"
-              id="file-upload"
-              className="sr-only"
-              accept="image/*,application/pdf"
-              capture="environment"
-              onChange={handleFileChange}
-              aria-label="Upload quote"
-            />
-            <label
-              htmlFor="file-upload"
-              className="block cursor-pointer"
-            >
-              <div className="flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-xl border border-border bg-card p-12 transition-colors hover:bg-muted/40">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                  <svg
-                    className="h-8 w-8 text-foreground"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                </div>
-                <p className="text-base font-medium text-foreground">
-                  Upload quote
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Supports PDF, JPEG and PNG
-                </p>
-              </div>
-            </label>
-
-            {/* Error message */}
-            {error && (
-              <p className="mt-3 text-sm text-destructive text-center" role="alert">
-                {error}
-              </p>
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            ) : success ? (
+              <svg
+                className="h-8 w-8 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="h-8 w-8 text-foreground"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
             )}
+          </div>
+          <p className="mt-4 text-base font-medium text-foreground">
+            {uploading ? 'Processing...' : file ? file.name : 'Upload quote'}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {uploading
+              ? 'Extracting your company info and line items...'
+              : success 
+              ? "Upload different file"
+              : 'Supports PDF, JPEG and PNG'
+            }
+          </p>
+          <input
+            id="file-upload"
+            type="file"
+            accept="image/*,application/pdf"
+            capture="environment"
+            onChange={handleFileChange}
+            className="hidden"
+            disabled={uploading}
+          />
+        </label>
+
+        {/* Error message */}
+        {error && (
+          <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4">
+            <p className="text-sm text-destructive">{error}</p>
           </div>
         )}
       </div>
 
-      {/* Sticky footer */}
+      {/* Sticky footer with buttons */}
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto w-full max-w-2xl space-y-3 p-6">
+        <div className="mx-auto w-full max-w-2xl p-6 space-y-3">
           <Button
             variant="ghost"
-            size="sm"
-            className="w-full text-muted-foreground hover:text-foreground"
+            size="lg"
+            className="w-full"
             onClick={handleSkip}
+            disabled={uploading}
           >
-            Or skip and add manually
+            Skip and add manually
           </Button>
-
           <Button
             size="lg"
             className="w-full"
             onClick={handleContinue}
-            disabled={!file || isUploading}
+            disabled={uploading || !success}
             aria-label="Continue to company info"
           >
-            {isUploading ? "Processing..." : "Continue to auto-generated template"}
+            Continue
           </Button>
         </div>
       </div>
