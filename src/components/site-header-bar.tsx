@@ -149,7 +149,7 @@ export function SiteHeaderBar({
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
-      <div ref={pillRef} className="relative">
+      <div ref={pillRef} className="relative mx-auto w-full max-w-[1920px]">
         <div
           className={`transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
             productOpen ? "rounded-t-3xl" : "rounded-3xl"
