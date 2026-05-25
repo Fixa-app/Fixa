@@ -102,13 +102,13 @@ export function ProductAccordion() {
 
   return (
     <div className="grid gap-10 md:grid-cols-2 md:items-start md:gap-6">
-      <div className="flex aspect-square flex-col gap-10 overflow-y-auto rounded-3xl bg-[#E4E2DB] p-8 md:p-10">
+      <div className="flex flex-col gap-8">
         {groups.map((group) => (
           <div key={group.key} className="flex flex-col gap-3">
             <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
               {group.label}
             </h3>
-            <div className="flex flex-col">
+            <div className="flex flex-col rounded-3xl bg-[#E4E2DB] p-5 md:p-6">
               {group.features.map((feature) => {
                 const open = activeKey === feature.key;
                 return (
