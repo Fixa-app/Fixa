@@ -102,14 +102,9 @@ function Product() {
   return (
     <section id="product" className="pt-8 pb-20 sm:pt-10 sm:pb-24">
       <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-8 px-4">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-            Eén systeem, van aanvraag tot betaling.
-          </h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Van eerste aanvraag tot betaalde factuur — Fixa zit overal tussen.
-          </p>
-        </div>
+        <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+          Eén systeem, van aanvraag tot betaling.
+        </h2>
         <ProductAccordion />
       </div>
     </section>
