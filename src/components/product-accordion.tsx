@@ -122,38 +122,38 @@ export function ProductAccordion() {
                       type="button"
                       onClick={() => setActiveKey(feature.key)}
                       aria-expanded={open}
-                      className="flex w-full items-center justify-between gap-4 py-3.5 text-left"
+                      className="flex w-full items-center justify-between gap-4 py-5 text-left"
                     >
-                      <span className="flex items-center gap-3 text-base font-semibold tracking-tight">
+                      <span className="flex items-center gap-3 text-2xl font-semibold tracking-tight">
                         <feature.icon
-                          className="size-5 text-foreground/80"
+                          className="size-6 text-foreground/80"
                           strokeWidth={2}
                         />
                         {feature.name}
                       </span>
                       {open ? (
                         <Minus
-                          className="size-5 text-foreground/60"
+                          className="size-6 text-foreground/60"
                           strokeWidth={2}
                         />
                       ) : (
                         <Plus
-                          className="size-5 text-foreground/60"
+                          className="size-6 text-foreground/60"
                           strokeWidth={2}
                         />
                       )}
                     </button>
                     {open && (
-                      <div className="flex animate-in flex-col gap-2 pb-4 pl-8 duration-300 fade-in">
-                        <p className="text-sm text-muted-foreground">
+                      <div className="flex animate-in flex-col gap-2 pb-5 pl-9 duration-300 fade-in">
+                        <p className="text-base text-muted-foreground">
                           {feature.body}
                         </p>
                         <Link
                           href={feature.href}
-                          className="inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline"
+                          className="inline-flex items-center gap-1.5 text-base font-semibold underline-offset-4 hover:underline"
                         >
                           Lees meer
-                          <ArrowRight className="size-3.5" />
+                          <ArrowRight className="size-4" />
                         </Link>
                       </div>
                     )}
