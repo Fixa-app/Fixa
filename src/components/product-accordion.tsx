@@ -114,7 +114,9 @@ export function ProductAccordion() {
                 return (
                   <div
                     key={feature.key}
-                    className="rounded-2xl bg-[#E4E2DB] px-5"
+                    className={`rounded-2xl px-5 transition-colors ${
+                      open ? "bg-[#E4E2DB]" : "hover:bg-foreground/5"
+                    }`}
                   >
                     <button
                       type="button"
