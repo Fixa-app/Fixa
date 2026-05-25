@@ -14,6 +14,7 @@ type ParsedCompanyInfo = {
   kvk?: string;
   vat?: string;
   iban?: string;
+  category?: 'loodgieters' | 'elektriciens' | 'cv_klimaat' | 'hoveniers' | 'schoonmaak' | 'klusbedrijf' | 'schilders' | 'dakdekkers';
 };
 
 type ParsedLineItem = {
@@ -116,6 +117,20 @@ Extract:
    - kvk (KVK number, optional)
    - vat (BTW number, optional)
    - iban (bank account, optional)
+   
+   ALSO detect the industry category based on company name, services offered, and line items.
+   Return category as ONE of these exact values:
+   - "loodgieters" (plumbing, sanitair, loodgieterswerk, waterleiding, cv-ketel, boiler)
+   - "elektriciens" (electrical, elektra, bedrading, stopcontacten, meterkast, schakelaar)
+   - "cv_klimaat" (heating/cooling, verwarming, airco, klimaatbeheersing, warmtepomp, cv-installatie)
+   - "hoveniers" (gardening, tuin, gazon, beplanting, tuinonderhoud, tuinaanleg, bestrating)
+   - "schoonmaak" (cleaning, schoonmaken, poets, glazenwasser, bedrijfsschoonmaak)
+   - "klusbedrijf" (handyman, klussen, reparaties, onderhoud, verbouwing, timmerwerk)
+   - "schilders" (painting, schilderwerk, spuiten, stukadoor, behangen, latex)
+   - "dakdekkers" (roofing, dakwerk, dakbedekking, goot, dakpannen, isolatie dak)
+   
+   If unclear, choose the BEST match based on the services described.
+   Example: "stukwerk wand" → "schilders", "trapgat isoleren" → "klusbedrijf"
 
 2. Line items (products/services offered):
    ⚠️ CRITICAL: You MUST extract EVERY SINGLE line item from the quote.
@@ -158,7 +173,8 @@ Return ONLY valid JSON, no markdown, no explanation:
     "email": "...",
     "kvk": "...",
     "vat": "...",
-    "iban": "..."
+    "iban": "...",
+    "category": "klusbedrijf"
   },
   "lineItems": [
     { "title": "...", "unit": "hour", "rate": 65.00 },

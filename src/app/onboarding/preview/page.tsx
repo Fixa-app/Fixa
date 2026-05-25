@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { saveOnboardingData } from '@/lib/save-onboarding-data';
 
 type CompanyInfo = {
   name: string;
@@ -45,11 +46,18 @@ export default function OnboardingPreviewPage() {
     setMounted(true);
   }, []);
 
-  const handleFinish = () => {
-    // TODO: Save to database
-    // For now, just navigate to dashboard placeholder
+  const handleFinish = async () => {
+  try {
+    // Save all onboarding data to Supabase
+    await saveOnboardingData();
+    
+    // Navigate to dashboard
     router.push('/dashboard');
-  };
+  } catch (error) {
+    console.error('Failed to save onboarding data:', error);
+    alert('Er ging iets mis bij het opslaan. Probeer het opnieuw.');
+  }
+};
 
   if (!mounted) {
     return null;
