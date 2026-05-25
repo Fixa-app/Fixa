@@ -102,67 +102,58 @@ export function ProductAccordion() {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
-      <div className="flex flex-col gap-5">
-        {groups.map((group) => (
-          <div key={group.key} className="flex flex-col gap-2">
-            <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
-              {group.label}
-            </h3>
-            <div className="flex flex-col gap-2">
-              {group.features.map((feature) => {
-                const open = activeKey === feature.key;
-                return (
-                  <div
-                    key={feature.key}
-                    className={`rounded-2xl px-5 transition-colors ${
-                      open ? "bg-[#E4E2DB]" : "hover:bg-foreground/5"
-                    }`}
+      <div className="flex flex-col gap-2">
+        {allFeatures.map((feature) => {
+          const open = activeKey === feature.key;
+          return (
+            <div
+              key={feature.key}
+              className={`rounded-2xl px-5 transition-colors ${
+                open ? "bg-[#E4E2DB]" : "hover:bg-foreground/5"
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => setActiveKey(feature.key)}
+                aria-expanded={open}
+                className="flex w-full items-center justify-between gap-4 py-5 text-left"
+              >
+                <span className="flex items-center gap-3 text-2xl font-semibold tracking-tight">
+                  <feature.icon
+                    className="size-6 text-foreground/80"
+                    strokeWidth={2}
+                  />
+                  {feature.name}
+                </span>
+                {open ? (
+                  <Minus
+                    className="size-6 text-foreground/60"
+                    strokeWidth={2}
+                  />
+                ) : (
+                  <Plus
+                    className="size-6 text-foreground/60"
+                    strokeWidth={2}
+                  />
+                )}
+              </button>
+              {open && (
+                <div className="flex animate-in flex-col gap-2 pb-5 pl-9 duration-300 fade-in">
+                  <p className="text-base text-muted-foreground">
+                    {feature.body}
+                  </p>
+                  <Link
+                    href={feature.href}
+                    className="inline-flex items-center gap-1.5 text-base font-semibold underline-offset-4 hover:underline"
                   >
-                    <button
-                      type="button"
-                      onClick={() => setActiveKey(feature.key)}
-                      aria-expanded={open}
-                      className="flex w-full items-center justify-between gap-4 py-5 text-left"
-                    >
-                      <span className="flex items-center gap-3 text-2xl font-semibold tracking-tight">
-                        <feature.icon
-                          className="size-6 text-foreground/80"
-                          strokeWidth={2}
-                        />
-                        {feature.name}
-                      </span>
-                      {open ? (
-                        <Minus
-                          className="size-6 text-foreground/60"
-                          strokeWidth={2}
-                        />
-                      ) : (
-                        <Plus
-                          className="size-6 text-foreground/60"
-                          strokeWidth={2}
-                        />
-                      )}
-                    </button>
-                    {open && (
-                      <div className="flex animate-in flex-col gap-2 pb-5 pl-9 duration-300 fade-in">
-                        <p className="text-base text-muted-foreground">
-                          {feature.body}
-                        </p>
-                        <Link
-                          href={feature.href}
-                          className="inline-flex items-center gap-1.5 text-base font-semibold underline-offset-4 hover:underline"
-                        >
-                          Lees meer
-                          <ArrowRight className="size-4" />
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                    Lees meer
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="relative aspect-square w-full overflow-hidden rounded-3xl md:aspect-auto md:h-full">
