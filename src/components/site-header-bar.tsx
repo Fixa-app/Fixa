@@ -142,7 +142,7 @@ export function SiteHeaderBar({
   const aiIconColor = isLight ? "text-violet-500" : "text-violet-300";
 
   const surfaceClasses = isLight
-    ? "bg-background"
+    ? "bg-[#E4E2DB]"
     : isTransparent
       ? "bg-transparent"
       : "bg-ink/70 backdrop-blur-md";
