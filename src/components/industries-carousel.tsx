@@ -52,11 +52,11 @@ export function IndustriesCarousel({
           </button>
         </div>
       </div>
-      <div
-        ref={scrollerRef}
-        className="mx-auto flex w-full max-w-[1920px] snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth scroll-pl-4 scroll-pr-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
-      >
+      <div className="px-4">
+        <div
+          ref={scrollerRef}
+          className="mx-auto flex w-full max-w-[1920px] snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
         {cards.map((card) => (
           <a
             key={card.name}
@@ -82,6 +82,7 @@ export function IndustriesCarousel({
             </p>
           </a>
         ))}
+        </div>
       </div>
     </div>
   );

@@ -54,8 +54,9 @@ export function ReferralsCards() {
     .join(" ");
 
   return (
+    <div className="px-4">
     <div
-      className="mx-auto grid h-[500px] w-full max-w-[1920px] gap-4 px-4 transition-[grid-template-columns] duration-500 ease-out sm:h-[600px]"
+      className="mx-auto grid h-[500px] w-full max-w-[1920px] gap-4 transition-[grid-template-columns] duration-500 ease-out sm:h-[600px]"
       style={{ gridTemplateColumns }}
     >
       {referrals.map((r, i) => {
@@ -109,6 +110,7 @@ export function ReferralsCards() {
           </a>
         );
       })}
+    </div>
     </div>
   );
 }
