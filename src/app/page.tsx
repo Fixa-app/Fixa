@@ -20,7 +20,6 @@ export default function Home() {
         <Industries />
         <Product />
         <AI />
-        <Workflow />
         <Referrals />
         <CTABand />
       </main>
@@ -68,7 +67,7 @@ function Hero() {
                 variant="outline"
                 className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
                 nativeButton={false}
-                render={<a href="#workflow" />}
+                render={<a href="#product" />}
               >
                 Aan de slag
               </Button>
@@ -160,50 +159,6 @@ function AI() {
             </article>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-const workflowSteps = [
-  { name: "Aanvraag", body: "Vang werk op via drie kanalen." },
-  {
-    name: "Intake",
-    body: "Bepaal of een bezoek nodig is. Verzamel wat je nodig hebt voor de offerte.",
-  },
-  { name: "Offerte", body: "Opstellen, delen, aanpassen — tot het akkoord is." },
-  { name: "Werk", body: "Plannen, toewijzen, uitvoeren." },
-  { name: "Factuur", body: "Versturen, herinneren, geld ontvangen." },
-];
-
-function Workflow() {
-  return (
-    <section id="workflow" className="px-4 py-20 sm:py-24">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-12">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <h2 className="font-display font-medium text-4xl leading-[1.05] tracking-tight sm:text-5xl">
-            Van eerste telefoontje tot laatste factuur.
-          </h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Eén workflow die past bij hoe vakwerk écht loopt.
-          </p>
-        </div>
-        <ol className="grid gap-4 md:grid-cols-5">
-          {workflowSteps.map((step, i) => (
-            <li
-              key={step.name}
-              className="flex flex-col gap-2 rounded-lg border border-border bg-background p-5"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-base font-semibold">{step.name}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">{step.body}</p>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );
@@ -325,11 +280,11 @@ function SiteFooter() {
           <Link href="/plan" className="hover:text-foreground">
             Plan
           </Link>
-          <a href="#features" className="hover:text-foreground">
-            Functies
+          <a href="#product" className="hover:text-foreground">
+            Product
           </a>
-          <a href="#workflow" className="hover:text-foreground">
-            Hoe het werkt
+          <a href="#referrals" className="hover:text-foreground">
+            Klanten
           </a>
         </div>
       </div>
