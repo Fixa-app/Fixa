@@ -151,7 +151,7 @@ function AI() {
           {aiCards.map(({ title, body, Mockup }) => (
             <article
               key={title}
-              className="flex flex-col gap-6 rounded-3xl bg-[#E4E2DB] p-6 md:p-8"
+              className="flex flex-col gap-6 rounded-3xl bg-[#EAE9E3] p-6 md:p-8"
             >
               <div className="flex flex-col gap-3">
                 <h3 className="text-2xl font-semibold tracking-tight">
@@ -159,7 +159,7 @@ function AI() {
                 </h3>
                 <p className="text-base text-muted-foreground">{body}</p>
               </div>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <div className="flex aspect-[4/3] items-center justify-center">
                 <Mockup />
               </div>
             </article>

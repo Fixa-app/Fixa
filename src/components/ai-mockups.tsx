@@ -6,19 +6,9 @@ import {
   Sparkles,
 } from "lucide-react";
 
-function MockupShell({
-  bg,
-  children,
-}: {
-  bg: string;
-  children: React.ReactNode;
-}) {
+function MockupShell({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className={`absolute inset-0 flex items-center justify-center p-5 ${bg}`}
-    >
-      {children}
-    </div>
+    <div className="flex w-full items-center justify-center">{children}</div>
   );
 }
 
@@ -33,7 +23,7 @@ function AiBadge() {
 
 export function AIQuoteMockup() {
   return (
-    <MockupShell bg="bg-gradient-to-br from-violet-100 to-violet-50">
+    <MockupShell>
       <div className="w-full max-w-[240px] rounded-xl bg-background p-4 shadow-xl ring-1 ring-foreground/5">
         <div className="mb-3 flex items-center justify-between">
           <span className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
@@ -73,7 +63,7 @@ export function AIQuoteMockup() {
 
 export function AIReplyMockup() {
   return (
-    <MockupShell bg="bg-gradient-to-br from-violet-100 to-violet-50">
+    <MockupShell>
       <div className="flex w-full max-w-[260px] flex-col gap-2">
         <div className="rounded-2xl rounded-bl-sm bg-background p-3 shadow-md ring-1 ring-foreground/5">
           <div className="mb-1 flex items-center gap-2 text-[10px] text-muted-foreground">
@@ -111,7 +101,7 @@ export function AIReplyMockup() {
 export function AIPlanningMockup() {
   const days = ["Ma", "Di", "Wo", "Do", "Vr"];
   return (
-    <MockupShell bg="bg-gradient-to-br from-violet-100 to-violet-50">
+    <MockupShell>
       <div className="w-full max-w-[260px] rounded-xl bg-background p-4 shadow-xl ring-1 ring-foreground/5">
         <div className="mb-3 flex items-center justify-between">
           <span className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
