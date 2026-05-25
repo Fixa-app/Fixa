@@ -99,8 +99,8 @@ function PhoneMockup() {
 
 function Product() {
   return (
-    <section id="product" className="pt-8 pb-20 sm:pt-10 sm:pb-24">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4">
+    <section id="product" className="px-4 pt-8 pb-20 sm:pt-10 sm:pb-24">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Eén systeem, van aanvraag tot betaling.
         </h2>
@@ -130,8 +130,8 @@ const aiCards = [
 
 function AI() {
   return (
-    <section id="ai" className="py-20 sm:py-24">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-4">
+    <section id="ai" className="px-4 py-20 sm:py-24">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
         <div className="flex flex-col gap-3">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Hoe AI je werk versimpelt.
@@ -234,14 +234,16 @@ function Referrals() {
   return (
     <section id="referrals" className="py-20 sm:py-24">
       <div className="flex flex-col gap-10">
-        <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-3 px-4">
-          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-            Vakmensen aan het woord.
-          </h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Lees waarom collega&apos;s overstapten en wat het hun bedrijf
-            oplevert.
-          </p>
+        <div className="px-4">
+          <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-3 px-5">
+            <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+              Vakmensen aan het woord.
+            </h2>
+            <p className="max-w-2xl text-muted-foreground">
+              Lees waarom collega&apos;s overstapten en wat het hun bedrijf
+              oplevert.
+            </p>
+          </div>
         </div>
         <ReferralsCards />
       </div>
