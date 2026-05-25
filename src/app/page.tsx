@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
 import { ProductAccordion } from "@/components/product-accordion";
+import {
+  AIPlanningMockup,
+  AIQuoteMockup,
+  AIReplyMockup,
+} from "@/components/ai-mockups";
 import { ReferralsCards } from "@/components/referrals-cards";
 
 export default function Home() {
@@ -14,6 +19,7 @@ export default function Home() {
         <Hero />
         <Industries />
         <Product />
+        <AI />
         <Workflow />
         <Referrals />
         <CTABand />
@@ -105,6 +111,60 @@ function Product() {
           </p>
         </div>
         <ProductAccordion />
+      </div>
+    </section>
+  );
+}
+
+const aiCards = [
+  {
+    title: "Offertes in een minuut",
+    body: "AI leest je intake-notities en stelt direct een complete offerte op — line items, prijzen en BTW al ingevuld.",
+    Mockup: AIQuoteMockup,
+  },
+  {
+    title: "Slimme klantantwoorden",
+    body: "AI vat klantgesprekken samen en stelt professionele reacties voor. Jij bevestigt met één klik.",
+    Mockup: AIReplyMockup,
+  },
+  {
+    title: "Routes & planning",
+    body: "AI plant jobs op basis van locatie, vaardigheden en historie. Minder rijden, meer werk.",
+    Mockup: AIPlanningMockup,
+  },
+];
+
+function AI() {
+  return (
+    <section id="ai" className="py-20 sm:py-24">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-4">
+        <div className="flex flex-col gap-3">
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+            Hoe AI je werk versimpelt.
+          </h2>
+          <p className="max-w-2xl text-muted-foreground">
+            Drie plekken waar Fixa Assist AI direct tijd bespaart en je dag
+            soepeler laat verlopen.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {aiCards.map(({ title, body, Mockup }) => (
+            <article
+              key={title}
+              className="flex flex-col gap-6 rounded-3xl bg-[#E4E2DB] p-6 md:p-8"
+            >
+              <div className="flex flex-col gap-3">
+                <h3 className="text-2xl font-semibold tracking-tight">
+                  {title}
+                </h3>
+                <p className="text-base text-muted-foreground">{body}</p>
+              </div>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <Mockup />
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
