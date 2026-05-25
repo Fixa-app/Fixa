@@ -54,7 +54,11 @@ export function IndustriesCarousel({
       </div>
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{
+          paddingLeft: "max(1rem, calc((100vw - 1536px) / 2 + 1rem))",
+          paddingRight: "max(1rem, calc((100vw - 1536px) / 2 + 1rem))",
+        }}
       >
         {cards.map((card) => (
           <a
