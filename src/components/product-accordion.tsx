@@ -37,9 +37,9 @@ const groups: Group[] = [
     features: [
       {
         key: "online-intakes",
-        name: "Online intakes",
+        name: "Online aanvragen",
         icon: CalendarCheck,
-        body: "Klanten boeken zelf een intake-afspraak via je website. Direct in je agenda, geen heen-en-weer.",
+        body: "Klanten dienen aanvragen direct via je website in. Landt automatisch in je inbox, geen heen-en-weer.",
         href: "#",
       },
       {
