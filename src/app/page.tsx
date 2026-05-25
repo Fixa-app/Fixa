@@ -31,7 +31,7 @@ export default function Home() {
 function Hero() {
   return (
     <section className="-mt-[72px] px-4">
-      <div className="relative min-h-[600px] w-full overflow-hidden rounded-3xl sm:min-h-[680px]">
+      <div className="relative mx-auto min-h-[600px] w-full max-w-[1920px] overflow-hidden rounded-3xl sm:min-h-[680px]">
         <Image
           src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
           alt=""
