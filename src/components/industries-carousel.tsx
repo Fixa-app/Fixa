@@ -10,7 +10,13 @@ export type IndustryCard = {
   image: string;
 };
 
-export function IndustriesCarousel({ cards }: { cards: IndustryCard[] }) {
+export function IndustriesCarousel({
+  cards,
+  headerContent,
+}: {
+  cards: IndustryCard[];
+  headerContent?: React.ReactNode;
+}) {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const scroll = (dir: "prev" | "next") => {
@@ -24,28 +30,31 @@ export function IndustriesCarousel({ cards }: { cards: IndustryCard[] }) {
   };
 
   return (
-    <div className="flex flex-col gap-6 px-4">
-      <div className="flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => scroll("prev")}
-          aria-label="Vorige"
-          className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-foreground hover:text-background"
-        >
-          <ChevronLeft className="size-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => scroll("next")}
-          aria-label="Volgende"
-          className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-foreground hover:text-background"
-        >
-          <ChevronRight className="size-5" />
-        </button>
+    <div className="flex flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1536px] items-end justify-between gap-6 px-4">
+        <div className="flex-1">{headerContent}</div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => scroll("prev")}
+            aria-label="Vorige"
+            className="flex size-10 items-center justify-center rounded-full bg-[#E4E2DB] text-foreground transition-colors hover:bg-foreground hover:text-background"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scroll("next")}
+            aria-label="Volgende"
+            className="flex size-10 items-center justify-center rounded-full bg-[#E4E2DB] text-foreground transition-colors hover:bg-foreground hover:text-background"
+          >
+            <ChevronRight className="size-5" />
+          </button>
+        </div>
       </div>
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {cards.map((card) => (
           <a

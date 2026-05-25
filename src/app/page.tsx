@@ -94,12 +94,9 @@ function PhoneMockup() {
 
 function Product() {
   return (
-    <section id="product" className="py-20 sm:py-24">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-12 px-4">
+    <section id="product" className="pt-8 pb-20 sm:pt-10 sm:pb-24">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-8 px-4">
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
-            Product
-          </p>
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Eén systeem, van aanvraag tot betaling.
           </h2>
@@ -211,14 +208,14 @@ const industryCards = [
 function Industries() {
   return (
     <section id="industries" className="py-20 sm:py-24">
-      <div className="flex flex-col gap-4">
-        <div className="mx-auto w-full max-w-[1536px] px-4">
+      <IndustriesCarousel
+        cards={industryCards}
+        headerContent={
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Voor vakmensen en servicebedrijven.
           </h2>
-        </div>
-        <IndustriesCarousel cards={industryCards} />
-      </div>
+        }
+      />
     </section>
   );
 }
