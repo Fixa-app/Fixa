@@ -49,8 +49,15 @@ const referrals: Referral[] = [
 export function ReferralsCards() {
   const [active, setActive] = useState(0);
 
+  const gridTemplateColumns = referrals
+    .map((_, i) => (i === active ? "3fr" : "1fr"))
+    .join(" ");
+
   return (
-    <div className="flex h-[500px] gap-2 px-4 sm:h-[600px]">
+    <div
+      className="grid h-[500px] gap-4 px-4 transition-[grid-template-columns] duration-500 ease-out sm:h-[600px]"
+      style={{ gridTemplateColumns }}
+    >
       {referrals.map((r, i) => {
         const isActive = i === active;
         return (
@@ -59,10 +66,7 @@ export function ReferralsCards() {
             href={r.href}
             onMouseEnter={() => setActive(i)}
             onFocus={() => setActive(i)}
-            className={`group relative overflow-hidden rounded-2xl transition-[flex-grow] duration-500 ease-out ${
-              isActive ? "flex-[5]" : "flex-[1]"
-            }`}
-            style={isActive ? undefined : { flexBasis: "320px" }}
+            className="group relative min-w-0 overflow-hidden rounded-2xl"
           >
             <Image
               src={r.image}
@@ -76,7 +80,7 @@ export function ReferralsCards() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
             <div
-              className={`absolute right-6 top-6 flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-all duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${
+              className={`absolute top-6 right-6 flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-opacity duration-500 ${
                 isActive ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -84,10 +88,8 @@ export function ReferralsCards() {
             </div>
 
             <h3
-              className={`absolute right-6 left-6 font-display font-semibold tracking-tight text-white transition-all duration-500 ease-out ${
-                isActive
-                  ? "top-6 text-left text-xl sm:text-2xl"
-                  : "top-1/2 -translate-y-1/2 text-center text-lg"
+              className={`absolute right-6 left-6 font-display text-xl font-semibold tracking-tight whitespace-nowrap text-white transition-[bottom] duration-500 ease-out sm:text-2xl ${
+                isActive ? "bottom-40 sm:bottom-48" : "bottom-6"
               }`}
             >
               {r.name}
@@ -100,7 +102,7 @@ export function ReferralsCards() {
                   : "pointer-events-none translate-y-10 opacity-0"
               }`}
             >
-              <p className="font-display text-2xl leading-[1.15] font-medium tracking-tight text-white sm:text-3xl lg:text-4xl">
+              <p className="font-display text-2xl leading-[1.15] font-medium tracking-tight text-white sm:text-3xl">
                 &ldquo;{r.quote}&rdquo;
               </p>
             </div>
