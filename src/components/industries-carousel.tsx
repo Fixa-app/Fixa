@@ -31,7 +31,7 @@ export function IndustriesCarousel({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="mx-auto flex w-full max-w-[1536px] items-end justify-between gap-6 px-4">
+      <div className="flex items-end justify-between gap-6 px-4">
         <div className="flex-1">{headerContent}</div>
         <div className="flex items-center gap-2">
           <button
@@ -54,7 +54,7 @@ export function IndustriesCarousel({
       </div>
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden 2xl:px-[calc((100vw-1536px)/2+1rem)]"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {cards.map((card) => (
           <a
@@ -70,15 +70,15 @@ export function IndustriesCarousel({
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
-            <div className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+            <div className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white text-foreground opacity-0 shadow-md transition-opacity duration-300 group-hover:opacity-100">
               <ArrowUpRight className="size-5" />
             </div>
-            <div className="absolute inset-x-5 bottom-5 flex flex-col gap-2 text-white">
-              <h3 className="text-2xl font-semibold leading-tight">
-                {card.name}
-              </h3>
-              <p className="text-sm leading-snug text-white/85">{card.body}</p>
-            </div>
+            <h3 className="absolute inset-x-5 bottom-5 text-2xl leading-tight font-semibold text-white transition-transform duration-500 ease-out group-hover:-translate-y-[72px]">
+              {card.name}
+            </h3>
+            <p className="absolute inset-x-5 bottom-5 translate-y-12 text-sm leading-snug text-white/85 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+              {card.body}
+            </p>
           </a>
         ))}
       </div>
