@@ -70,13 +70,13 @@ export function IndustriesCarousel({
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
-            <div className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white text-foreground opacity-0 shadow-md transition-opacity duration-300 group-hover:opacity-100">
+            <div className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white text-foreground opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100">
               <ArrowUpRight className="size-5" />
             </div>
-            <h3 className="absolute inset-x-5 bottom-5 text-2xl leading-tight font-semibold text-white transition-transform duration-500 ease-out group-hover:-translate-y-[72px]">
+            <h3 className="absolute inset-x-5 bottom-5 text-2xl leading-tight font-semibold text-white transition-transform duration-300 ease-out group-hover:-translate-y-[52px]">
               {card.name}
             </h3>
-            <p className="absolute inset-x-5 bottom-5 translate-y-12 text-sm leading-snug text-white/85 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+            <p className="absolute inset-x-5 bottom-5 translate-y-8 text-sm leading-snug text-white/85 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
               {card.body}
             </p>
           </a>
