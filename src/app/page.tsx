@@ -354,8 +354,8 @@ function SiteFooter() {
     <footer className="px-4 pb-4">
       <div className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-black text-white">
         <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5 py-10 md:py-12">
-          <div className="grid grid-cols-3 gap-6 md:grid-cols-4 md:gap-12">
-            <div className="col-span-3 md:col-span-1">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-12">
+            <div className="col-span-2 md:col-span-1">
               <Link href="/" aria-label="Fixa" className="inline-flex">
                 <Image
                   src="/fixa-logo.svg"
