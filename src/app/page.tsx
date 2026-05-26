@@ -111,28 +111,34 @@ const aiCards = [
 
 function AI() {
   return (
-    <section id="ai" className="px-4 py-12 sm:py-16">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
-        <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-          Hoe AI je werk versimpelt.
-        </h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          {aiCards.map(({ title, body, Mockup }) => (
-            <article
-              key={title}
-              className="flex flex-col gap-6 rounded-3xl bg-[#EAE9E3] p-6 md:p-8"
-            >
-              <div className="flex flex-col gap-3">
-                <h3 className="text-2xl font-semibold tracking-tight">
-                  {title}
-                </h3>
-                <p className="text-base text-muted-foreground">{body}</p>
-              </div>
-              <div className="flex aspect-[4/3] items-center justify-center">
-                <Mockup />
-              </div>
-            </article>
-          ))}
+    <section id="ai" className="py-12 sm:py-16">
+      <div className="flex flex-col gap-10">
+        <div className="px-4">
+          <div className="mx-auto w-full max-w-[1536px] px-5">
+            <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+              Hoe AI je werk versimpelt.
+            </h2>
+          </div>
+        </div>
+        <div className="px-4">
+          <div className="mx-auto grid w-full max-w-[1920px] gap-4 md:grid-cols-3">
+            {aiCards.map(({ title, body, Mockup }) => (
+              <article
+                key={title}
+                className="flex flex-col gap-6 rounded-3xl bg-[#EAE9E3] p-6 md:p-8"
+              >
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-2xl font-semibold tracking-tight">
+                    {title}
+                  </h3>
+                  <p className="text-base text-muted-foreground">{body}</p>
+                </div>
+                <div className="flex aspect-[4/3] items-center justify-center">
+                  <Mockup />
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
