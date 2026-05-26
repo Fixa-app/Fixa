@@ -104,7 +104,7 @@ export function ReferralsCards() {
                 isActive ? "bottom-28 sm:bottom-32" : "bottom-6"
               }`}
             >
-              <h3 className="text-xl font-semibold tracking-tight whitespace-nowrap text-white sm:text-2xl">
+              <h3 className="text-2xl font-semibold tracking-tight whitespace-nowrap text-white">
                 {r.firstName}
               </h3>
               <p
