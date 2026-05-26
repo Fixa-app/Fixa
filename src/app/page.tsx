@@ -381,28 +381,29 @@ const footerColumns: { title: string; links: { name: string; href: string }[] }[
 
 function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-ink text-ink-foreground">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-50"
-        style={{
-          background:
-            "radial-gradient(ellipse 55% 75% at 92% 50%, #016aff, transparent 65%)",
-        }}
-      />
-      <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-16 px-5 py-16 md:py-20">
-        <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" aria-label="Fixa" className="inline-flex">
-              <Image
-                src="/fixa-logo.svg"
-                alt="Fixa"
-                width={120}
-                height={48}
-                className="h-12 w-auto invert"
-              />
-            </Link>
-          </div>
+    <footer className="px-4 pb-4">
+      <div className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-ink text-ink-foreground">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-50"
+          style={{
+            background:
+              "radial-gradient(ellipse 55% 75% at 92% 50%, #016aff, transparent 65%)",
+          }}
+        />
+        <div className="relative flex w-full flex-col gap-16 px-5 py-16 md:py-20">
+          <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
+            <div className="col-span-2 md:col-span-1">
+              <Link href="/" aria-label="Fixa" className="inline-flex">
+                <Image
+                  src="/fixa-logo.svg"
+                  alt="Fixa"
+                  width={80}
+                  height={80}
+                  className="h-18 w-auto invert"
+                />
+              </Link>
+            </div>
           {footerColumns.map((col) => (
             <div key={col.title} className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold tracking-wide text-primary-dark-surface">
@@ -431,6 +432,7 @@ function SiteFooter() {
           >
             Cookie-instellingen
           </button>
+        </div>
         </div>
       </div>
     </footer>
