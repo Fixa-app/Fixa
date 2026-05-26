@@ -297,7 +297,7 @@ const footerColumns: { title: string; links: { name: string; href: string }[] }[
 function SiteFooter() {
   return (
     <footer className="px-4 pb-4">
-      <div className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-ink text-ink-foreground">
+      <div className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-violet text-white">
         <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5 py-10 md:py-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
             <div className="col-span-2 md:col-span-1">
@@ -313,7 +313,7 @@ function SiteFooter() {
             </div>
             {footerColumns.map((col) => (
               <div key={col.title} className="flex flex-col gap-3">
-                <h3 className="text-base font-bold text-primary-dark-surface">
+                <h3 className="text-base font-bold text-white/50">
                   {col.title}
                 </h3>
                 <ul className="flex flex-col gap-2">
@@ -321,7 +321,7 @@ function SiteFooter() {
                     <li key={link.name}>
                       <Link
                         href={link.href}
-                        className="text-base font-bold text-ink-foreground/85 transition-colors hover:text-ink-foreground"
+                        className="text-base font-bold text-white transition-colors hover:text-white/80"
                       >
                         {link.name}
                       </Link>
@@ -331,11 +331,11 @@ function SiteFooter() {
               </div>
             ))}
           </div>
-          <div className="flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-sm text-ink-foreground/60 sm:flex-row sm:items-center">
+          <div className="flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row sm:items-center">
             <span>© {new Date().getFullYear()} Fixa B.V.</span>
             <button
               type="button"
-              className="transition-colors hover:text-ink-foreground"
+              className="transition-colors hover:text-white"
             >
               Cookie-instellingen
             </button>
