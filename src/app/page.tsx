@@ -242,17 +242,17 @@ function Pricing() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-            Prijzen die werken voor jou.
+            Eerlijke prijzen, geen contracten.
           </h2>
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-base font-semibold text-ink-foreground transition-colors hover:bg-ink/85"
+            className="inline-flex h-12 items-center gap-2 rounded-xl border border-foreground/15 bg-foreground/5 px-6 text-base font-bold text-foreground backdrop-blur-sm transition-colors hover:bg-foreground/10"
           >
             Meer informatie
             <ArrowRight className="size-4" />
           </Link>
         </div>
-        <div className="rounded-3xl bg-teal p-8 text-teal-foreground md:p-12">
+        <div className="rounded-3xl bg-violet p-8 text-white md:p-12">
           <PricingCalculator />
         </div>
       </div>
