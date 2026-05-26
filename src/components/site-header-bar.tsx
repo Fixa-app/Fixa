@@ -167,7 +167,7 @@ export function SiteHeaderBar({
                 onClick={() => toggleMenu("industries")}
                 className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
               >
-                Voor wie
+                Bedrijfstypen
                 <ChevronDown
                   aria-hidden
                   className={`size-3 transition-transform duration-200 ${industriesOpen ? "rotate-180" : ""}`}
@@ -294,11 +294,6 @@ export function SiteHeaderBar({
             )}
             {industriesOpen && (
               <div className="flex flex-col gap-4">
-                <h3
-                  className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
-                >
-                  Bedrijfstypen
-                </h3>
                 <ul className="grid grid-cols-2 gap-1 md:grid-cols-4">
                   {industriesMenu.map((item) => (
                     <li key={item.label}>
