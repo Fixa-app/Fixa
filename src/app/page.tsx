@@ -39,7 +39,7 @@ function Hero() {
     <section className="-mt-[72px] px-4">
       <div className="relative mx-auto min-h-[600px] w-full max-w-[1920px] overflow-hidden rounded-3xl sm:min-h-[680px]">
         <Image
-          src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=2400&q=80"
+          src="https://plus.unsplash.com/premium_photo-1663133630972-d9b620dfea27?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt=""
           fill
           priority
