@@ -362,18 +362,18 @@ function SiteFooter() {
     <footer className="px-4 pb-4">
       <div
         className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl text-ink-foreground"
-        style={{ backgroundColor: "#2F203C" }}
+        style={{ backgroundColor: "#0D424E" }}
       >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 45% 70% at 95% 55%, #9C2D05 0%, transparent 55%), radial-gradient(ellipse 65% 85% at 55% 45%, #0D424E 0%, transparent 70%)",
+              "radial-gradient(ellipse 45% 70% at 95% 55%, #9C2D05 0%, transparent 55%)",
           }}
         />
-        <div className="relative flex w-full flex-col gap-16 px-5 py-16 md:py-20">
-          <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
+        <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5 py-10 md:py-12">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" aria-label="Fixa" className="inline-flex">
                 <Image
@@ -385,35 +385,35 @@ function SiteFooter() {
                 />
               </Link>
             </div>
-          {footerColumns.map((col) => (
-            <div key={col.title} className="flex flex-col gap-4">
-              <h3 className="text-sm font-semibold tracking-wide text-primary-dark-surface">
-                {col.title}
-              </h3>
-              <ul className="flex flex-col gap-3">
-                {col.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-ink-foreground/85 transition-colors hover:text-ink-foreground"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-8 text-sm text-ink-foreground/60 sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Fixa B.V.</span>
-          <button
-            type="button"
-            className="transition-colors hover:text-ink-foreground"
-          >
-            Cookie-instellingen
-          </button>
-        </div>
+            {footerColumns.map((col) => (
+              <div key={col.title} className="flex flex-col gap-3">
+                <h3 className="text-base font-bold text-primary-dark-surface">
+                  {col.title}
+                </h3>
+                <ul className="flex flex-col gap-2">
+                  {col.links.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-base font-bold text-ink-foreground/85 transition-colors hover:text-ink-foreground"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-sm text-ink-foreground/60 sm:flex-row sm:items-center">
+            <span>© {new Date().getFullYear()} Fixa B.V.</span>
+            <button
+              type="button"
+              className="transition-colors hover:text-ink-foreground"
+            >
+              Cookie-instellingen
+            </button>
+          </div>
         </div>
       </div>
     </footer>
