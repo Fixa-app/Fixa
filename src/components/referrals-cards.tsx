@@ -20,7 +20,7 @@ const referrals: Referral[] = [
       "Sinds Fixa missen we geen aanvragen meer. Klanten boeken zelf en facturen gaan automatisch de deur uit.",
     image:
       "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1600&q=80",
-    href: "#",
+    href: "/testimonials/loodgieter-visser",
   },
   {
     firstName: "Mark",
@@ -29,7 +29,7 @@ const referrals: Referral[] = [
       "Drie monteurs op de weg, één planning. Fixa houdt overzicht waar mijn whatsapp dat niet meer kon.",
     image:
       "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1600&q=80",
-    href: "#",
+    href: "/testimonials/elektrotechniek-smit",
   },
   {
     firstName: "Sander",
@@ -38,7 +38,7 @@ const referrals: Referral[] = [
       "De Klanthub maakt het verschil. Klanten zien zelf wat er speelt — ik krijg veel minder belletjes.",
     image:
       "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1600&q=80",
-    href: "#",
+    href: "/testimonials/klusbedrijf-de-jong",
   },
   {
     firstName: "Lisa",
@@ -47,7 +47,7 @@ const referrals: Referral[] = [
       "Service plans lopen vanzelf door. Voorspelbare omzet zonder dat ik er administratie aan kwijt ben.",
     image:
       "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=1600&q=80",
-    href: "#",
+    href: "/testimonials/cv-specialist-bakker",
   },
 ];
 
@@ -61,7 +61,7 @@ export function ReferralsCards() {
   return (
     <div className="px-4">
     <div
-      className="mx-auto grid h-[600px] w-full max-w-[1920px] gap-4 transition-[grid-template-rows,grid-template-columns] duration-500 ease-out [--active-fr:2fr] [grid-template-rows:var(--cells)] sm:h-[700px] lg:h-[400px] lg:[grid-template-rows:none] lg:[grid-template-columns:var(--cells)] xl:h-[480px] xl:[--active-fr:3fr]"
+      className="mx-auto grid h-[720px] w-full max-w-[1920px] gap-4 transition-[grid-template-rows,grid-template-columns] duration-500 ease-out [--active-fr:3fr] [grid-template-rows:var(--cells)] sm:h-[820px] lg:h-[400px] lg:[--active-fr:2fr] lg:[grid-template-rows:none] lg:[grid-template-columns:var(--cells)] xl:h-[480px] xl:[--active-fr:3fr]"
       style={{ ["--cells" as string]: gridTemplateColumns }}
     >
       {referrals.map((r, i) => {
