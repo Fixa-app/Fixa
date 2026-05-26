@@ -360,18 +360,7 @@ const footerColumns: { title: string; links: { name: string; href: string }[] }[
 function SiteFooter() {
   return (
     <footer className="px-4 pb-4">
-      <div
-        className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl text-ink-foreground"
-        style={{ backgroundColor: "#0D424E" }}
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 45% 70% at 95% 55%, #9C2D05 0%, transparent 55%)",
-          }}
-        />
+      <div className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-ink text-ink-foreground">
         <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5 py-10 md:py-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
             <div className="col-span-2 md:col-span-1">
