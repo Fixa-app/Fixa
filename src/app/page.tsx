@@ -261,21 +261,32 @@ function Pricing() {
 
 function CTABand() {
   return (
-    <section className="px-6 py-12 sm:py-16">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-2xl border border-border bg-foreground p-12 text-center text-background">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Wees een van de eersten die Fixa proberen.
-        </h2>
-        <p className="max-w-xl text-background/80">
-          We bouwen Fixa in het open, samen met een kleine groep pilotklanten.
-          Start je gratis proefperiode of neem contact op om mee te bouwen.
-        </p>
-        <AuthDialog>
-          <Button size="lg" variant="secondary" className="rounded-full">
-            Gratis proberen
+    <section className="px-4 py-16 sm:py-24">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-8 px-5 md:flex-row md:items-center md:gap-12">
+        <div className="flex flex-col gap-4">
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl md:text-6xl">
+            Start vandaag met Fixa.
+          </h2>
+          <p className="max-w-xl text-base leading-relaxed text-foreground/70 sm:text-lg">
+            Upload je bestaande factuur en verstuur binnen enkele minuten je
+            eerste via Fixa. Gratis zolang je maandomzet onder €5k blijft.
+          </p>
+        </div>
+        <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
+          <AuthDialog>
+            <Button className="h-14 rounded-full bg-black px-7 text-base font-bold text-white hover:bg-black/80">
+              Aan de slag
+            </Button>
+          </AuthDialog>
+          <Button
+            className="h-14 rounded-full bg-[#f1e07a] px-7 text-base font-bold text-foreground hover:bg-[#f1e07a]/90"
+            nativeButton={false}
+            render={<a href="#contact" />}
+          >
+            Boek een demo
             <ArrowRight className="ml-2 size-4" />
           </Button>
-        </AuthDialog>
+        </div>
       </div>
     </section>
   );
