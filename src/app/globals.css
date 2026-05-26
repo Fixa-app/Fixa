@@ -66,6 +66,10 @@
   --color-mint-foreground: var(--mint-foreground);
   --color-violet: var(--violet);
   --color-violet-foreground: var(--violet-foreground);
+  --color-teal-light: var(--teal-light);
+  --color-teal-light-foreground: var(--teal-light-foreground);
+  --color-violet-light: var(--violet-light);
+  --color-violet-light-foreground: var(--violet-light-foreground);
 }
 
 :root {
@@ -122,6 +126,11 @@
   --mint-foreground: oklch(1 0 0);
   --violet: #7c3aed;
   --violet-foreground: oklch(1 0 0);
+
+  --teal-light: #d8e5e7;
+  --teal-light-foreground: oklch(0.2 0.013 60);
+  --violet-light: #e0d8e6;
+  --violet-light-foreground: oklch(0.2 0.013 60);
 }
 
 .dark {
