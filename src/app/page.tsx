@@ -83,7 +83,7 @@ function Hero() {
 
 function Product() {
   return (
-    <section id="product" className="px-4 py-12 sm:py-16">
+    <section id="product" className="px-4 pt-24 pb-12 sm:pt-32 sm:pb-16">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Eén systeem, van aanvraag tot betaling.
