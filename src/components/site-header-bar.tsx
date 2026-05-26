@@ -83,6 +83,9 @@ export function SiteHeaderBar({
   userIsAdmin: boolean;
 }) {
   const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
+  const [mobileSection, setMobileSection] = useState<
+    "industries" | "product" | null
+  >(null);
   const [scrolled, setScrolled] = useState(false);
   const pillRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -105,6 +108,10 @@ export function SiteHeaderBar({
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, [hasHero]);
+
+  useEffect(() => {
+    if (openMenu !== "mobile") setMobileSection(null);
+  }, [openMenu]);
 
   useEffect(() => {
     if (openMenu === null) return;
@@ -292,7 +299,7 @@ export function SiteHeaderBar({
                           <Link
                             href={item.href}
                             onClick={closeMenu}
-                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
                           >
                             <item.icon className="size-5" strokeWidth={2} />
                             <span>{item.label}</span>
@@ -312,7 +319,7 @@ export function SiteHeaderBar({
                       <Link
                         href={item.href}
                         onClick={closeMenu}
-                        className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                        className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
                       >
                         <item.icon className="size-5" strokeWidth={2} />
                         <span>{item.label}</span>
@@ -323,45 +330,33 @@ export function SiteHeaderBar({
               </div>
             )}
             {mobileOpen && (
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-3">
-                  <Link
-                    href="/pricing"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${itemHover}`}
-                  >
-                    Prijzen
-                  </Link>
-                  <a
-                    href="#contact"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${itemHover}`}
-                  >
-                    Boek een demo
-                  </a>
-                  {userIsAdmin && (
-                    <Link
-                      href="/admin"
-                      onClick={closeMenu}
-                      className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${itemHover}`}
-                    >
-                      Admin
-                    </Link>
-                  )}
-                </div>
-                <div className="flex flex-col gap-3">
-                  <h3
-                    className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
-                  >
-                    Bedrijfstypen
-                  </h3>
-                  <ul className="grid grid-cols-2 gap-1">
+              <div className="flex flex-col gap-1">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMobileSection((c) =>
+                      c === "industries" ? null : "industries",
+                    )
+                  }
+                  aria-expanded={mobileSection === "industries"}
+                  className={`flex items-center justify-between rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Bedrijfstypen
+                  <ChevronDown
+                    aria-hidden
+                    className={`size-4 transition-transform duration-200 ${
+                      mobileSection === "industries" ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {mobileSection === "industries" && (
+                  <ul className="grid grid-cols-2 gap-1 pl-2">
                     {industriesMenu.map((item) => (
                       <li key={item.label}>
                         <Link
                           href={item.href}
                           onClick={closeMenu}
-                          className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                          className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
                         >
                           <item.icon className="size-5" strokeWidth={2} />
                           <span>{item.label}</span>
@@ -369,21 +364,35 @@ export function SiteHeaderBar({
                       </li>
                     ))}
                   </ul>
-                </div>
-                <div className="flex flex-col gap-3">
-                  <h3
-                    className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
-                  >
-                    Product
-                  </h3>
-                  <ul className="grid grid-cols-2 gap-1">
+                )}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMobileSection((c) =>
+                      c === "product" ? null : "product",
+                    )
+                  }
+                  aria-expanded={mobileSection === "product"}
+                  className={`flex items-center justify-between rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Product
+                  <ChevronDown
+                    aria-hidden
+                    className={`size-4 transition-transform duration-200 ${
+                      mobileSection === "product" ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {mobileSection === "product" && (
+                  <ul className="grid grid-cols-2 gap-1 pl-2">
                     {productMenu.flatMap((col) =>
                       col.items.map((item) => (
                         <li key={item.label}>
                           <Link
                             href={item.href}
                             onClick={closeMenu}
-                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
                           >
                             <item.icon className="size-5" strokeWidth={2} />
                             <span>{item.label}</span>
@@ -392,7 +401,46 @@ export function SiteHeaderBar({
                       )),
                     )}
                   </ul>
-                </div>
+                )}
+
+                <Link
+                  href="/pricing"
+                  onClick={closeMenu}
+                  className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Prijzen
+                </Link>
+
+                {userIsAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Admin
+                  </Link>
+                )}
+
+                <div className={`my-3 border-t ${dividerBorder}`} />
+
+                <a
+                  href="#contact"
+                  onClick={closeMenu}
+                  className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Boek een demo
+                </a>
+
+                {!userEmail && (
+                  <AuthDialog>
+                    <button
+                      type="button"
+                      className={`rounded-lg p-2 text-left text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      Inloggen
+                    </button>
+                  </AuthDialog>
+                )}
               </div>
             )}
           </div>
