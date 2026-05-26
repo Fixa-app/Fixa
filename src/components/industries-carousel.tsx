@@ -79,7 +79,7 @@ export function IndustriesCarousel({
             <h3 className="absolute inset-x-5 bottom-5 text-2xl leading-tight font-semibold text-white transition-transform duration-300 ease-out group-hover:-translate-y-[52px]">
               {card.name}
             </h3>
-            <p className="absolute inset-x-5 bottom-5 translate-y-8 text-sm leading-snug text-white/85 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+            <p className="absolute inset-x-5 bottom-5 translate-y-8 text-base leading-relaxed text-white/85 opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
               {card.body}
             </p>
           </a>
