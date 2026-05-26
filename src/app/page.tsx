@@ -49,32 +49,29 @@ function Hero() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20" />
         <div className="relative z-10 mx-auto flex h-full w-full max-w-[1536px] flex-col px-6 pt-[160px] pb-16 sm:pb-20 md:justify-center">
           <div className="flex max-w-2xl flex-col items-start gap-8 text-left text-white">
-            <span className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium tracking-widest uppercase backdrop-blur-sm">
-              Pre-launch
-            </span>
             <h1 className="font-display text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl lg:text-7xl">
               Minder papierwerk,
               <br />
               meer vakwerk.
             </h1>
             <p className="max-w-lg text-lg text-white/85 sm:text-xl">
-              Fixa brengt aanvragen, intakes, offertes, werk en facturen samen
-              in één voorspelbare flow — zodat je meer tijd hebt voor je vak en
-              minder voor administratie.
+              Fixa verbindt op slimme wijze je dagelijkse werk met je
+              administratie, zodat je soepeler kunt werken en met vertrouwen
+              kunt groeien.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <AuthDialog>
                 <Button className="h-12 rounded-xl px-6 text-base font-bold">
-                  Boek een demo
+                  Aan de slag
                 </Button>
               </AuthDialog>
               <Button
                 variant="outline"
                 className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
                 nativeButton={false}
-                render={<a href="#product" />}
+                render={<a href="#contact" />}
               >
-                Aan de slag
+                Boek een demo
               </Button>
             </div>
           </div>

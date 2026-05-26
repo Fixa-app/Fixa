@@ -247,9 +247,17 @@ export function SiteHeaderBar({
                     Inloggen
                   </Button>
                 </AuthDialog>
+                <Button
+                  variant="ghost"
+                  className={`hidden text-base font-bold hover:bg-transparent sm:inline-flex ${txtBase} ${txtHover}`}
+                  nativeButton={false}
+                  render={<a href="#contact" />}
+                >
+                  Boek een demo
+                </Button>
                 <AuthDialog>
                   <Button className="h-12 rounded-xl px-6 text-base font-bold">
-                    Begin nu
+                    Aan de slag
                   </Button>
                 </AuthDialog>
               </>
