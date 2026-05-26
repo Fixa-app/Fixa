@@ -125,11 +125,11 @@ export function SiteHeaderBar({
   const toggleMenu = (menu: Exclude<OpenMenu, null>) =>
     setOpenMenu((current) => (current === menu ? null : menu));
 
-  const txtBase = isLight ? "text-foreground" : "text-ink-foreground";
-  const txtMuted = isLight ? "text-foreground/60" : "text-ink-foreground/60";
+  const txtBase = isLight ? "text-foreground" : "text-white";
+  const txtMuted = isLight ? "text-foreground/60" : "text-white/60";
   const txtHover = isLight
     ? "hover:text-foreground/70"
-    : "hover:text-ink-foreground/70";
+    : "hover:text-white/70";
   const itemHover = isLight ? "hover:bg-foreground/5" : "hover:bg-white/10";
   const dividerBorder = isLight ? "border-border" : "border-white/10";
 
@@ -228,7 +228,7 @@ export function SiteHeaderBar({
                     className={`${txtBase} ${itemHover} ${
                       isLight
                         ? "hover:text-foreground"
-                        : "hover:text-ink-foreground"
+                        : "hover:text-white"
                     }`}
                   >
                     Uitloggen
