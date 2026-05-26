@@ -83,7 +83,7 @@ function Hero() {
 
 function Product() {
   return (
-    <section id="product" className="px-4 pt-8 pb-20 sm:pt-10 sm:pb-24">
+    <section id="product" className="px-4 py-12 sm:py-16">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Eén systeem, van aanvraag tot betaling.
@@ -114,7 +114,7 @@ const aiCards = [
 
 function AI() {
   return (
-    <section id="ai" className="px-4 py-20 sm:py-24">
+    <section id="ai" className="px-4 py-12 sm:py-16">
       <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Hoe AI je werk versimpelt.
@@ -195,7 +195,7 @@ const industryCards = [
 
 function Industries() {
   return (
-    <section id="industries" className="py-20 sm:py-24">
+    <section id="industries" className="py-12 sm:py-16">
       <IndustriesCarousel
         cards={industryCards}
         headerContent={
@@ -210,7 +210,7 @@ function Industries() {
 
 function Referrals() {
   return (
-    <section id="referrals" className="py-20 sm:py-24">
+    <section id="referrals" className="py-12 sm:py-16">
       <div className="flex flex-col gap-10">
         <div className="px-4">
           <div className="mx-auto w-full max-w-[1536px] px-5">
@@ -257,7 +257,7 @@ const whyFixaCards = [
 
 function WhyFixa() {
   return (
-    <section id="why-fixa" className="px-4 py-20 sm:py-24">
+    <section id="why-fixa" className="px-4 py-12 sm:py-16">
       <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Waarom vakmensen kiezen voor Fixa.
@@ -299,7 +299,7 @@ function WhyFixa() {
 
 function CTABand() {
   return (
-    <section className="px-6 py-20 sm:py-24">
+    <section className="px-6 py-12 sm:py-16">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-2xl border border-border bg-foreground p-12 text-center text-background">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Wees een van de eersten die Fixa proberen.
