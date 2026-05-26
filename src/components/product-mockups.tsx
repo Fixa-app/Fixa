@@ -11,17 +11,9 @@ import {
   User,
 } from "lucide-react";
 
-function MockupShell({
-  bg,
-  children,
-}: {
-  bg: string;
-  children: React.ReactNode;
-}) {
+function MockupShell({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className={`absolute inset-0 flex items-center justify-center p-6 sm:p-10 ${bg}`}
-    >
+    <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-10">
       {children}
     </div>
   );
@@ -45,7 +37,7 @@ function Card({
 
 export function OnlineIntakesMockup() {
   return (
-    <MockupShell bg="bg-gradient-to-br from-primary/15 to-primary/5">
+    <MockupShell>
       <Card className="w-full max-w-xs">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold tracking-tight">
@@ -108,7 +100,7 @@ export function OffertesMockup() {
     { label: "Voorrijden", price: "€ 50,00" },
   ];
   return (
-    <MockupShell bg="bg-gradient-to-br from-cream to-cream/40">
+    <MockupShell>
       <Card className="w-full max-w-xs">
         <div className="mb-4 flex items-start justify-between">
           <div>
@@ -162,7 +154,7 @@ export function PlanningMockup() {
     { day: 4, start: 0, len: 3, color: "bg-tangerine/80", label: "Schoonmaak" },
   ];
   return (
-    <MockupShell bg="bg-gradient-to-br from-primary/15 to-primary/5">
+    <MockupShell>
       <Card className="w-full max-w-sm">
         <div className="mb-4 flex items-center justify-between">
           <h4 className="text-sm font-semibold tracking-tight">Week 48</h4>
@@ -223,7 +215,7 @@ export function ScheduleMockup() {
     },
   ];
   return (
-    <MockupShell bg="bg-gradient-to-br from-primary/10 to-primary/5">
+    <MockupShell>
       <Card className="w-full max-w-xs">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold tracking-tight">
@@ -259,7 +251,7 @@ export function ScheduleMockup() {
 
 export function BetalingenMockup() {
   return (
-    <MockupShell bg="bg-gradient-to-br from-mint/15 to-mint/5">
+    <MockupShell>
       <Card className="w-full max-w-xs">
         <div className="mb-4 flex items-start justify-between">
           <div>
@@ -299,7 +291,7 @@ export function RapportenMockup() {
   const bars = [40, 55, 30, 70, 85, 60, 95];
   const labels = ["M", "D", "W", "D", "V", "Z", "Z"];
   return (
-    <MockupShell bg="bg-gradient-to-br from-violet/15 to-violet/5">
+    <MockupShell>
       <Card className="w-full max-w-xs">
         <div className="mb-4 flex items-start justify-between">
           <div>
