@@ -108,7 +108,7 @@ export function ReferralsCards() {
                 {r.firstName}
               </h3>
               <p
-                className={`text-sm text-white/70 transition-opacity duration-300 sm:text-base ${
+                className={`text-base text-white/70 transition-opacity duration-300 ${
                   isActive ? "opacity-100 delay-300" : "opacity-0"
                 }`}
               >
