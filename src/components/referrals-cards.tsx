@@ -61,8 +61,8 @@ export function ReferralsCards() {
   return (
     <div className="px-4">
     <div
-      className="mx-auto grid w-full max-w-[1920px] grid-cols-1 gap-4 transition-[grid-template-columns] duration-500 ease-out [--active-fr:2fr] lg:h-[400px] lg:[grid-template-columns:var(--cols)] xl:h-[480px] xl:[--active-fr:3fr]"
-      style={{ ["--cols" as string]: gridTemplateColumns }}
+      className="mx-auto grid h-[600px] w-full max-w-[1920px] gap-4 transition-[grid-template-rows,grid-template-columns] duration-500 ease-out [--active-fr:2fr] [grid-template-rows:var(--cells)] sm:h-[700px] lg:h-[400px] lg:[grid-template-rows:none] lg:[grid-template-columns:var(--cells)] xl:h-[480px] xl:[--active-fr:3fr]"
+      style={{ ["--cells" as string]: gridTemplateColumns }}
     >
       {referrals.map((r, i) => {
         const isActive = i === active;
@@ -72,7 +72,13 @@ export function ReferralsCards() {
             href={r.href}
             onMouseEnter={() => setActive(i)}
             onFocus={() => setActive(i)}
-            className="group relative min-w-0 overflow-hidden rounded-2xl max-lg:aspect-[16/10]"
+            onClick={(e) => {
+              if (!isActive) {
+                e.preventDefault();
+                setActive(i);
+              }
+            }}
+            className="group relative min-h-0 min-w-0 overflow-hidden rounded-2xl"
           >
             <Image
               src={r.image}
@@ -80,13 +86,13 @@ export function ReferralsCards() {
               fill
               sizes="(min-width: 1024px) 60vw, 100vw"
               className={`object-cover transition-[filter] duration-500 ${
-                isActive ? "" : "max-lg:brightness-100 brightness-75"
+                isActive ? "" : "brightness-75"
               }`}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
             <div
-              className={`absolute top-6 right-6 flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-opacity duration-500 max-lg:opacity-100 ${
+              className={`absolute top-6 right-6 flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-foreground shadow-md transition-opacity duration-500 ${
                 isActive ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -94,7 +100,7 @@ export function ReferralsCards() {
             </div>
 
             <div
-              className={`absolute right-6 left-6 transition-[bottom] duration-500 ease-out max-lg:bottom-28 ${
+              className={`absolute right-6 left-6 transition-[bottom] duration-500 ease-out ${
                 isActive ? "bottom-28 sm:bottom-32" : "bottom-6"
               }`}
             >
@@ -102,7 +108,7 @@ export function ReferralsCards() {
                 {r.firstName}
               </h3>
               <p
-                className={`text-sm text-white/70 transition-opacity duration-300 max-lg:opacity-100 sm:text-base ${
+                className={`text-sm text-white/70 transition-opacity duration-300 sm:text-base ${
                   isActive ? "opacity-100 delay-300" : "opacity-0"
                 }`}
               >
@@ -111,7 +117,7 @@ export function ReferralsCards() {
             </div>
 
             <div
-              className={`absolute right-6 bottom-6 left-6 transition-all duration-300 ease-out max-lg:pointer-events-auto max-lg:translate-y-0 max-lg:opacity-100 ${
+              className={`absolute right-6 bottom-6 left-6 transition-all duration-300 ease-out ${
                 isActive
                   ? "translate-y-0 opacity-100 delay-500"
                   : "pointer-events-none translate-y-6 opacity-0"

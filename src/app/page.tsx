@@ -58,7 +58,7 @@ function Hero() {
               administratie, zodat je soepeler kunt werken en met vertrouwen
               kunt groeien.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-row gap-3">
               <AuthDialog>
                 <Button className="h-12 rounded-xl px-6 text-base font-bold">
                   Aan de slag
