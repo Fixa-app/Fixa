@@ -9,6 +9,7 @@ import {
   AIQuoteMockup,
   AIReplyMockup,
 } from "@/components/ai-mockups";
+import { FAQAccordion } from "@/components/faq-accordion";
 import { PricingCalculator } from "@/components/pricing-calculator";
 import { ReferralsCards } from "@/components/referrals-cards";
 import { WhyFixaCards } from "@/components/why-fixa-cards";
@@ -24,6 +25,7 @@ export default function Home() {
         <Referrals />
         <WhyFixa />
         <Pricing />
+        <FAQ />
         <CTABand />
       </main>
       <SiteFooter />
@@ -259,6 +261,19 @@ function Pricing() {
         <div className="rounded-3xl bg-violet p-8 text-white md:p-12">
           <PricingCalculator />
         </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQ() {
+  return (
+    <section id="faq" className="px-4 py-12 sm:py-16">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5">
+        <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+          Veelgestelde vragen.
+        </h2>
+        <FAQAccordion />
       </div>
     </section>
   );
