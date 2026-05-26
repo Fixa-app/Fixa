@@ -22,8 +22,8 @@ export default function Home() {
     <>
       <main className="flex-1">
         <Hero />
-        <Industries />
         <Product />
+        <Industries />
         <AI />
         <Referrals />
         <WhyFixa />
