@@ -341,21 +341,96 @@ function CTABand() {
   );
 }
 
+const footerColumns: { title: string; links: { name: string; href: string }[] }[] =
+  [
+    {
+      title: "Bedrijfstypen",
+      links: [
+        { name: "Loodgieters", href: "#" },
+        { name: "Elektriciens", href: "#" },
+        { name: "CV & klimaat", href: "#" },
+        { name: "Hoveniers", href: "#" },
+        { name: "Schoonmaak", href: "#" },
+        { name: "Klusbedrijf", href: "#" },
+        { name: "Schilders", href: "#" },
+        { name: "Dakdekkers", href: "#" },
+      ],
+    },
+    {
+      title: "Features",
+      links: [
+        { name: "Online aanvragen", href: "#" },
+        { name: "Offertes", href: "#" },
+        { name: "Planning", href: "#" },
+        { name: "Schedule", href: "#" },
+        { name: "Betalingen", href: "#" },
+        { name: "Rapporten", href: "#" },
+        { name: "Fixa Assist AI", href: "#" },
+      ],
+    },
+    {
+      title: "Bedrijf",
+      links: [
+        { name: "Over", href: "#" },
+        { name: "Prijzen", href: "/pricing" },
+        { name: "Blog", href: "#" },
+        { name: "Carrières", href: "#" },
+      ],
+    },
+  ];
+
 function SiteFooter() {
   return (
-    <footer className="border-t border-border px-4 py-10">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
-        <span>© {new Date().getFullYear()} Fixa</span>
-        <div className="flex items-center gap-6">
-          <Link href="/plan" className="hover:text-foreground">
-            Plan
-          </Link>
-          <a href="#product" className="hover:text-foreground">
-            Product
-          </a>
-          <a href="#referrals" className="hover:text-foreground">
-            Klanten
-          </a>
+    <footer className="relative overflow-hidden bg-ink text-ink-foreground">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-50"
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 75% at 92% 50%, #016aff, transparent 65%)",
+        }}
+      />
+      <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-16 px-5 py-16 md:py-20">
+        <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" aria-label="Fixa" className="inline-flex">
+              <Image
+                src="/fixa-logo.svg"
+                alt="Fixa"
+                width={120}
+                height={48}
+                className="h-12 w-auto invert"
+              />
+            </Link>
+          </div>
+          {footerColumns.map((col) => (
+            <div key={col.title} className="flex flex-col gap-4">
+              <h3 className="text-sm font-semibold tracking-wide text-primary-dark-surface">
+                {col.title}
+              </h3>
+              <ul className="flex flex-col gap-3">
+                {col.links.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-ink-foreground/85 transition-colors hover:text-ink-foreground"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-8 text-sm text-ink-foreground/60 sm:flex-row sm:items-center">
+          <span>© {new Date().getFullYear()} Fixa B.V.</span>
+          <button
+            type="button"
+            className="transition-colors hover:text-ink-foreground"
+          >
+            Cookie-instellingen
+          </button>
         </div>
       </div>
     </footer>
