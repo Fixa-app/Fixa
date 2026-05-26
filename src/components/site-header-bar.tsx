@@ -6,23 +6,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
-  BookOpen,
-  Boxes,
   Calendar,
   CalendarCheck,
   ChevronDown,
+  Clock,
   CreditCard,
   FileText,
+  Flame,
+  Hammer,
+  Home,
   type LucideIcon,
-  MapPin,
-  MessageSquare,
-  Receipt,
-  Repeat,
-  Star,
-  Truck,
-  UserCog,
-  Users,
-  Wand2,
+  Paintbrush,
+  Sparkles,
+  Trees,
+  Wrench,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
@@ -32,7 +30,6 @@ type ProductMenuItem = {
   label: string;
   href: string;
   icon: LucideIcon;
-  ai?: boolean;
 };
 
 type ProductColumn = {
@@ -44,43 +41,38 @@ const productMenu: ProductColumn[] = [
   {
     title: "Betere aanvragen",
     items: [
-      { label: "Online boekingen", href: "#features", icon: CalendarCheck },
-      { label: "Website & reviews", href: "#features", icon: Star },
-      { label: "Reserveren via Google", href: "#features", icon: MapPin },
-    ],
-  },
-  {
-    title: "Meer werk",
-    items: [
-      { label: "Offertes", href: "#features", icon: FileText, ai: true },
-      { label: "Service plans", href: "#features", icon: Repeat },
-      { label: "Communicatie", href: "#features", icon: MessageSquare, ai: true },
+      { label: "Online aanvragen", href: "#product", icon: CalendarCheck },
+      { label: "Offertes", href: "#product", icon: FileText },
     ],
   },
   {
     title: "Slimmer werken",
     items: [
-      { label: "Planning", href: "#features", icon: Calendar, ai: true },
-      { label: "Dispatching", href: "#features", icon: Truck, ai: true },
-      { label: "Klantbeheer", href: "#features", icon: UserCog },
-      { label: "Klanthub", href: "#features", icon: Users },
+      { label: "Planning", href: "#product", icon: Calendar },
+      { label: "Schedule", href: "#product", icon: Clock },
     ],
   },
   {
     title: "Meer winst",
     items: [
-      { label: "Facturen", href: "#features", icon: Receipt },
-      { label: "Betalingen", href: "#features", icon: CreditCard },
-      { label: "Boekhoudkoppelingen", href: "#features", icon: BookOpen },
-      { label: "Business dashboard", href: "#features", icon: BarChart3, ai: true },
+      { label: "Betalingen", href: "#product", icon: CreditCard },
+      { label: "Rapporten", href: "#product", icon: BarChart3 },
     ],
   },
 ];
 
-const productMenuFooter: ProductMenuItem[] = [
-  { label: "Fixa Assist AI", href: "#features", icon: Wand2, ai: true },
-  { label: "Integraties", href: "#features", icon: Boxes },
+const industriesMenu: { label: string; href: string; icon: LucideIcon }[] = [
+  { label: "Loodgieters", href: "#industries", icon: Wrench },
+  { label: "Elektriciens", href: "#industries", icon: Zap },
+  { label: "CV & klimaat", href: "#industries", icon: Flame },
+  { label: "Hoveniers", href: "#industries", icon: Trees },
+  { label: "Schoonmaak", href: "#industries", icon: Sparkles },
+  { label: "Klusbedrijf", href: "#industries", icon: Hammer },
+  { label: "Schilders", href: "#industries", icon: Paintbrush },
+  { label: "Dakdekkers", href: "#industries", icon: Home },
 ];
+
+type OpenMenu = "product" | "industries" | null;
 
 export function SiteHeaderBar({
   userEmail,
@@ -89,14 +81,16 @@ export function SiteHeaderBar({
   userEmail: string | null;
   userIsAdmin: boolean;
 }) {
-  const [productOpen, setProductOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
   const [scrolled, setScrolled] = useState(false);
   const pillRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const hasHero = pathname === "/";
   const overHero = hasHero && !scrolled;
-  const isLight = overHero && productOpen;
-  const isTransparent = overHero && !productOpen;
+  const isLight = overHero && openMenu !== null;
+  const isTransparent = overHero && openMenu === null;
+  const productOpen = openMenu === "product";
+  const industriesOpen = openMenu === "industries";
 
   useEffect(() => {
     if (!hasHero) {
@@ -112,12 +106,12 @@ export function SiteHeaderBar({
   }, [hasHero]);
 
   useEffect(() => {
-    if (!productOpen) return;
+    if (openMenu === null) return;
     const onClick = (e: MouseEvent) => {
-      if (!pillRef.current?.contains(e.target as Node)) setProductOpen(false);
+      if (!pillRef.current?.contains(e.target as Node)) setOpenMenu(null);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setProductOpen(false);
+      if (e.key === "Escape") setOpenMenu(null);
     };
     document.addEventListener("mousedown", onClick);
     document.addEventListener("keydown", onKey);
@@ -125,9 +119,11 @@ export function SiteHeaderBar({
       document.removeEventListener("mousedown", onClick);
       document.removeEventListener("keydown", onKey);
     };
-  }, [productOpen]);
+  }, [openMenu]);
 
-  const closeMenu = () => setProductOpen(false);
+  const closeMenu = () => setOpenMenu(null);
+  const toggleMenu = (menu: Exclude<OpenMenu, null>) =>
+    setOpenMenu((current) => (current === menu ? null : menu));
 
   const txtBase = isLight ? "text-foreground" : "text-ink-foreground";
   const txtMuted = isLight ? "text-foreground/60" : "text-ink-foreground/60";
@@ -136,10 +132,6 @@ export function SiteHeaderBar({
     : "hover:text-ink-foreground/70";
   const itemHover = isLight ? "hover:bg-foreground/5" : "hover:bg-white/10";
   const dividerBorder = isLight ? "border-border" : "border-white/10";
-  const aiBadge = isLight
-    ? "border-violet-400/50 text-violet-600"
-    : "border-violet-300/60 text-violet-300";
-  const aiIconColor = isLight ? "text-violet-500" : "text-violet-300";
 
   const surfaceClasses = isLight
     ? "bg-[#E4E2DB]"
@@ -152,7 +144,7 @@ export function SiteHeaderBar({
       <div ref={pillRef} className="relative mx-auto w-full max-w-[1920px]">
         <div
           className={`transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
-            productOpen ? "rounded-t-3xl" : "rounded-3xl"
+            openMenu !== null ? "rounded-t-3xl" : "rounded-3xl"
           }`}
         >
           <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between gap-6 py-0 pr-3 pl-5">
@@ -175,18 +167,24 @@ export function SiteHeaderBar({
               />
             </Link>
             <nav className="hidden items-center gap-1 md:flex">
-              <a
-                href="#industries"
-                onClick={closeMenu}
-                className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
+              <button
+                type="button"
+                aria-expanded={industriesOpen}
+                aria-controls="header-dropdown-menu"
+                onClick={() => toggleMenu("industries")}
+                className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
               >
                 Voor wie
-              </a>
+                <ChevronDown
+                  aria-hidden
+                  className={`size-3 transition-transform duration-200 ${industriesOpen ? "rotate-180" : ""}`}
+                />
+              </button>
               <button
                 type="button"
                 aria-expanded={productOpen}
-                aria-controls="header-product-menu"
-                onClick={() => setProductOpen((v) => !v)}
+                aria-controls="header-dropdown-menu"
+                onClick={() => toggleMenu("product")}
                 className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
               >
                 Product
@@ -267,61 +265,67 @@ export function SiteHeaderBar({
         </div>
 
         <div
-          id="header-product-menu"
-          aria-hidden={!productOpen}
+          id="header-dropdown-menu"
+          aria-hidden={openMenu === null}
           className={`absolute top-full right-0 left-0 origin-top overflow-hidden rounded-b-3xl transition-all duration-300 ease-out ${txtBase} ${surfaceClasses} ${
-            productOpen
+            openMenu !== null
               ? "translate-y-0 opacity-100"
               : "pointer-events-none -translate-y-2 opacity-0"
           }`}
         >
-          <div className={`mx-auto w-full max-w-[1536px] border-t px-6 py-8 ${dividerBorder}`}>
-            <div className="grid grid-cols-4 gap-10">
-              {productMenu.map((col) => (
-                <div key={col.title} className="flex flex-col gap-4">
-                  <h3 className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}>
-                    {col.title}
-                  </h3>
-                  <ul className="flex flex-col gap-1">
-                    {col.items.map((item) => (
-                      <li key={item.label}>
-                        <Link
-                          href={item.href}
-                          onClick={closeMenu}
-                          className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
-                        >
-                          <item.icon className="size-5" strokeWidth={2} />
-                          <span>{item.label}</span>
-                          {item.ai && (
-                            <span
-                              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap uppercase ${aiBadge}`}
-                            >
-                              Assist AI
-                            </span>
-                          )}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            <div className={`mt-6 flex items-center gap-6 border-t pt-4 ${dividerBorder}`}>
-              {productMenuFooter.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  onClick={closeMenu}
-                  className={`flex items-center gap-2 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+          <div
+            className={`mx-auto w-full max-w-[1536px] border-t px-6 py-8 ${dividerBorder}`}
+          >
+            {productOpen && (
+              <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+                {productMenu.map((col) => (
+                  <div key={col.title} className="flex flex-col gap-4">
+                    <h3
+                      className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
+                    >
+                      {col.title}
+                    </h3>
+                    <ul className="flex flex-col gap-1">
+                      {col.items.map((item) => (
+                        <li key={item.label}>
+                          <Link
+                            href={item.href}
+                            onClick={closeMenu}
+                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                          >
+                            <item.icon className="size-5" strokeWidth={2} />
+                            <span>{item.label}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+            {industriesOpen && (
+              <div className="flex flex-col gap-4">
+                <h3
+                  className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
                 >
-                  <item.icon
-                    className={`size-5 ${item.ai ? aiIconColor : ""}`}
-                    strokeWidth={2}
-                  />
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </div>
+                  Bedrijfstypen
+                </h3>
+                <ul className="grid grid-cols-2 gap-1 md:grid-cols-4">
+                  {industriesMenu.map((item) => (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        onClick={closeMenu}
+                        className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                      >
+                        <item.icon className="size-5" strokeWidth={2} />
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
