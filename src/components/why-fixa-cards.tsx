@@ -79,21 +79,16 @@ export function WhyFixaCards() {
               type="button"
               onClick={() => setActive(i)}
               aria-label={`Bekijk ${reason.title}`}
-              className={`flex gap-4 rounded-xl p-2 text-left transition-opacity ${
+              className={`flex flex-col gap-1.5 rounded-xl p-2 text-left transition-opacity ${
                 i === active ? "opacity-100" : "opacity-60 hover:opacity-80"
               }`}
             >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/25 text-sm font-bold">
-                {i + 1}
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className="text-xl font-semibold tracking-tight">
-                  {reason.title}
-                </h3>
-                <p className="text-base leading-relaxed text-teal-foreground/80">
-                  {reason.body}
-                </p>
-              </div>
+              <h3 className="text-2xl font-semibold tracking-tight">
+                {reason.title}
+              </h3>
+              <p className="text-base leading-relaxed text-teal-foreground/80">
+                {reason.body}
+              </p>
             </button>
           ))}
         </div>
