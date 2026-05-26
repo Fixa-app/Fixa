@@ -89,21 +89,21 @@ export function ReferralsCards() {
             </div>
 
             <h3
-              className={`absolute right-6 left-6 font-display text-xl font-semibold tracking-tight whitespace-nowrap text-white transition-[bottom] duration-500 ease-out sm:text-2xl ${
-                isActive ? "bottom-40 sm:bottom-48" : "bottom-6"
+              className={`absolute right-6 left-6 text-xl font-semibold tracking-tight whitespace-nowrap text-white transition-[bottom] duration-500 ease-out sm:text-2xl ${
+                isActive ? "bottom-32 sm:bottom-40" : "bottom-6"
               }`}
             >
               {r.name}
             </h3>
 
             <div
-              className={`absolute right-6 bottom-6 left-6 transition-all duration-500 ease-out ${
+              className={`absolute right-6 bottom-6 left-6 transition-all duration-300 ease-out ${
                 isActive
-                  ? "translate-y-0 opacity-100"
-                  : "pointer-events-none translate-y-10 opacity-0"
+                  ? "translate-y-0 opacity-100 delay-500"
+                  : "pointer-events-none translate-y-6 opacity-0"
               }`}
             >
-              <p className="font-display text-2xl leading-[1.15] font-medium tracking-tight text-white sm:text-3xl">
+              <p className="font-display text-2xl leading-[1.1] font-medium tracking-tight text-white sm:text-3xl">
                 &ldquo;{r.quote}&rdquo;
               </p>
             </div>
