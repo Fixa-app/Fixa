@@ -382,13 +382,16 @@ const footerColumns: { title: string; links: { name: string; href: string }[] }[
 function SiteFooter() {
   return (
     <footer className="px-4 pb-4">
-      <div className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-ink text-ink-foreground">
+      <div
+        className="relative mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl text-ink-foreground"
+        style={{ backgroundColor: "#2F203C" }}
+      >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-50"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 55% 75% at 92% 50%, #016aff, transparent 65%)",
+              "radial-gradient(ellipse 45% 70% at 95% 55%, #9C2D05 0%, transparent 55%), radial-gradient(ellipse 65% 85% at 55% 45%, #0D424E 0%, transparent 70%)",
           }}
         />
         <div className="relative flex w-full flex-col gap-16 px-5 py-16 md:py-20">
