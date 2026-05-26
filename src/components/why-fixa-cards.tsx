@@ -44,6 +44,12 @@ export function WhyFixaCards() {
   return (
     <div className="grid gap-4 md:grid-cols-2 md:items-stretch">
       <div className="flex aspect-square flex-col gap-6 overflow-hidden rounded-3xl bg-[#EAE9E3] p-6 md:aspect-auto md:p-8">
+        <style>{`
+          @keyframes whyfixa-progress {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+          }
+        `}</style>
         <div className="flex gap-2">
           {reasons.map((_, i) => (
             <button
@@ -53,11 +59,17 @@ export function WhyFixaCards() {
               aria-label={`Bekijk ${reasons[i].title}`}
               className="flex-1 py-1"
             >
-              <div
-                className={`h-0.5 w-full rounded-full transition-colors duration-300 ${
-                  i === active ? "bg-foreground" : "bg-foreground/15"
-                }`}
-              />
+              <div className="h-0.5 w-full overflow-hidden rounded-full bg-foreground/15">
+                {i === active && (
+                  <div
+                    key={active}
+                    className="h-full origin-left rounded-full bg-foreground"
+                    style={{
+                      animation: `whyfixa-progress ${CYCLE_MS}ms linear forwards`,
+                    }}
+                  />
+                )}
+              </div>
             </button>
           ))}
         </div>
