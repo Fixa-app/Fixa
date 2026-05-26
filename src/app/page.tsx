@@ -246,10 +246,9 @@ function Pricing() {
           </h2>
           <Link
             href="/pricing"
-            className="inline-flex h-12 items-center gap-2 rounded-xl border border-foreground/15 bg-foreground/5 px-6 text-base font-bold text-foreground backdrop-blur-sm transition-colors hover:bg-foreground/10"
+            className="inline-flex h-12 items-center rounded-xl bg-black px-6 text-base font-bold text-white transition-colors hover:bg-black/80"
           >
             Meer informatie
-            <ArrowRight className="size-4" />
           </Link>
         </div>
         <div className="rounded-3xl bg-violet p-8 text-white md:p-12">

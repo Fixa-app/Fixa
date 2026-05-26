@@ -25,12 +25,12 @@ export function PricingCalculator() {
   return (
     <div className="flex flex-col gap-12">
       <div className="flex flex-col gap-4">
-        <span className="text-xs font-bold tracking-widest text-white/60 uppercase">
-          Jouw maandelijkse omzet
-        </span>
+        <h3 className="text-2xl font-semibold tracking-tight text-white">
+          Bereken jouw abonnementskosten
+        </h3>
         <div className="relative pt-12">
           <div
-            className="pointer-events-none absolute top-0 -translate-x-1/2 rounded-full bg-white px-3 py-1 text-sm font-bold text-foreground transition-[left] duration-100"
+            className="pointer-events-none absolute top-0 -translate-x-1/2 rounded-full bg-white px-4 py-1.5 text-base font-bold text-foreground transition-[left] duration-100"
             style={{ left: `${thumbPercent}%` }}
           >
             {formatRevenue(revenue)}
@@ -48,7 +48,7 @@ export function PricingCalculator() {
               background: `linear-gradient(to right, white 0%, white ${thumbPercent}%, rgba(255,255,255,0.2) ${thumbPercent}%, rgba(255,255,255,0.2) 100%)`,
             }}
           />
-          <div className="mt-2 flex justify-between text-xs text-white/60">
+          <div className="mt-3 flex justify-between text-base font-medium text-white/60">
             <span>€0</span>
             <span>€100K+</span>
           </div>
@@ -67,7 +67,7 @@ export function PricingCalculator() {
             <span className="text-2xl font-medium text-white/60">/ma</span>
           </div>
         </div>
-        <div className="text-sm leading-relaxed text-white/60 sm:text-right">
+        <div className="text-base leading-relaxed text-white/60 sm:text-right">
           <div>Eerste €5k omzet: gratis</div>
           <div>Daarna €15/maand per €5k</div>
         </div>
