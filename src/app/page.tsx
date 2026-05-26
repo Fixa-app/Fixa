@@ -138,15 +138,9 @@ function AI() {
   return (
     <section id="ai" className="px-4 py-20 sm:py-24">
       <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-            Hoe AI je werk versimpelt.
-          </h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Drie plekken waar Fixa Assist AI direct tijd bespaart en je dag
-            soepeler laat verlopen.
-          </p>
-        </div>
+        <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+          Hoe AI je werk versimpelt.
+        </h2>
         <div className="grid gap-4 md:grid-cols-3">
           {aiCards.map(({ title, body, Mockup }) => (
             <article
@@ -241,14 +235,10 @@ function Referrals() {
     <section id="referrals" className="py-20 sm:py-24">
       <div className="flex flex-col gap-10">
         <div className="px-4">
-          <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-3 px-5">
+          <div className="mx-auto w-full max-w-[1536px] px-5">
             <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
               Vakmensen aan het woord.
             </h2>
-            <p className="max-w-2xl text-muted-foreground">
-              Lees waarom collega&apos;s overstapten en wat het hun bedrijf
-              oplevert.
-            </p>
           </div>
         </div>
         <ReferralsCards />
@@ -291,14 +281,9 @@ function WhyFixa() {
   return (
     <section id="why-fixa" className="px-4 py-20 sm:py-24">
       <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-            Waarom vakmensen kiezen voor Fixa.
-          </h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Drie redenen waarom Fixa je vakbedrijf vooruit helpt.
-          </p>
-        </div>
+        <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+          Waarom vakmensen kiezen voor Fixa.
+        </h2>
         <div className="grid gap-4 md:grid-cols-3">
           {whyFixaCards.map(({ title, body, features, Mockup }) => (
             <article
