@@ -87,7 +87,6 @@ export function SiteHeaderBar({
   const pathname = usePathname();
   const hasHero = pathname === "/";
   const overHero = hasHero && !scrolled;
-  const isLight = overHero && openMenu !== null;
   const isTransparent = overHero && openMenu === null;
   const productOpen = openMenu === "product";
   const industriesOpen = openMenu === "industries";
@@ -125,19 +124,15 @@ export function SiteHeaderBar({
   const toggleMenu = (menu: Exclude<OpenMenu, null>) =>
     setOpenMenu((current) => (current === menu ? null : menu));
 
-  const txtBase = isLight ? "text-foreground" : "text-white";
-  const txtMuted = isLight ? "text-foreground/60" : "text-white/60";
-  const txtHover = isLight
-    ? "hover:text-foreground/70"
-    : "hover:text-white/70";
-  const itemHover = isLight ? "hover:bg-foreground/5" : "hover:bg-white/10";
-  const dividerBorder = isLight ? "border-border" : "border-white/10";
+  const txtBase = "text-white";
+  const txtMuted = "text-white/60";
+  const txtHover = "hover:text-white/70";
+  const itemHover = "hover:bg-white/10";
+  const dividerBorder = "border-white/10";
 
-  const surfaceClasses = isLight
-    ? "bg-[#E4E2DB]"
-    : isTransparent
-      ? "bg-transparent"
-      : "bg-ink/70 backdrop-blur-md";
+  const surfaceClasses = isTransparent
+    ? "bg-transparent"
+    : "bg-ink/70 backdrop-blur-md";
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
@@ -161,9 +156,7 @@ export function SiteHeaderBar({
                 width={80}
                 height={80}
                 priority
-                className={`h-18 w-auto transition-[filter] duration-300 ${
-                  isLight ? "" : "invert"
-                }`}
+                className="h-18 w-auto invert"
               />
             </Link>
             <nav className="hidden items-center gap-1 md:flex">
@@ -225,11 +218,7 @@ export function SiteHeaderBar({
                     variant="ghost"
                     size="sm"
                     type="submit"
-                    className={`${txtBase} ${itemHover} ${
-                      isLight
-                        ? "hover:text-foreground"
-                        : "hover:text-white"
-                    }`}
+                    className={`${txtBase} ${itemHover} hover:text-white`}
                   >
                     Uitloggen
                   </Button>
