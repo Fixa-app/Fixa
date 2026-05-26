@@ -5,7 +5,8 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 type Referral = {
-  name: string;
+  firstName: string;
+  company: string;
   quote: string;
   image: string;
   href: string;
@@ -13,7 +14,8 @@ type Referral = {
 
 const referrals: Referral[] = [
   {
-    name: "Loodgieter Visser",
+    firstName: "Tom",
+    company: "Loodgieter Visser",
     quote:
       "Sinds Fixa missen we geen aanvragen meer. Klanten boeken zelf en facturen gaan automatisch de deur uit.",
     image:
@@ -21,7 +23,8 @@ const referrals: Referral[] = [
     href: "#",
   },
   {
-    name: "Elektrotechniek Smit",
+    firstName: "Mark",
+    company: "Elektrotechniek Smit",
     quote:
       "Drie monteurs op de weg, één planning. Fixa houdt overzicht waar mijn whatsapp dat niet meer kon.",
     image:
@@ -29,7 +32,8 @@ const referrals: Referral[] = [
     href: "#",
   },
   {
-    name: "Klusbedrijf de Jong",
+    firstName: "Sander",
+    company: "Klusbedrijf de Jong",
     quote:
       "De Klanthub maakt het verschil. Klanten zien zelf wat er speelt — ik krijg veel minder belletjes.",
     image:
@@ -37,7 +41,8 @@ const referrals: Referral[] = [
     href: "#",
   },
   {
-    name: "CV-specialist Bakker",
+    firstName: "Lisa",
+    company: "CV-specialist Bakker",
     quote:
       "Service plans lopen vanzelf door. Voorspelbare omzet zonder dat ik er administratie aan kwijt ben.",
     image:
@@ -56,14 +61,14 @@ export function ReferralsCards() {
   return (
     <div className="px-4">
     <div
-      className="mx-auto grid h-[500px] w-full max-w-[1920px] gap-4 transition-[grid-template-columns] duration-500 ease-out [--active-fr:2fr] sm:h-[600px] xl:[--active-fr:3fr]"
+      className="mx-auto grid h-[400px] w-full max-w-[1920px] gap-4 transition-[grid-template-columns] duration-500 ease-out [--active-fr:2fr] sm:h-[480px] xl:[--active-fr:3fr]"
       style={{ gridTemplateColumns }}
     >
       {referrals.map((r, i) => {
         const isActive = i === active;
         return (
           <a
-            key={r.name}
+            key={r.company}
             href={r.href}
             onMouseEnter={() => setActive(i)}
             onFocus={() => setActive(i)}
@@ -71,7 +76,7 @@ export function ReferralsCards() {
           >
             <Image
               src={r.image}
-              alt={r.name}
+              alt={r.company}
               fill
               sizes="(min-width: 768px) 60vw, 100vw"
               className={`object-cover transition-[filter] duration-500 ${
@@ -88,13 +93,22 @@ export function ReferralsCards() {
               <ArrowUpRight className="size-5" />
             </div>
 
-            <h3
-              className={`absolute right-6 left-6 text-xl font-semibold tracking-tight whitespace-nowrap text-white transition-[bottom] duration-500 ease-out sm:text-2xl ${
-                isActive ? "bottom-32 sm:bottom-40" : "bottom-6"
+            <div
+              className={`absolute right-6 left-6 transition-[bottom] duration-500 ease-out ${
+                isActive ? "bottom-28 sm:bottom-32" : "bottom-6"
               }`}
             >
-              {r.name}
-            </h3>
+              <h3 className="text-xl font-semibold tracking-tight whitespace-nowrap text-white sm:text-2xl">
+                {r.firstName}
+              </h3>
+              <p
+                className={`text-sm text-white/70 transition-opacity duration-300 sm:text-base ${
+                  isActive ? "opacity-100 delay-300" : "opacity-0"
+                }`}
+              >
+                {r.company}
+              </p>
+            </div>
 
             <div
               className={`absolute right-6 bottom-6 left-6 transition-all duration-300 ease-out ${
@@ -103,7 +117,7 @@ export function ReferralsCards() {
                   : "pointer-events-none translate-y-6 opacity-0"
               }`}
             >
-              <p className="font-display text-2xl leading-[1.1] font-medium tracking-tight text-white sm:text-3xl">
+              <p className="font-display text-xl leading-[1.15] font-medium tracking-tight text-white sm:text-2xl">
                 &ldquo;{r.quote}&rdquo;
               </p>
             </div>
