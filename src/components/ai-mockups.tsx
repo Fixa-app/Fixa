@@ -14,7 +14,7 @@ function MockupShell({ children }: { children: React.ReactNode }) {
 
 function AiBadge() {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-violet-400/40 bg-violet-50 px-2 py-0.5 text-[9px] font-semibold tracking-wider text-violet-600 uppercase">
+    <span className="inline-flex items-center gap-1 rounded-full border border-violet/30 bg-violet-light px-2 py-0.5 text-[9px] font-semibold tracking-wider text-violet uppercase">
       <Sparkles className="size-2.5" />
       Assist AI
     </span>
@@ -52,7 +52,7 @@ export function AIQuoteMockup() {
             <span>€ 1.851,30</span>
           </div>
         </div>
-        <div className="mt-3 text-[10px] text-violet-600">
+        <div className="mt-3 text-[10px] text-violet">
           <Sparkles className="mr-1 inline size-2.5" />
           Opgesteld vanuit intake-notities · 3 sec
         </div>
@@ -74,9 +74,9 @@ export function AIReplyMockup() {
             Hoi! Kunnen jullie morgen rond 10 uur langskomen voor de lekkage?
           </p>
         </div>
-        <div className="rounded-2xl bg-violet-100 p-3 ring-1 ring-violet-400/30">
+        <div className="rounded-2xl bg-violet-light p-3 ring-1 ring-violet/30">
           <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-[10px] font-semibold text-violet-700">
+            <span className="text-[10px] font-semibold text-violet">
               Voorgestelde reactie
             </span>
             <AiBadge />
@@ -132,23 +132,23 @@ export function AIPlanningMockup() {
               {dayIdx === 2 && (
                 <>
                   <div className="absolute inset-x-0.5 top-0.5 h-5 rounded bg-primary/80" />
-                  <div className="absolute inset-x-0.5 top-7 h-5 rounded border-2 border-dashed border-violet-500 bg-violet-200" />
+                  <div className="absolute inset-x-0.5 top-7 h-5 rounded border-2 border-dashed border-violet bg-violet-light" />
                 </>
               )}
               {dayIdx === 3 && (
                 <div className="absolute inset-x-0.5 top-2 bottom-2 rounded bg-teal/70" />
               )}
               {dayIdx === 4 && (
-                <div className="absolute inset-x-0.5 bottom-0.5 h-6 rounded bg-oxblood/70" />
+                <div className="absolute inset-x-0.5 bottom-0.5 h-6 rounded bg-primary-dark/80" />
               )}
             </div>
           ))}
         </div>
-        <div className="rounded-lg border border-violet-300/50 bg-violet-50 p-2">
+        <div className="rounded-lg border border-violet/30 bg-violet-light p-2">
           <div className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-3 shrink-0 text-violet-600" />
+            <Sparkles className="mt-0.5 size-3 shrink-0 text-violet" />
             <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-semibold text-violet-700">
+              <span className="text-[10px] font-semibold text-violet">
                 AI-suggestie
               </span>
               <span className="flex items-center gap-1 text-[10px] leading-snug text-foreground">
