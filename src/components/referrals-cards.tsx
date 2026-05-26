@@ -70,7 +70,9 @@ export function ReferralsCards() {
           <a
             key={r.company}
             href={r.href}
-            onMouseEnter={() => setActive(i)}
+            onPointerEnter={(e) => {
+              if (e.pointerType !== "touch") setActive(i);
+            }}
             onFocus={() => setActive(i)}
             onClick={(e) => {
               if (!isActive) {
@@ -101,7 +103,7 @@ export function ReferralsCards() {
 
             <div
               className={`absolute right-6 left-6 transition-[bottom] duration-500 ease-out ${
-                isActive ? "bottom-28 sm:bottom-32" : "bottom-6"
+                isActive ? "bottom-40 sm:bottom-32" : "bottom-6"
               }`}
             >
               <h3 className="text-2xl font-semibold tracking-tight whitespace-nowrap text-white">
