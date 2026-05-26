@@ -45,7 +45,7 @@ function Card({
 
 export function OnlineIntakesMockup() {
   return (
-    <MockupShell bg="bg-gradient-to-br from-sage/20 to-sage/5">
+    <MockupShell bg="bg-gradient-to-br from-primary/15 to-primary/5">
       <Card className="w-full max-w-xs">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold tracking-tight">
@@ -140,7 +140,7 @@ export function OffertesMockup() {
           </div>
         </div>
         <div className="mt-4 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-sage/30 px-2 py-0.5 text-[10px] font-semibold text-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-mint/20 px-2 py-0.5 text-[10px] font-semibold text-foreground">
             <CheckCircle2 className="size-3" />
             Geopend
           </span>
@@ -155,11 +155,11 @@ export function PlanningMockup() {
   const days = ["Ma", "Di", "Wo", "Do", "Vr"];
   const jobs: { day: number; start: number; len: number; color: string; label: string }[] = [
     { day: 0, start: 0, len: 2, color: "bg-primary/80", label: "Visser" },
-    { day: 1, start: 1, len: 3, color: "bg-teal/80", label: "Smit" },
-    { day: 2, start: 0, len: 1, color: "bg-oxblood/70", label: "De Jong" },
-    { day: 2, start: 2, len: 2, color: "bg-sage", label: "Bakker" },
+    { day: 1, start: 1, len: 3, color: "bg-mint/80", label: "Smit" },
+    { day: 2, start: 0, len: 1, color: "bg-tangerine/80", label: "De Jong" },
+    { day: 2, start: 2, len: 2, color: "bg-mint/70", label: "Bakker" },
     { day: 3, start: 1, len: 2, color: "bg-primary/80", label: "Visser" },
-    { day: 4, start: 0, len: 3, color: "bg-teal/80", label: "Schoonmaak" },
+    { day: 4, start: 0, len: 3, color: "bg-tangerine/80", label: "Schoonmaak" },
   ];
   return (
     <MockupShell bg="bg-gradient-to-br from-primary/15 to-primary/5">
@@ -213,17 +213,17 @@ export function ScheduleMockup() {
       time: "10:00",
       title: "CV-ketel onderhoud",
       meta: "Crew: Mark & Joep",
-      color: "border-l-teal",
+      color: "border-l-mint",
     },
     {
       time: "13:30",
       title: "Lekkage badkamer",
       meta: "Crew: Mark",
-      color: "border-l-oxblood",
+      color: "border-l-tangerine",
     },
   ];
   return (
-    <MockupShell bg="bg-gradient-to-br from-teal/15 to-teal/5">
+    <MockupShell bg="bg-gradient-to-br from-primary/10 to-primary/5">
       <Card className="w-full max-w-xs">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold tracking-tight">
@@ -259,7 +259,7 @@ export function ScheduleMockup() {
 
 export function BetalingenMockup() {
   return (
-    <MockupShell bg="bg-gradient-to-br from-sage/25 to-sage/5">
+    <MockupShell bg="bg-gradient-to-br from-mint/15 to-mint/5">
       <Card className="w-full max-w-xs">
         <div className="mb-4 flex items-start justify-between">
           <div>
@@ -276,7 +276,7 @@ export function BetalingenMockup() {
               <User className="size-3 text-muted-foreground" />
               Visser BV
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-sage/30 px-2 py-0.5 text-[10px] font-semibold text-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full bg-mint/20 px-2 py-0.5 text-[10px] font-semibold text-foreground">
               <CheckCircle2 className="size-3" />
               Betaald
             </span>
@@ -299,7 +299,7 @@ export function RapportenMockup() {
   const bars = [40, 55, 30, 70, 85, 60, 95];
   const labels = ["M", "D", "W", "D", "V", "Z", "Z"];
   return (
-    <MockupShell bg="bg-gradient-to-br from-oxblood/15 to-oxblood/5">
+    <MockupShell bg="bg-gradient-to-br from-violet/15 to-violet/5">
       <Card className="w-full max-w-xs">
         <div className="mb-4 flex items-start justify-between">
           <div>
@@ -308,7 +308,7 @@ export function RapportenMockup() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold tracking-tight">€ 14.750</span>
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-sage">
+              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-mint">
                 <TrendingUp className="size-3" />
                 +4,5%
               </span>

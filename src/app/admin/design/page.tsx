@@ -162,7 +162,7 @@ const stackItems = [
   { label: "Display font", value: "Sora (headings)" },
   { label: "Sans font", value: "Manrope (body + nav)" },
   { label: "Mono font", value: "Geist Mono" },
-  { label: "Brand color", value: "Saffron (--primary)" },
+  { label: "Brand colors", value: "Digital Blue + Violet + Tangerine + Mint" },
   { label: "Theme", value: "Light + dark via CSS variables" },
 ];
 
@@ -311,34 +311,34 @@ function ColorPalette() {
 
 const brandSurfaces = [
   {
-    name: "cream",
-    hex: "#F5EDDC",
-    use: "Card-like sections, lifted from page background",
+    name: "primary",
+    hex: "#016AFF",
+    use: "Digital Blue — core CTAs, links, brand anchor",
+  },
+  {
+    name: "violet",
+    hex: "#7C3AED",
+    use: "Blue Violet — Assist AI, premium / smart features only",
+  },
+  {
+    name: "tangerine",
+    hex: "#F97316",
+    use: "Pumpkin Spice — energy, urgency, time-sensitive states",
+  },
+  {
+    name: "mint",
+    hex: "#10B981",
+    use: "Mint Leaf — paid, approved, completed states",
   },
   {
     name: "ink",
     hex: "#1F1A14",
-    use: "Dark sections, full-bleed bands, text on light surfaces",
+    use: "Warm charcoal — body text, headlines, dark surfaces",
   },
   {
-    name: "oxblood",
-    hex: "#661B1A",
-    use: "Accent panels, premium / editorial moments",
-  },
-  {
-    name: "teal",
-    hex: "#2F6B7A",
-    use: "Cool counterpoint — info badges, secondary CTAs",
-  },
-  {
-    name: "sage",
-    hex: "#8FA68E",
-    use: "Soft accent — bridges yellow and teal, organic feel",
-  },
-  {
-    name: "saffron",
-    hex: "#F5C842",
-    use: "Same as --primary. Hero accents, energetic highlights",
+    name: "cream",
+    hex: "#F5EDDC",
+    use: "Lifted card surface, marketing sections",
   },
 ];
 
