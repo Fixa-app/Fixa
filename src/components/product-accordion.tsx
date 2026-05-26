@@ -149,6 +149,16 @@ export function ProductAccordion() {
                     Lees meer
                     <ArrowRight className="size-4" />
                   </Link>
+                  {(() => {
+                    const Mockup = mockupByKey[feature.key];
+                    return Mockup ? (
+                      <div className="relative mt-4 aspect-[4/3] w-full overflow-hidden rounded-2xl md:hidden">
+                        <div className="absolute inset-0">
+                          <Mockup />
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
               )}
             </div>
@@ -156,7 +166,7 @@ export function ProductAccordion() {
         })}
       </div>
 
-      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-[#EAE9E3] md:aspect-auto md:h-full">
+      <div className="relative hidden aspect-square w-full overflow-hidden rounded-3xl bg-[#EAE9E3] md:block md:aspect-auto md:h-full">
         {(() => {
           const Mockup = mockupByKey[activeFeature.key];
           return Mockup ? (

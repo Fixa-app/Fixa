@@ -16,6 +16,7 @@ import {
   Hammer,
   Home,
   type LucideIcon,
+  Menu,
   Paintbrush,
   Sparkles,
   Trees,
@@ -72,7 +73,7 @@ const industriesMenu: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Dakdekkers", href: "#industries", icon: Home },
 ];
 
-type OpenMenu = "product" | "industries" | null;
+type OpenMenu = "product" | "industries" | "mobile" | null;
 
 export function SiteHeaderBar({
   userEmail,
@@ -90,6 +91,7 @@ export function SiteHeaderBar({
   const isTransparent = overHero && openMenu === null;
   const productOpen = openMenu === "product";
   const industriesOpen = openMenu === "industries";
+  const mobileOpen = openMenu === "mobile";
 
   useEffect(() => {
     if (!hasHero) {
@@ -159,7 +161,7 @@ export function SiteHeaderBar({
                 className="h-18 w-auto invert"
               />
             </Link>
-            <nav className="hidden items-center gap-1 md:flex">
+            <nav className="hidden items-center gap-1 lg:flex">
               <button
                 type="button"
                 aria-expanded={industriesOpen}
@@ -229,14 +231,14 @@ export function SiteHeaderBar({
                 <AuthDialog>
                   <Button
                     variant="ghost"
-                    className={`text-base font-bold hover:bg-transparent ${txtBase} ${txtHover}`}
+                    className={`hidden text-base font-bold hover:bg-transparent sm:inline-flex ${txtBase} ${txtHover}`}
                   >
                     Inloggen
                   </Button>
                 </AuthDialog>
                 <Button
                   variant="ghost"
-                  className={`hidden text-base font-bold hover:bg-transparent sm:inline-flex ${txtBase} ${txtHover}`}
+                  className={`hidden text-base font-bold hover:bg-transparent lg:inline-flex ${txtBase} ${txtHover}`}
                   nativeButton={false}
                   render={<a href="#contact" />}
                 >
@@ -247,6 +249,16 @@ export function SiteHeaderBar({
                     Aan de slag
                   </Button>
                 </AuthDialog>
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  aria-expanded={mobileOpen}
+                  aria-controls="header-dropdown-menu"
+                  onClick={() => toggleMenu("mobile")}
+                  className={`flex size-12 items-center justify-center rounded-xl lg:hidden ${txtBase} ${itemHover}`}
+                >
+                  <Menu className="size-6" strokeWidth={2} />
+                </button>
               </>
             )}
           </div>
@@ -308,6 +320,79 @@ export function SiteHeaderBar({
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+            {mobileOpen && (
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/pricing"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${itemHover}`}
+                  >
+                    Prijzen
+                  </Link>
+                  <a
+                    href="#contact"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${itemHover}`}
+                  >
+                    Boek een demo
+                  </a>
+                  {userIsAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${itemHover}`}
+                    >
+                      Admin
+                    </Link>
+                  )}
+                </div>
+                <div className="flex flex-col gap-3">
+                  <h3
+                    className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
+                  >
+                    Bedrijfstypen
+                  </h3>
+                  <ul className="grid grid-cols-2 gap-1">
+                    {industriesMenu.map((item) => (
+                      <li key={item.label}>
+                        <Link
+                          href={item.href}
+                          onClick={closeMenu}
+                          className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                        >
+                          <item.icon className="size-5" strokeWidth={2} />
+                          <span>{item.label}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <h3
+                    className={`text-xs font-bold tracking-widest uppercase ${txtMuted}`}
+                  >
+                    Product
+                  </h3>
+                  <ul className="grid grid-cols-2 gap-1">
+                    {productMenu.flatMap((col) =>
+                      col.items.map((item) => (
+                        <li key={item.label}>
+                          <Link
+                            href={item.href}
+                            onClick={closeMenu}
+                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${itemHover}`}
+                          >
+                            <item.icon className="size-5" strokeWidth={2} />
+                            <span>{item.label}</span>
+                          </Link>
+                        </li>
+                      )),
+                    )}
+                  </ul>
+                </div>
               </div>
             )}
           </div>
