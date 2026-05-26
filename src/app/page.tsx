@@ -10,6 +10,11 @@ import {
   AIQuoteMockup,
   AIReplyMockup,
 } from "@/components/ai-mockups";
+import {
+  OnlineIntakesMockup,
+  PlanningMockup,
+  RapportenMockup,
+} from "@/components/product-mockups";
 import { ReferralsCards } from "@/components/referrals-cards";
 
 export default function Home() {
@@ -21,6 +26,7 @@ export default function Home() {
         <Product />
         <AI />
         <Referrals />
+        <WhyFixa />
         <CTABand />
       </main>
       <SiteFooter />
@@ -246,6 +252,83 @@ function Referrals() {
           </div>
         </div>
         <ReferralsCards />
+      </div>
+    </section>
+  );
+}
+
+const whyFixaCards = [
+  {
+    title: "Betere aanvragen",
+    body: "Klanten dienen aanvragen 24/7 in via je website of agenda. Geen heen-en-weer over beschikbaarheid — alle info direct in je systeem.",
+    features: [
+      { name: "Online aanvragen", href: "#" },
+      { name: "Offertes", href: "#" },
+    ],
+    Mockup: OnlineIntakesMockup,
+  },
+  {
+    title: "Slimmer werken",
+    body: "Plan, dispatch en stuur je crews aan vanaf één plek. Geen losse spreadsheets of WhatsApp-groepen meer.",
+    features: [
+      { name: "Planning", href: "#" },
+      { name: "Schedule", href: "#" },
+    ],
+    Mockup: PlanningMockup,
+  },
+  {
+    title: "Meer winst",
+    body: "Sneller factureren, sneller betaald krijgen, en zien wat je bedrijf oplevert — in één overzicht.",
+    features: [
+      { name: "Betalingen", href: "#" },
+      { name: "Rapporten", href: "#" },
+    ],
+    Mockup: RapportenMockup,
+  },
+];
+
+function WhyFixa() {
+  return (
+    <section id="why-fixa" className="px-4 py-20 sm:py-24">
+      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 px-5">
+        <div className="flex flex-col gap-3">
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+            Waarom vakmensen kiezen voor Fixa.
+          </h2>
+          <p className="max-w-2xl text-muted-foreground">
+            Drie redenen waarom Fixa je vakbedrijf vooruit helpt.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {whyFixaCards.map(({ title, body, features, Mockup }) => (
+            <article
+              key={title}
+              className="flex flex-col gap-6 rounded-3xl bg-[#EAE9E3] p-6 md:p-8"
+            >
+              <div className="flex flex-col gap-3">
+                <h3 className="text-2xl font-semibold tracking-tight">
+                  {title}
+                </h3>
+                <p className="text-base text-muted-foreground">{body}</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
+                  {features.map((f) => (
+                    <Link
+                      key={f.name}
+                      href={f.href}
+                      className="inline-flex items-center gap-1 text-sm font-semibold underline-offset-4 hover:underline"
+                    >
+                      {f.name}
+                      <ArrowRight className="size-3.5" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <Mockup />
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
