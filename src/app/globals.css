@@ -72,6 +72,8 @@
   --color-teal-light-foreground: var(--teal-light-foreground);
   --color-violet-light: var(--violet-light);
   --color-violet-light-foreground: var(--violet-light-foreground);
+  --color-burgundy: var(--burgundy);
+  --color-burgundy-foreground: var(--burgundy-foreground);
 }
 
 :root {
@@ -119,6 +121,8 @@
   --oxblood-foreground: oklch(0.95 0.025 85);
   --teal: #0d424e;
   --teal-foreground: oklch(1 0 0);
+  --burgundy: #3a1d22;
+  --burgundy-foreground: oklch(1 0 0);
   --sage: oklch(0.66 0.035 145);
   --sage-foreground: oklch(0.20 0.013 60);
   --saffron: oklch(0.83 0.155 90);
