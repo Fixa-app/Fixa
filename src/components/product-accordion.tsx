@@ -109,7 +109,7 @@ export function ProductAccordion() {
             <div
               key={feature.key}
               className={`rounded-2xl px-5 transition-colors ${
-                open ? "bg-[#D8D5C8]" : "hover:bg-foreground/5"
+                open ? "bg-[#E2DFD4]" : "hover:bg-foreground/5"
               }`}
             >
               <button
@@ -166,7 +166,7 @@ export function ProductAccordion() {
         })}
       </div>
 
-      <div className="relative hidden aspect-square w-full overflow-hidden rounded-3xl bg-[#D8D5C8] md:block md:aspect-auto md:h-full">
+      <div className="relative hidden aspect-square w-full overflow-hidden rounded-3xl bg-[#E2DFD4] md:block md:aspect-auto md:h-full">
         {(() => {
           const Mockup = mockupByKey[activeFeature.key];
           return Mockup ? (
