@@ -42,8 +42,8 @@ export function WhyFixaCards() {
   const ActiveVisual = reasons[active].Visual;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 md:items-stretch">
-      <div className="hidden aspect-square flex-col gap-6 overflow-hidden rounded-3xl bg-[#E2DFD4] p-6 md:flex md:aspect-auto md:p-8">
+    <div className="grid gap-0 md:grid-cols-2 md:items-stretch md:gap-4">
+      <div className="flex aspect-square flex-col gap-6 overflow-hidden rounded-3xl bg-[#E2DFD4] p-6 max-md:rounded-b-none md:aspect-auto md:p-8">
         <style>{`
           @keyframes whyfixa-progress {
             from { transform: scaleX(0); }
@@ -83,7 +83,7 @@ export function WhyFixaCards() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8 rounded-3xl bg-teal p-8 text-teal-foreground md:p-10">
+      <div className="flex flex-col gap-8 rounded-3xl bg-teal p-8 text-teal-foreground max-md:rounded-t-none md:p-10">
         <div className="flex flex-col gap-6 md:gap-7">
           {reasons.map((reason, i) => (
             <button
@@ -92,7 +92,9 @@ export function WhyFixaCards() {
               onClick={() => setActive(i)}
               aria-label={`Bekijk ${reason.title}`}
               className={`flex flex-col gap-1.5 rounded-xl p-2 text-left transition-opacity ${
-                i === active ? "opacity-100" : "opacity-60 hover:opacity-80"
+                i === active
+                  ? "opacity-100"
+                  : "opacity-60 hover:opacity-80 max-md:hidden"
               }`}
             >
               <h3 className="text-2xl font-semibold tracking-tight">
