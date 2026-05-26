@@ -91,13 +91,82 @@ function Hero() {
 }
 
 function PhoneMockup() {
+  const schedule = [
+    {
+      time: "08:30",
+      title: "Intake Visser",
+      meta: "Damstraat 12",
+      accent: "border-l-primary",
+    },
+    {
+      time: "10:00",
+      title: "CV-ketel onderhoud",
+      meta: "Mark & Joep",
+      accent: "border-l-teal",
+    },
+    {
+      time: "13:30",
+      title: "Lekkage badkamer",
+      meta: "Mark",
+      accent: "border-l-primary-dark",
+    },
+  ];
   return (
     <div
       aria-hidden
       className="relative aspect-[9/19] w-[210px] rounded-[2.5rem] bg-black p-[6px] shadow-2xl ring-1 ring-white/10 lg:w-[240px]"
     >
-      <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[2.25rem] bg-cream text-xs font-medium tracking-wider text-cream-foreground/60 uppercase">
-        App screenshot
+      <div className="flex h-full w-full flex-col overflow-hidden rounded-[2.25rem] bg-background">
+        <div className="flex items-center justify-between px-4 pt-2.5 text-[10px] font-semibold text-foreground">
+          <span>9:41</span>
+          <div className="flex items-center gap-0.5">
+            <span className="size-1.5 rounded-full bg-foreground" />
+            <span className="size-1.5 rounded-full bg-foreground" />
+            <span className="size-1.5 rounded-full bg-foreground" />
+          </div>
+        </div>
+        <div className="px-4 pt-3 pb-2">
+          <div className="text-[8px] font-bold tracking-widest text-muted-foreground uppercase">
+            Vandaag
+          </div>
+          <div className="mt-0.5 text-base font-bold tracking-tight">
+            Di 28 nov
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 px-3 pt-1">
+          {schedule.map((item) => (
+            <div
+              key={item.time}
+              className={`flex gap-2 rounded-md border-l-2 bg-muted/40 p-2 ${item.accent}`}
+            >
+              <div className="text-[9px] font-semibold tracking-tight text-foreground">
+                {item.time}
+              </div>
+              <div className="flex flex-col gap-0">
+                <span className="text-[10px] leading-tight font-semibold text-foreground">
+                  {item.title}
+                </span>
+                <span className="text-[8px] leading-tight text-muted-foreground">
+                  {item.meta}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 px-3">
+          <div className="flex items-center gap-1.5 rounded-md border border-violet/30 bg-violet-light p-1.5">
+            <span className="size-1.5 shrink-0 rounded-full bg-violet" />
+            <span className="text-[8px] font-semibold tracking-tight text-violet">
+              AI: route 12 min korter
+            </span>
+          </div>
+        </div>
+        <div className="mt-auto flex items-center justify-around border-t border-border bg-background py-2.5">
+          <div className="size-1.5 rounded-full bg-primary" />
+          <div className="size-1.5 rounded-full bg-muted-foreground/40" />
+          <div className="size-1.5 rounded-full bg-muted-foreground/40" />
+          <div className="size-1.5 rounded-full bg-muted-foreground/40" />
+        </div>
       </div>
     </div>
   );
