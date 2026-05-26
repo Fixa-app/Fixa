@@ -138,7 +138,7 @@ export function ProductAccordion() {
                 )}
               </button>
               {open && (
-                <div className="flex animate-in flex-col gap-2 pb-5 pl-9 duration-300 fade-in">
+                <div className="flex animate-in flex-col gap-2 pb-5 duration-300 fade-in lg:pl-9">
                   <p className="text-base text-muted-foreground">
                     {feature.body}
                   </p>
