@@ -50,13 +50,13 @@ export function ReferralsCards() {
   const [active, setActive] = useState(0);
 
   const gridTemplateColumns = referrals
-    .map((_, i) => (i === active ? "3fr" : "1fr"))
+    .map((_, i) => (i === active ? "var(--active-fr)" : "1fr"))
     .join(" ");
 
   return (
     <div className="px-4">
     <div
-      className="mx-auto grid h-[500px] w-full max-w-[1920px] gap-4 transition-[grid-template-columns] duration-500 ease-out sm:h-[600px]"
+      className="mx-auto grid h-[500px] w-full max-w-[1920px] gap-4 transition-[grid-template-columns] duration-500 ease-out [--active-fr:2fr] sm:h-[600px] xl:[--active-fr:3fr]"
       style={{ gridTemplateColumns }}
     >
       {referrals.map((r, i) => {
