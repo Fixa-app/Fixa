@@ -81,9 +81,9 @@
   --card-foreground: oklch(0.20 0.013 60);
   --popover: oklch(0.97 0.015 90);
   --popover-foreground: oklch(0.20 0.013 60);
-  --primary: #016aff;
+  --primary: #fc5201;
   --primary-foreground: oklch(1 0 0);
-  --primary-dark-surface: #3b82f6;
+  --primary-dark-surface: #ff6f2c;
   --primary-dark: #9c2d05;
   --primary-dark-foreground: oklch(1 0 0);
   --secondary: oklch(0.90 0.020 85);
@@ -117,8 +117,8 @@
   --ink-foreground: oklch(0.95 0.025 90);
   --oxblood: oklch(0.32 0.115 25);
   --oxblood-foreground: oklch(0.95 0.025 85);
-  --teal: oklch(0.50 0.065 215);
-  --teal-foreground: oklch(0.95 0.025 90);
+  --teal: #0d424e;
+  --teal-foreground: oklch(1 0 0);
   --sage: oklch(0.66 0.035 145);
   --sage-foreground: oklch(0.20 0.013 60);
   --saffron: oklch(0.83 0.155 90);
@@ -128,7 +128,7 @@
   --tangerine-foreground: oklch(1 0 0);
   --mint: #10b981;
   --mint-foreground: oklch(1 0 0);
-  --violet: #7c3aed;
+  --violet: #2f203c;
   --violet-foreground: oklch(1 0 0);
 
   --teal-light: #d8e5e7;

@@ -162,7 +162,7 @@ const stackItems = [
   { label: "Display font", value: "Sora (headings)" },
   { label: "Sans font", value: "Manrope (body + nav)" },
   { label: "Mono font", value: "Geist Mono" },
-  { label: "Brand colors", value: "Digital Blue + Violet + Tangerine + Mint" },
+  { label: "Brand colors", value: "Flame Orange + Stormy Teal + Midnight Violet" },
   { label: "Theme", value: "Light + dark via CSS variables" },
 ];
 
@@ -312,33 +312,48 @@ function ColorPalette() {
 const brandSurfaces = [
   {
     name: "primary",
-    hex: "#016AFF",
-    use: "Digital Blue — core CTAs, links, brand anchor",
+    hex: "#FC5201",
+    use: "Flame Orange — CTAs, brand anchor, hero moments",
+  },
+  {
+    name: "primary-dark",
+    hex: "#9C2D05",
+    use: "Deep Burnt — illustration depth, anchors with teal + violet",
+  },
+  {
+    name: "primary-dark-surface",
+    hex: "#FF6F2C",
+    use: "Lifted Flame — primary on ink / dark surfaces",
+  },
+  {
+    name: "teal",
+    hex: "#0D424E",
+    use: "Stormy Teal — info, charts, cool counter",
+  },
+  {
+    name: "teal-light",
+    hex: "#D8E5E7",
+    use: "Light teal tint — card surfaces hinting at info",
   },
   {
     name: "violet",
-    hex: "#7C3AED",
-    use: "Blue Violet — Assist AI, premium / smart features only",
+    hex: "#2F203C",
+    use: "Midnight Violet — AI / premium accents, dark surfaces",
   },
   {
-    name: "tangerine",
-    hex: "#F97316",
-    use: "Pumpkin Spice — energy, urgency, time-sensitive states",
-  },
-  {
-    name: "mint",
-    hex: "#10B981",
-    use: "Mint Leaf — paid, approved, completed states",
+    name: "violet-light",
+    hex: "#E0D8E6",
+    use: "Light violet tint — card surfaces hinting at smart features",
   },
   {
     name: "ink",
     hex: "#1F1A14",
-    use: "Warm charcoal — body text, headlines, dark surfaces",
+    use: "Warm charcoal — body text, headlines",
   },
   {
-    name: "cream",
-    hex: "#F5EDDC",
-    use: "Lifted card surface, marketing sections",
+    name: "background",
+    hex: "#F0F0EB",
+    use: "Page background — warm cream",
   },
 ];
 
