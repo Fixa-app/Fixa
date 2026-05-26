@@ -10,6 +10,7 @@ import {
   AIQuoteMockup,
   AIReplyMockup,
 } from "@/components/ai-mockups";
+import { PricingCalculator } from "@/components/pricing-calculator";
 import { ReferralsCards } from "@/components/referrals-cards";
 import { WhyFixaCards } from "@/components/why-fixa-cards";
 
@@ -23,6 +24,7 @@ export default function Home() {
         <AI />
         <Referrals />
         <WhyFixa />
+        <Pricing />
         <CTABand />
       </main>
       <SiteFooter />
@@ -229,6 +231,30 @@ function WhyFixa() {
           Waarom vakmensen kiezen voor Fixa.
         </h2>
         <WhyFixaCards />
+      </div>
+    </section>
+  );
+}
+
+function Pricing() {
+  return (
+    <section id="pricing" className="px-4 py-12 sm:py-16">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+            Prijzen die werken voor jou.
+          </h2>
+          <Link
+            href="/pricing"
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-base font-semibold text-ink-foreground transition-colors hover:bg-ink/85"
+          >
+            Meer informatie
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
+        <div className="rounded-3xl bg-teal p-8 text-teal-foreground md:p-12">
+          <PricingCalculator />
+        </div>
       </div>
     </section>
   );
