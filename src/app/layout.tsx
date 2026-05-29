@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
-import { createClient } from "@/lib/supabase/server";
-import { isAdmin } from "@/lib/auth/admin";
 import { SiteHeader } from "@/components/site-header";
-import { AdminHeader } from "@/components/admin-header";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -26,24 +23,18 @@ export const metadata: Metadata = {
   description: "Field-service management, reimagined.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const userIsAdmin = await isAdmin(user);
-
   return (
     <html
       lang="nl"
       className={`${manrope.variable} ${geistMono.variable} ${sora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {userIsAdmin && user ? <AdminHeader user={user} /> : <SiteHeader />}
+        <SiteHeader />
         {children}
       </body>
     </html>
