@@ -36,67 +36,31 @@ export default function DesignPage() {
     <div className="mx-auto flex w-full max-w-6xl flex-col px-4 py-12 sm:py-16 lg:px-5">
       <PageHeader />
       <TypographyHero />
-      <Section
-        eyebrow="01"
-        title="Stack"
-        description="What the design system is built on."
-      >
+      <Section eyebrow="01" title="Stack">
         <StackGrid />
       </Section>
-      <Section
-        eyebrow="02"
-        title="Identity"
-        description="How Fixa shows up across surfaces."
-      >
+      <Section eyebrow="02" title="Identity">
         <IdentityRows />
       </Section>
-      <Section
-        eyebrow="03"
-        title="Color"
-        description="Semantic CSS variables. Always reach for the token, never a hex code — tokens auto-flip for dark mode."
-      >
+      <Section eyebrow="03" title="Color">
         <ColorPalette />
       </Section>
-      <Section
-        eyebrow="04"
-        title="Typography"
-        description="Three fonts: Sora for headings, Manrope for body and nav, Geist Mono for technical content."
-      >
+      <Section eyebrow="04" title="Typography">
         <TypeScale />
       </Section>
-      <Section
-        eyebrow="05"
-        title="Components"
-        description="The shadcn primitives we've added so far. New ones come in via pnpm dlx shadcn add."
-      >
+      <Section eyebrow="05" title="Components">
         <ComponentShowcase />
       </Section>
-      <Section
-        eyebrow="06"
-        title="Homepage building blocks"
-        description="The composite components that make up the marketing homepage. Live previews — edits to the source ripple here."
-      >
+      <Section eyebrow="06" title="Homepage building blocks">
         <HomepageShowcase />
       </Section>
-      <Section
-        eyebrow="07"
-        title="Icons"
-        description="Lucide. Always sized with Tailwind's size-* utilities, never width/height attributes."
-      >
+      <Section eyebrow="07" title="Icons">
         <IconShowcase />
       </Section>
-      <Section
-        eyebrow="08"
-        title="Spacing"
-        description="Tailwind's default scale. Patterns we reach for."
-      >
+      <Section eyebrow="08" title="Spacing">
         <SpacingTable />
       </Section>
-      <Section
-        eyebrow="09"
-        title="Breakpoints"
-        description="Tailwind's default screen sizes. Mobile first — base styles target the smallest viewport."
-      >
+      <Section eyebrow="09" title="Breakpoints">
         <BreakpointTable />
       </Section>
     </div>
@@ -141,12 +105,10 @@ function TypographyHero() {
 function Section({
   eyebrow,
   title,
-  description,
   children,
 }: {
   eyebrow: string;
   title: string;
-  description: string;
   children: React.ReactNode;
 }) {
   return (
@@ -158,9 +120,6 @@ function Section({
         <h2 className="font-display text-3xl leading-[1.05] font-medium tracking-tight">
           {title}
         </h2>
-        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
-          {description}
-        </p>
       </div>
       <div className="flex flex-col gap-6">{children}</div>
     </section>
