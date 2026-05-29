@@ -215,15 +215,6 @@ export function SiteHeaderBar({
               >
                 Prijzen
               </Link>
-              {userIsAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={closeMenu}
-                  className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
-                >
-                  Admin
-                </Link>
-              )}
             </nav>
           </div>
           <div className="flex items-center gap-3">
@@ -440,16 +431,6 @@ export function SiteHeaderBar({
                 >
                   Prijzen
                 </Link>
-
-                {userIsAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Admin
-                  </Link>
-                )}
 
                 <div className={`my-3 border-t ${dividerBorder}`} />
 
