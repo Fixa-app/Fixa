@@ -493,13 +493,6 @@ export function SiteHeaderBar({
             </div>
             <div className="flex flex-col gap-1 pt-2">
               <Link
-                href="/dashboard"
-                onClick={closeMenu}
-                className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-              >
-                Dashboard
-              </Link>
-              <Link
                 href="/onboarding/company"
                 onClick={closeMenu}
                 className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
@@ -507,13 +500,49 @@ export function SiteHeaderBar({
                 Account
               </Link>
               {userIsAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={closeMenu}
-                  className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Admin
-                </Link>
+                <>
+                  <div className={`my-1 border-t ${dividerBorder}`} />
+                  <span
+                    className={`px-2 pt-1 text-xs font-bold tracking-widest uppercase ${txtMuted}`}
+                  >
+                    Admin
+                  </span>
+                  <Link
+                    href="/admin/blueprint"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Blueprint
+                  </Link>
+                  <Link
+                    href="/admin/users"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Users
+                  </Link>
+                  <Link
+                    href="/admin/design"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Design
+                  </Link>
+                  <Link
+                    href="/plan"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Plan
+                  </Link>
+                  <Link
+                    href="/plan/workflow"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Workflow
+                  </Link>
+                </>
               )}
               <div className={`my-1 border-t ${dividerBorder}`} />
               <form action={signOut}>
