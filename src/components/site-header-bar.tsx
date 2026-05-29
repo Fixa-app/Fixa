@@ -103,6 +103,14 @@ export function SiteHeaderBar({
         .split(/[._-]/)[0]
         .replace(/^./, (c) => c.toUpperCase())
     : "";
+  const accountFullName = userEmail
+    ? userEmail
+        .split("@")[0]
+        .split(/[._-]/)
+        .filter(Boolean)
+        .map((part) => part.replace(/^./, (c) => c.toUpperCase()))
+        .join(" ")
+    : "";
   const accountInitial = (
     accountName[0] ||
     userEmail?.[0] ||
@@ -467,15 +475,20 @@ export function SiteHeaderBar({
                 : "pointer-events-none -translate-y-2 scale-95 opacity-0"
             }`}
           >
-            <div className={`flex flex-col gap-0.5 border-b px-2 pb-3 ${dividerBorder}`}>
-              <span className="text-xs font-bold tracking-widest uppercase opacity-60">
-                Ingelogd als
+            <div
+              className={`flex items-center gap-3 border-b px-2 pb-3 ${dividerBorder}`}
+            >
+              <span
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground"
+                aria-hidden
+              >
+                {accountInitial}
               </span>
               <span
                 className="truncate text-base font-bold"
-                title={userEmail ?? undefined}
+                title={accountFullName || (userEmail ?? undefined)}
               >
-                {userEmail}
+                {accountFullName}
               </span>
             </div>
             <div className="flex flex-col gap-1 pt-2">
