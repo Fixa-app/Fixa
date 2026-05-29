@@ -23,10 +23,17 @@ import {
   Workflow,
   Wrench,
 } from "lucide-react";
+import { AuthDialog } from "@/components/auth-dialog";
+import { FAQAccordion } from "@/components/faq-accordion";
+import { IndustriesCarousel } from "@/components/industries-carousel";
+import { PricingCalculator } from "@/components/pricing-calculator";
+import { ProductAccordion } from "@/components/product-accordion";
+import { ReferralsCards } from "@/components/referrals-cards";
+import { WhyFixaCards } from "@/components/why-fixa-cards";
 
 export default function DesignPage() {
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col px-6 py-16">
+    <div className="mx-auto flex w-full max-w-6xl flex-col px-4 py-12 sm:py-16 lg:px-5">
       <PageHeader />
       <TypographyHero />
       <Section
@@ -66,20 +73,27 @@ export default function DesignPage() {
       </Section>
       <Section
         eyebrow="06"
+        title="Homepage building blocks"
+        description="The composite components that make up the marketing homepage. Live previews — edits to the source ripple here."
+      >
+        <HomepageShowcase />
+      </Section>
+      <Section
+        eyebrow="07"
         title="Icons"
         description="Lucide. Always sized with Tailwind's size-* utilities, never width/height attributes."
       >
         <IconShowcase />
       </Section>
       <Section
-        eyebrow="07"
+        eyebrow="08"
         title="Spacing"
         description="Tailwind's default scale. Patterns we reach for."
       >
         <SpacingTable />
       </Section>
       <Section
-        eyebrow="08"
+        eyebrow="09"
         title="Breakpoints"
         description="Tailwind's default screen sizes. Mobile first — base styles target the smallest viewport."
       >
@@ -93,14 +107,14 @@ export default function DesignPage() {
 
 function PageHeader() {
   return (
-    <header className="flex flex-col gap-3 pb-12">
+    <header className="flex flex-col gap-4 pb-12">
       <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
         Fixa
       </p>
-      <h1 className="font-display text-5xl font-medium tracking-tight sm:text-6xl">
+      <h1 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
         Design system
       </h1>
-      <p className="max-w-2xl text-base text-muted-foreground">
+      <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
         Living reference for how Fixa looks and feels. Use this as the source
         of truth when adding new UI — staying close to these patterns means new
         screens feel like they belong.
@@ -111,11 +125,11 @@ function PageHeader() {
 
 function TypographyHero() {
   return (
-    <div className="flex flex-col gap-4 border-t border-border py-16 sm:py-20">
-      <p className="font-display text-4xl leading-[1.1] tracking-tight sm:text-6xl">
-        Eén workflow van het telefoontje tot de betaling.
+    <div className="flex flex-col gap-4 border-t border-border py-12 sm:py-16">
+      <p className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+        Minder papierwerk, meer vakwerk.
       </p>
-      <p className="max-w-xl text-base text-muted-foreground">
+      <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
         The display font carries the brand voice. Use it for editorial
         moments — hero headlines, section titles on marketing. Never for body
         copy.
@@ -136,15 +150,17 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid gap-10 border-t border-border py-16 sm:grid-cols-[220px_1fr] sm:gap-16">
+    <section className="grid gap-10 border-t border-border py-12 sm:py-16 sm:grid-cols-[220px_1fr] sm:gap-16">
       <div className="flex flex-col gap-3">
         <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
           {eyebrow}
         </p>
-        <h2 className="font-display text-3xl font-medium tracking-tight">
+        <h2 className="font-display text-3xl leading-[1.05] font-medium tracking-tight">
           {title}
         </h2>
-        <p className="max-w-xs text-sm text-muted-foreground">{description}</p>
+        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+          {description}
+        </p>
       </div>
       <div className="flex flex-col gap-6">{children}</div>
     </section>
@@ -222,7 +238,7 @@ function IdentityRow({
       <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
         {label}
       </p>
-      <div className="rounded-2xl border border-border bg-card p-8">
+      <div className="rounded-3xl border border-border bg-card p-8">
         {sample}
       </div>
       <p className="text-sm text-muted-foreground">{note}</p>
@@ -344,6 +360,11 @@ const brandSurfaces = [
     name: "violet-light",
     hex: "#E0D8E6",
     use: "Light violet tint — card surfaces hinting at smart features",
+  },
+  {
+    name: "burgundy",
+    hex: "#3A1D22",
+    use: "Burgundy — footer surface, dark trio with teal + violet",
   },
   {
     name: "ink",
@@ -508,6 +529,94 @@ function ComponentShowcase() {
   );
 }
 
+/* ----------------------------- Homepage building blocks ----------------------------- */
+
+const sampleIndustries = [
+  {
+    name: "Loodgieters",
+    body: "Vang noodgevallen op, plan onderhoud en factureer direct vanaf de werkplek.",
+    image:
+      "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=800&q=80",
+  },
+  {
+    name: "Elektriciens",
+    body: "Werk slim met digitale werkbonnen, materiaalbeheer en directe oplevering.",
+    image:
+      "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
+  },
+  {
+    name: "CV & klimaat",
+    body: "Beheer onderhoudscontracten, plan servicebezoeken en houd elke installatie bij.",
+    image:
+      "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=800&q=80",
+  },
+  {
+    name: "Hoveniers",
+    body: "Plan seizoenswerk, factureer uren en materialen, en blijf groeien zonder admin.",
+    image:
+      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80",
+  },
+];
+
+function HomepageShowcase() {
+  return (
+    <div className="flex flex-col gap-10">
+      <ComponentBlock
+        title="Auth dialog"
+        note="Combined login/signup with magic-link email and Google fallback. Trigger via any child component."
+      >
+        <AuthDialog>
+          <Button>Open auth dialog</Button>
+        </AuthDialog>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Product accordion"
+        note="Expanding feature list. Active row + mockup pane use bg-[#E2DFD4]. Inline mockup appears under Lees meer below lg."
+      >
+        <ProductAccordion />
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Industries carousel"
+        note="Horizontal snap-scroller. Cards reveal body + arrow on hover; first card auto-reveals below lg in marketing context (disabled here)."
+      >
+        <IndustriesCarousel cards={sampleIndustries} />
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Referrals cards"
+        note="Expand-on-hover on desktop. First tap on a collapsed mobile card expands; second tap navigates to /testimonials/<slug>."
+      >
+        <ReferralsCards />
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Why Fixa cards"
+        note="Auto-cycling visual + reasons (5s). Mobile fuses the two halves into one card and shows only the active reason."
+      >
+        <WhyFixaCards />
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Pricing calculator"
+        note="Slider with floating value bubble. Designed to sit inside a violet card surface — wrap accordingly in marketing pages."
+      >
+        <div className="rounded-3xl bg-violet p-8 text-white md:p-12">
+          <PricingCalculator />
+        </div>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="FAQ accordion"
+        note="Plus/minus toggle. Hover state matches the open-row surface for a soft preview."
+      >
+        <FAQAccordion />
+      </ComponentBlock>
+    </div>
+  );
+}
+
 function ComponentBlock({
   title,
   note,
@@ -523,7 +632,7 @@ function ComponentBlock({
         <h3 className="text-sm font-semibold">{title}</h3>
         <p className="text-sm text-muted-foreground">{note}</p>
       </div>
-      <div className="rounded-2xl border border-border bg-card p-6">
+      <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
         {children}
       </div>
     </div>
