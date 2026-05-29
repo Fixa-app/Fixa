@@ -18,7 +18,6 @@ import {
   type LucideIcon,
   Menu,
   Paintbrush,
-  Plus,
   Sparkles,
   Trees,
   Wrench,
@@ -100,12 +99,6 @@ export function SiteHeaderBar({
     { label: "Plan", href: "/plan" },
     { label: "Workflow", href: "/plan/workflow" },
   ];
-  const homeownerNav = [
-    { label: "Projecten", href: "/projects" },
-    { label: "Mijn pros", href: "/pros" },
-    { label: "Mijn huis", href: "/woning" },
-  ];
-  const isHomeownerView = Boolean(userEmail) && !isAdminPage;
   const overHero = hasHero && !scrolled;
   const isTransparent = overHero && openMenu === null;
   const productOpen = openMenu === "product";
@@ -219,17 +212,6 @@ export function SiteHeaderBar({
                     {item.label}
                   </Link>
                 ))
-              ) : isHomeownerView ? (
-                homeownerNav.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={closeMenu}
-                    className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
-                  >
-                    {item.label}
-                  </Link>
-                ))
               ) : (
                 <>
                   <button
@@ -272,16 +254,6 @@ export function SiteHeaderBar({
           <div className="flex items-center gap-3">
             {userEmail ? (
               <>
-                {isHomeownerView && (
-                  <Link
-                    href="/projects/new"
-                    onClick={closeMenu}
-                    className="hidden h-12 items-center gap-2 rounded-xl bg-primary px-5 text-base font-bold text-primary-foreground transition-colors hover:bg-primary/90 sm:inline-flex"
-                  >
-                    <Plus className="size-4" strokeWidth={2.5} />
-                    Start een project
-                  </Link>
-                )}
                 <button
                   type="button"
                   aria-expanded={accountOpen}
@@ -425,28 +397,6 @@ export function SiteHeaderBar({
                       {item.label}
                     </Link>
                   ))
-                ) : isHomeownerView ? (
-                  <>
-                    {homeownerNav.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={closeMenu}
-                        className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                    <div className={`my-3 border-t ${dividerBorder}`} />
-                    <Link
-                      href="/projects/new"
-                      onClick={closeMenu}
-                      className="inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-5 text-base font-bold text-primary-foreground transition-colors hover:bg-primary/90"
-                    >
-                      <Plus className="size-4" strokeWidth={2.5} />
-                      Start een project
-                    </Link>
-                  </>
                 ) : (
                   <>
                     <button
