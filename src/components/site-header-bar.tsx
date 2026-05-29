@@ -155,13 +155,15 @@ export function SiteHeaderBar({
   const surfaceClasses = isTransparent
     ? "bg-transparent"
     : "bg-ink/70 backdrop-blur-md";
+  const fullWidthOpen =
+    openMenu !== null && openMenu !== "account";
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
       <div ref={pillRef} className="relative mx-auto w-full max-w-[1920px]">
         <div
           className={`transition-[background-color,border-radius] duration-300 ${txtBase} ${surfaceClasses} ${
-            openMenu !== null ? "rounded-t-3xl" : "rounded-3xl"
+            fullWidthOpen ? "rounded-t-3xl" : "rounded-3xl"
           }`}
         >
           <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between gap-6 py-0 pr-3 pl-5">
@@ -295,9 +297,9 @@ export function SiteHeaderBar({
 
         <div
           id="header-dropdown-menu"
-          aria-hidden={openMenu === null}
+          aria-hidden={!fullWidthOpen}
           className={`absolute top-full right-0 left-0 origin-top overflow-hidden rounded-b-3xl transition-all duration-300 ease-out ${txtBase} ${surfaceClasses} ${
-            openMenu !== null
+            fullWidthOpen
               ? "translate-y-0 opacity-100"
               : "pointer-events-none -translate-y-2 opacity-0"
           }`}
@@ -454,55 +456,64 @@ export function SiteHeaderBar({
                 )}
               </div>
             )}
-            {accountOpen && (
-              <div className="ml-auto flex max-w-xs flex-col gap-1">
-                <div className="flex flex-col gap-0.5 px-2 pb-3">
-                  <span className="text-xs font-bold tracking-widest uppercase opacity-60">
-                    Ingelogd als
-                  </span>
-                  <span
-                    className="truncate text-base font-bold"
-                    title={userEmail ?? undefined}
-                  >
-                    {userEmail}
-                  </span>
-                </div>
-                <Link
-                  href="/dashboard"
-                  onClick={closeMenu}
-                  className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/onboarding/company"
-                  onClick={closeMenu}
-                  className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Account
-                </Link>
-                {userIsAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Admin
-                  </Link>
-                )}
-                <div className={`my-2 border-t ${dividerBorder}`} />
-                <form action={signOut}>
-                  <button
-                    type="submit"
-                    className={`w-full rounded-lg p-2 text-left text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Uitloggen
-                  </button>
-                </form>
-              </div>
-            )}
           </div>
         </div>
+        {userEmail && (
+          <div
+            aria-hidden={!accountOpen}
+            className={`absolute top-full right-0 z-50 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl p-3 shadow-lg transition-all duration-200 ease-out ${txtBase} bg-ink/85 backdrop-blur-md ${
+              accountOpen
+                ? "translate-y-0 scale-100 opacity-100"
+                : "pointer-events-none -translate-y-2 scale-95 opacity-0"
+            }`}
+          >
+            <div className={`flex flex-col gap-0.5 border-b px-2 pb-3 ${dividerBorder}`}>
+              <span className="text-xs font-bold tracking-widest uppercase opacity-60">
+                Ingelogd als
+              </span>
+              <span
+                className="truncate text-base font-bold"
+                title={userEmail ?? undefined}
+              >
+                {userEmail}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1 pt-2">
+              <Link
+                href="/dashboard"
+                onClick={closeMenu}
+                className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/onboarding/company"
+                onClick={closeMenu}
+                className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+              >
+                Account
+              </Link>
+              {userIsAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={closeMenu}
+                  className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Admin
+                </Link>
+              )}
+              <div className={`my-1 border-t ${dividerBorder}`} />
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className={`w-full rounded-lg p-2 text-left text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Uitloggen
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
