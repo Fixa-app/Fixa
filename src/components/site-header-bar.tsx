@@ -73,7 +73,7 @@ const industriesMenu: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Dakdekkers", href: "#industries", icon: Home },
 ];
 
-type OpenMenu = "product" | "industries" | "mobile" | null;
+type OpenMenu = "product" | "industries" | "mobile" | "account" | null;
 
 export function SiteHeaderBar({
   userEmail,
@@ -95,6 +95,19 @@ export function SiteHeaderBar({
   const productOpen = openMenu === "product";
   const industriesOpen = openMenu === "industries";
   const mobileOpen = openMenu === "mobile";
+  const accountOpen = openMenu === "account";
+
+  const accountName = userEmail
+    ? userEmail
+        .split("@")[0]
+        .split(/[._-]/)[0]
+        .replace(/^./, (c) => c.toUpperCase())
+    : "";
+  const accountInitial = (
+    accountName[0] ||
+    userEmail?.[0] ||
+    "?"
+  ).toUpperCase();
 
   useEffect(() => {
     if (!hasHero) {
@@ -216,22 +229,39 @@ export function SiteHeaderBar({
           <div className="flex items-center gap-3">
             {userEmail ? (
               <>
-                <span
-                  className={`hidden max-w-[220px] truncate text-sm sm:inline ${txtMuted}`}
-                  title={userEmail}
+                <button
+                  type="button"
+                  aria-expanded={accountOpen}
+                  aria-controls="header-dropdown-menu"
+                  onClick={() => toggleMenu("account")}
+                  className={`flex items-center gap-2 rounded-xl px-1 py-1 transition-colors ${txtBase} ${txtHover}`}
                 >
-                  {userEmail}
-                </span>
-                <form action={signOut}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    type="submit"
-                    className={`${txtBase} ${itemHover} hover:text-white`}
+                  <span
+                    className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+                    aria-hidden
                   >
-                    Uitloggen
-                  </Button>
-                </form>
+                    {accountInitial}
+                  </span>
+                  <span className="hidden text-base font-bold sm:inline">
+                    {accountName}
+                  </span>
+                  <ChevronDown
+                    aria-hidden
+                    className={`size-3 transition-transform duration-200 ${
+                      accountOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  aria-expanded={mobileOpen}
+                  aria-controls="header-dropdown-menu"
+                  onClick={() => toggleMenu("mobile")}
+                  className={`flex size-12 items-center justify-center rounded-xl lg:hidden ${txtBase} ${itemHover}`}
+                >
+                  <Menu className="size-6" strokeWidth={2} />
+                </button>
               </>
             ) : (
               <>
@@ -441,6 +471,53 @@ export function SiteHeaderBar({
                     </button>
                   </AuthDialog>
                 )}
+              </div>
+            )}
+            {accountOpen && (
+              <div className="ml-auto flex max-w-xs flex-col gap-1">
+                <div className="flex flex-col gap-0.5 px-2 pb-3">
+                  <span className="text-xs font-bold tracking-widest uppercase opacity-60">
+                    Ingelogd als
+                  </span>
+                  <span
+                    className="truncate text-base font-bold"
+                    title={userEmail ?? undefined}
+                  >
+                    {userEmail}
+                  </span>
+                </div>
+                <Link
+                  href="/dashboard"
+                  onClick={closeMenu}
+                  className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/onboarding/company"
+                  onClick={closeMenu}
+                  className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                >
+                  Account
+                </Link>
+                {userIsAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={closeMenu}
+                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Admin
+                  </Link>
+                )}
+                <div className={`my-2 border-t ${dividerBorder}`} />
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    className={`w-full rounded-lg p-2 text-left text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                  >
+                    Uitloggen
+                  </button>
+                </form>
               </div>
             )}
           </div>
