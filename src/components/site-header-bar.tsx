@@ -90,6 +90,15 @@ export function SiteHeaderBar({
   const pillRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const hasHero = pathname === "/";
+  const isAdminPage =
+    pathname.startsWith("/admin") || pathname.startsWith("/plan");
+  const adminNav = [
+    { label: "Blueprint", href: "/admin/blueprint" },
+    { label: "Users", href: "/admin/users" },
+    { label: "Design", href: "/admin/design" },
+    { label: "Plan", href: "/plan" },
+    { label: "Workflow", href: "/plan/workflow" },
+  ];
   const overHero = hasHero && !scrolled;
   const isTransparent = overHero && openMenu === null;
   const productOpen = openMenu === "product";
@@ -192,39 +201,54 @@ export function SiteHeaderBar({
               />
             </Link>
             <nav className="hidden items-center gap-1 lg:flex">
-              <button
-                type="button"
-                aria-expanded={industriesOpen}
-                aria-controls="header-dropdown-menu"
-                onClick={() => toggleMenu("industries")}
-                className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
-              >
-                Bedrijfstypen
-                <ChevronDown
-                  aria-hidden
-                  className={`size-3 transition-transform duration-200 ${industriesOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              <button
-                type="button"
-                aria-expanded={productOpen}
-                aria-controls="header-dropdown-menu"
-                onClick={() => toggleMenu("product")}
-                className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
-              >
-                Product
-                <ChevronDown
-                  aria-hidden
-                  className={`size-3 transition-transform duration-200 ${productOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              <Link
-                href="/pricing"
-                onClick={closeMenu}
-                className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
-              >
-                Prijzen
-              </Link>
+              {isAdminPage ? (
+                adminNav.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
+                  >
+                    {item.label}
+                  </Link>
+                ))
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    aria-expanded={industriesOpen}
+                    aria-controls="header-dropdown-menu"
+                    onClick={() => toggleMenu("industries")}
+                    className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
+                  >
+                    Bedrijfstypen
+                    <ChevronDown
+                      aria-hidden
+                      className={`size-3 transition-transform duration-200 ${industriesOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    aria-expanded={productOpen}
+                    aria-controls="header-dropdown-menu"
+                    onClick={() => toggleMenu("product")}
+                    className={`flex items-center gap-1 px-2 text-base font-bold ${txtBase} ${txtHover}`}
+                  >
+                    Product
+                    <ChevronDown
+                      aria-hidden
+                      className={`size-3 transition-transform duration-200 ${productOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  <Link
+                    href="/pricing"
+                    onClick={closeMenu}
+                    className={`px-2 text-base font-bold ${txtBase} ${txtHover}`}
+                  >
+                    Prijzen
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
           <div className="flex items-center gap-3">
@@ -362,105 +386,120 @@ export function SiteHeaderBar({
             )}
             {mobileOpen && (
               <div className="flex flex-col gap-1">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setMobileSection((c) =>
-                      c === "industries" ? null : "industries",
-                    )
-                  }
-                  aria-expanded={mobileSection === "industries"}
-                  className={`flex items-center justify-between rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Bedrijfstypen
-                  <ChevronDown
-                    aria-hidden
-                    className={`size-4 transition-transform duration-200 ${
-                      mobileSection === "industries" ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {mobileSection === "industries" && (
-                  <ul className="grid grid-cols-2 gap-1 pl-2">
-                    {industriesMenu.map((item) => (
-                      <li key={item.label}>
-                        <Link
-                          href={item.href}
-                          onClick={closeMenu}
-                          className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                        >
-                          <item.icon className="size-5" strokeWidth={2} />
-                          <span>{item.label}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setMobileSection((c) =>
-                      c === "product" ? null : "product",
-                    )
-                  }
-                  aria-expanded={mobileSection === "product"}
-                  className={`flex items-center justify-between rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Product
-                  <ChevronDown
-                    aria-hidden
-                    className={`size-4 transition-transform duration-200 ${
-                      mobileSection === "product" ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {mobileSection === "product" && (
-                  <ul className="grid grid-cols-2 gap-1 pl-2">
-                    {productMenu.flatMap((col) =>
-                      col.items.map((item) => (
-                        <li key={item.label}>
-                          <Link
-                            href={item.href}
-                            onClick={closeMenu}
-                            className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                          >
-                            <item.icon className="size-5" strokeWidth={2} />
-                            <span>{item.label}</span>
-                          </Link>
-                        </li>
-                      )),
-                    )}
-                  </ul>
-                )}
-
-                <Link
-                  href="/pricing"
-                  onClick={closeMenu}
-                  className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Prijzen
-                </Link>
-
-                <div className={`my-3 border-t ${dividerBorder}`} />
-
-                <a
-                  href="#contact"
-                  onClick={closeMenu}
-                  className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Boek een demo
-                </a>
-
-                {!userEmail && (
-                  <AuthDialog>
+                {isAdminPage ? (
+                  adminNav.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))
+                ) : (
+                  <>
                     <button
                       type="button"
-                      className={`rounded-lg p-2 text-left text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                      onClick={() =>
+                        setMobileSection((c) =>
+                          c === "industries" ? null : "industries",
+                        )
+                      }
+                      aria-expanded={mobileSection === "industries"}
+                      className={`flex items-center justify-between rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
                     >
-                      Inloggen
+                      Bedrijfstypen
+                      <ChevronDown
+                        aria-hidden
+                        className={`size-4 transition-transform duration-200 ${
+                          mobileSection === "industries" ? "rotate-180" : ""
+                        }`}
+                      />
                     </button>
-                  </AuthDialog>
+                    {mobileSection === "industries" && (
+                      <ul className="grid grid-cols-2 gap-1 pl-2">
+                        {industriesMenu.map((item) => (
+                          <li key={item.label}>
+                            <Link
+                              href={item.href}
+                              onClick={closeMenu}
+                              className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                            >
+                              <item.icon className="size-5" strokeWidth={2} />
+                              <span>{item.label}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMobileSection((c) =>
+                          c === "product" ? null : "product",
+                        )
+                      }
+                      aria-expanded={mobileSection === "product"}
+                      className={`flex items-center justify-between rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      Product
+                      <ChevronDown
+                        aria-hidden
+                        className={`size-4 transition-transform duration-200 ${
+                          mobileSection === "product" ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {mobileSection === "product" && (
+                      <ul className="grid grid-cols-2 gap-1 pl-2">
+                        {productMenu.flatMap((col) =>
+                          col.items.map((item) => (
+                            <li key={item.label}>
+                              <Link
+                                href={item.href}
+                                onClick={closeMenu}
+                                className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                              >
+                                <item.icon className="size-5" strokeWidth={2} />
+                                <span>{item.label}</span>
+                              </Link>
+                            </li>
+                          )),
+                        )}
+                      </ul>
+                    )}
+
+                    <Link
+                      href="/pricing"
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      Prijzen
+                    </Link>
+
+                    <div className={`my-3 border-t ${dividerBorder}`} />
+
+                    <a
+                      href="#contact"
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      Boek een demo
+                    </a>
+
+                    {!userEmail && (
+                      <AuthDialog>
+                        <button
+                          type="button"
+                          className={`rounded-lg p-2 text-left text-lg font-bold transition-colors ${txtBase} ${txtHover}`}
+                        >
+                          Inloggen
+                        </button>
+                      </AuthDialog>
+                    )}
+                  </>
                 )}
               </div>
             )}
