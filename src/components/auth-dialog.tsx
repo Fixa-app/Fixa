@@ -109,24 +109,6 @@ export function AuthDialog({ children }: { children: ReactElement }) {
               </DialogDescription>
             </DialogHeader>
 
-            <Button
-              type="button"
-              variant="outline"
-              disabled
-              className="h-12 w-full rounded-xl border-foreground/15 bg-background text-base font-bold text-foreground hover:bg-foreground/5"
-            >
-              <GoogleLogo />
-              Doorgaan met Google
-            </Button>
-
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-foreground/10" />
-              <span className="text-xs font-bold tracking-widest text-foreground/50 uppercase">
-                of
-              </span>
-              <div className="h-px flex-1 bg-foreground/10" />
-            </div>
-
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="auth-email" className="text-sm font-semibold">
@@ -156,6 +138,24 @@ export function AuthDialog({ children }: { children: ReactElement }) {
                 {status === "sending" ? "Versturen..." : "Verstuur magic link"}
               </Button>
             </form>
+
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-foreground/10" />
+              <span className="text-xs font-bold tracking-widest text-foreground/50 uppercase">
+                of
+              </span>
+              <div className="h-px flex-1 bg-foreground/10" />
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              disabled
+              className="h-12 w-full rounded-xl border-foreground/15 bg-background text-base font-bold text-foreground hover:bg-foreground/5"
+            >
+              <GoogleLogo />
+              Doorgaan met Google
+            </Button>
 
             <p className="text-center text-xs leading-relaxed text-foreground/60">
               Door door te gaan ga je akkoord met onze{" "}
