@@ -150,7 +150,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid gap-10 border-t border-border py-12 sm:py-16 sm:grid-cols-[220px_1fr] sm:gap-16">
+    <section className="flex flex-col gap-8 border-t border-border py-12 sm:py-16">
       <div className="flex flex-col gap-3">
         <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
           {eyebrow}
@@ -158,7 +158,7 @@ function Section({
         <h2 className="font-display text-3xl leading-[1.05] font-medium tracking-tight">
           {title}
         </h2>
-        <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
           {description}
         </p>
       </div>
@@ -248,64 +248,77 @@ function IdentityRow({
 
 /* ----------------------------- Color ----------------------------- */
 
-const colorTokens = [
-  { name: "background", description: "Page background" },
-  { name: "foreground", description: "Default text" },
-  { name: "primary", description: "Key actions, default buttons" },
-  { name: "primary-foreground", description: "Text on primary" },
-  { name: "secondary", description: "Secondary surfaces" },
-  { name: "secondary-foreground", description: "Text on secondary" },
-  { name: "muted", description: "Subtle backgrounds, card tints" },
-  { name: "muted-foreground", description: "Captions, descriptions" },
-  { name: "accent", description: "Hover backgrounds" },
-  { name: "accent-foreground", description: "Text on accent" },
-  { name: "destructive", description: "Errors, dangerous actions" },
-  { name: "border", description: "Card and input borders" },
-  { name: "input", description: "Input borders" },
-  { name: "ring", description: "Focus rings" },
-  { name: "card", description: "Card backgrounds" },
-  { name: "popover", description: "Dialog, dropdown surfaces" },
+type Swatch = {
+  name: string;
+  hex: string;
+  use: string;
+  textOn?: string;
+};
+
+const palette: Swatch[] = [
+  {
+    name: "background",
+    hex: "#F0F0EB",
+    use: "Page background — warm cream",
+    textOn: "var(--foreground)",
+  },
+  {
+    name: "card surface",
+    hex: "#E2DFD4",
+    use: "AI cards, accordion open rows, WhyFixa visual",
+    textOn: "var(--foreground)",
+  },
+  {
+    name: "foreground",
+    hex: "#1F1A14",
+    use: "Body text, headlines, ink",
+    textOn: "var(--background)",
+  },
+  {
+    name: "primary",
+    hex: "#FC5201",
+    use: "Flame Orange — CTAs, brand anchor, hero moments",
+    textOn: "var(--primary-foreground)",
+  },
+  {
+    name: "teal",
+    hex: "#0D424E",
+    use: "Stormy Teal — WhyFixa reasons card",
+    textOn: "var(--teal-foreground)",
+  },
+  {
+    name: "violet",
+    hex: "#2F203C",
+    use: "Midnight Violet — pricing card, premium accents",
+    textOn: "var(--violet-foreground)",
+  },
+  {
+    name: "burgundy",
+    hex: "#3A1D22",
+    use: "Burgundy — footer surface",
+    textOn: "var(--burgundy-foreground)",
+  },
+  {
+    name: "ink",
+    hex: "#1F1A14",
+    use: "Warm charcoal — scrolled header, dark dropdown glass",
+    textOn: "var(--ink-foreground)",
+  },
 ];
 
 function ColorPalette() {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {colorTokens.map((token) => (
-          <div key={token.name} className="flex flex-col gap-2">
-            <div
-              aria-hidden
-              className="h-20 w-full rounded-xl border border-border"
-              style={{ background: `var(--${token.name})` }}
-            />
-            <div className="flex flex-col gap-0.5">
-              <code className="text-xs font-semibold">--{token.name}</code>
-              <span className="text-xs text-muted-foreground">
-                {token.description}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
-            Brand surfaces
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            Named brand colors for marketing sections. Each ships with a paired
-            foreground token — use them together (bg-ink + text-ink-foreground).
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
-          {brandSurfaces.map((s) => (
+        {palette.map((s) => {
+          const isTokenBg = ["background", "foreground", "primary", "teal", "violet", "burgundy", "ink"].includes(s.name);
+          return (
             <div key={s.name} className="flex flex-col gap-2">
               <div
-                className="flex h-28 w-full items-end justify-between rounded-xl border border-border p-3"
+                className="flex h-28 w-full items-end justify-between rounded-2xl border border-border p-3"
                 style={{
-                  background: `var(--${s.name})`,
-                  color: `var(--${s.name}-foreground)`,
+                  background: isTokenBg ? `var(--${s.name})` : s.hex,
+                  color: s.textOn ?? "var(--foreground)",
                 }}
               >
                 <span className="text-sm font-semibold">Aa</span>
@@ -314,69 +327,24 @@ function ColorPalette() {
                 </code>
               </div>
               <div className="flex flex-col gap-0.5">
-                <code className="text-xs font-semibold">--{s.name}</code>
-                <span className="text-xs text-muted-foreground">{s.use}</span>
+                <code className="text-xs font-semibold">{s.name}</code>
+                <span className="text-xs leading-snug text-muted-foreground">
+                  {s.use}
+                </span>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
+      <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        Brand tokens ship with a paired <code>-foreground</code> for text on
+        top (e.g. <code>bg-teal text-teal-foreground</code>). The full
+        semantic shadcn set (muted, accent, border, ring, popover, …) lives
+        in <code>globals.css</code> and powers the primitives below.
+      </p>
     </div>
   );
 }
-
-const brandSurfaces = [
-  {
-    name: "primary",
-    hex: "#FC5201",
-    use: "Flame Orange — CTAs, brand anchor, hero moments",
-  },
-  {
-    name: "primary-dark",
-    hex: "#9C2D05",
-    use: "Deep Burnt — illustration depth, anchors with teal + violet",
-  },
-  {
-    name: "primary-dark-surface",
-    hex: "#FF6F2C",
-    use: "Lifted Flame — primary on ink / dark surfaces",
-  },
-  {
-    name: "teal",
-    hex: "#0D424E",
-    use: "Stormy Teal — info, charts, cool counter",
-  },
-  {
-    name: "teal-light",
-    hex: "#D8E5E7",
-    use: "Light teal tint — card surfaces hinting at info",
-  },
-  {
-    name: "violet",
-    hex: "#2F203C",
-    use: "Midnight Violet — AI / premium accents, dark surfaces",
-  },
-  {
-    name: "violet-light",
-    hex: "#E0D8E6",
-    use: "Light violet tint — card surfaces hinting at smart features",
-  },
-  {
-    name: "burgundy",
-    hex: "#3A1D22",
-    use: "Burgundy — footer surface, dark trio with teal + violet",
-  },
-  {
-    name: "ink",
-    hex: "#1F1A14",
-    use: "Warm charcoal — body text, headlines",
-  },
-  {
-    name: "background",
-    hex: "#F0F0EB",
-    use: "Page background — warm cream",
-  },
-];
 
 /* ----------------------------- Typography ----------------------------- */
 
@@ -453,8 +421,38 @@ function ComponentShowcase() {
   return (
     <div className="flex flex-col gap-10">
       <ComponentBlock
-        title="Buttons"
-        note="Variants control intent; sizes control fit. Default size is `default`."
+        title="Primary buttons (marketing)"
+        note="The site CTAs are h-12 rounded-xl px-6 text-base font-bold. Primary = bg-primary; black secondary = bg-black; outline used inside the dark hero photo card."
+      >
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button className="h-12 rounded-xl px-6 text-base font-bold">
+              Aan de slag
+            </Button>
+            <Button className="h-12 rounded-xl bg-black px-6 text-base font-bold text-white hover:bg-black/80">
+              Boek een demo
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-base font-bold hover:bg-transparent"
+            >
+              Inloggen
+            </Button>
+          </div>
+          <div className="rounded-2xl bg-ink p-6">
+            <Button
+              variant="outline"
+              className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+            >
+              Boek een demo
+            </Button>
+          </div>
+        </div>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="shadcn button variants"
+        note="The base primitives. Use these inside the product app; pick the marketing pattern above when it lands on a public page."
       >
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -473,8 +471,27 @@ function ComponentShowcase() {
             <Button size="icon" aria-label="Settings">
               <Settings />
             </Button>
-            <Button className="rounded-full px-5">Pill (marketing)</Button>
           </div>
+        </div>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Form fields"
+        note="Focus uses border-primary (Flame Orange), no surrounding glow."
+      >
+        <div className="flex max-w-sm flex-col gap-2">
+          <Label
+            htmlFor="design-input"
+            className="text-sm font-semibold"
+          >
+            E-mailadres
+          </Label>
+          <Input
+            id="design-input"
+            type="email"
+            placeholder="jij@voorbeeld.nl"
+            className="h-12 rounded-xl border-foreground/15 bg-background text-base"
+          />
         </div>
       </ComponentBlock>
 
@@ -488,24 +505,17 @@ function ComponentShowcase() {
         </div>
       </ComponentBlock>
 
-      <ComponentBlock title="Form fields" note="Labels paired with inputs.">
-        <div className="flex max-w-sm flex-col gap-2">
-          <Label htmlFor="design-input">Email</Label>
-          <Input
-            id="design-input"
-            type="email"
-            placeholder="you@example.com"
-          />
-        </div>
-      </ComponentBlock>
-
       <ComponentBlock
         title="Dialog"
-        note="Modal for focused interactions. Trigger via Base UI's render prop."
+        note="rounded-3xl bg-popover p-6 sm:max-w-md. Title uses font-heading text-xl font-semibold."
       >
         <Dialog>
           <DialogTrigger
-            render={<Button variant="outline">Open dialog</Button>}
+            render={
+              <Button className="h-12 rounded-xl px-6 text-base font-bold">
+                Open dialog
+              </Button>
+            }
           />
           <DialogContent>
             <DialogHeader>
