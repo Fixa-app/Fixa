@@ -24,12 +24,10 @@ console.log('Membership:', membership);
 console.log('Membership error:', membershipError);
 
 if (membership) {
-        // Has company → go to dashboard
-        return NextResponse.redirect(`${origin}/dashboard`);
-      } else {
-        // No company → start onboarding
-        return NextResponse.redirect(`${origin}/onboarding/upload`);
-      }
+  return NextResponse.redirect(`${origin}/dashboard`);
+} else {
+  return NextResponse.redirect(`${origin}/onboarding/upload?debug_user=${user?.id}&debug_error=${membershipError?.message}`);
+}
     }
   }
 
