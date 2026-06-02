@@ -47,17 +47,16 @@ export default function OnboardingPreviewPage() {
   }, []);
 
   const handleFinish = async () => {
-  try {
-    // Save all onboarding data to Supabase
-    await saveOnboardingData();
-    
-    // Navigate to dashboard
-    router.push('/dashboard');
-  } catch (error) {
-    console.error('Failed to save onboarding data:', error);
-    alert('Er ging iets mis bij het opslaan. Probeer het opnieuw.');
-  }
-};
+    try {
+      await saveOnboardingData();
+      // Flag for dashboard notification
+      sessionStorage.setItem('just_onboarded', 'true');
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Failed to save onboarding data:', error);
+      alert('Er ging iets mis bij het opslaan. Probeer het opnieuw.');
+    }
+  };
 
   if (!mounted) {
     return null;
