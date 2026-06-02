@@ -159,7 +159,7 @@ function ProductsServicesContent() {
     <>
       <div className="flex min-h-screen flex-col">
         {/* Scrollable content */}
-        <div className="flex-1 space-y-6 pb-32">
+        <div className="flex-1 space-y-6 pb-32 p-6">
           {/* Progress indicator with back button */}
           <div className="flex items-center gap-4">
             <Button
