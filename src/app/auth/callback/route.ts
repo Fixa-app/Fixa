@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -10,24 +11,25 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      // Check if user already has a company
       const { data: { user } } = await supabase.auth.getUser();
 
-      const { data: membership, error: membershipError } = await supabase
-  .from('company_members')
-  .select('company_id')
-  .eq('user_id', user?.id)
-  .single();
+      // Use service role to bypass RLS for company check
+      const serviceSupabase = createServiceClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
 
-console.log('User ID:', user?.id);
-console.log('Membership:', membership);
-console.log('Membership error:', membershipError);
+      const { data: membership } = await serviceSupabase
+        .from('company_members')
+        .select('company_id')
+        .eq('user_id', user?.id)
+        .single();
 
-if (membership) {
-  return NextResponse.redirect(`${origin}/dashboard`);
-} else {
-  return NextResponse.redirect(`${origin}/onboarding/upload?debug_user=${user?.id}&debug_error=${membershipError?.message}`);
-}
+      if (membership) {
+        return NextResponse.redirect(`${origin}/dashboard`);
+      } else {
+        return NextResponse.redirect(`${origin}/onboarding/upload`);
+      }
     }
   }
 
