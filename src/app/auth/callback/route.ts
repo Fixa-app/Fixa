@@ -28,7 +28,7 @@ export async function GET(request: Request) {
       if (membership) {
         return NextResponse.redirect(`${origin}/dashboard`);
       } else {
-        return NextResponse.redirect(`${origin}/onboarding/upload`);
+        return NextResponse.redirect(`${origin}/onboarding/upload?uid=${user?.id}&has_key=${!!process.env.SUPABASE_SERVICE_ROLE_KEY}&membership=${JSON.stringify(membership)}`);
       }
     }
   }
