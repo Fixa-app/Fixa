@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -7,7 +8,6 @@ export async function proxy(request: NextRequest) {
   // Pass pathname to layout via header
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-pathname', pathname);
-
 
   let response = NextResponse.next({
     request: { headers: requestHeaders },
@@ -46,9 +46,15 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Use service role for company checks (bypasses RLS)
+  const serviceSupabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   // If logged in and on onboarding - check if already has company
   if (user && pathname.startsWith('/onboarding')) {
-    const { data: membership } = await supabase
+    const { data: membership } = await serviceSupabase
       .from('company_members')
       .select('company_id')
       .eq('user_id', user.id)
@@ -61,7 +67,7 @@ export async function proxy(request: NextRequest) {
 
   // If logged in and on dashboard - check if has company
   if (user && pathname.startsWith('/dashboard')) {
-    const { data: membership } = await supabase
+    const { data: membership } = await serviceSupabase
       .from('company_members')
       .select('company_id')
       .eq('user_id', user.id)
