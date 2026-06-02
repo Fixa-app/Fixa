@@ -202,14 +202,16 @@ export default function OnboardingPreviewPage() {
 
       {/* Sticky footer */}
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <Button
-          size="lg"
-          className="m-6 w-[calc(100%-3rem)]"
-          onClick={handleFinish}
-        >
-          Finish setup
-        </Button>
-      </div>
+  <div className="mx-auto w-full max-w-2xl">
+    <Button
+      size="lg"
+      className="m-6 w-[calc(100%-3rem)]"
+      onClick={handleFinish}
+    >
+      Finish setup
+    </Button>
+  </div>
+</div>
     </div>
   );
 }
