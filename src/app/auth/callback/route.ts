@@ -13,13 +13,17 @@ export async function GET(request: Request) {
       // Check if user already has a company
       const { data: { user } } = await supabase.auth.getUser();
 
-      const { data: membership } = await supabase
-        .from('company_members')
-        .select('company_id')
-        .eq('user_id', user?.id)
-        .single();
+      const { data: membership, error: membershipError } = await supabase
+  .from('company_members')
+  .select('company_id')
+  .eq('user_id', user?.id)
+  .single();
 
-      if (membership) {
+console.log('User ID:', user?.id);
+console.log('Membership:', membership);
+console.log('Membership error:', membershipError);
+
+if (membership) {
         // Has company → go to dashboard
         return NextResponse.redirect(`${origin}/dashboard`);
       } else {
