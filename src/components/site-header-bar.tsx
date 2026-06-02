@@ -78,9 +78,11 @@ type OpenMenu = "product" | "industries" | "mobile" | "account" | null;
 export function SiteHeaderBar({
   userEmail,
   userIsAdmin,
+  hasCompany,
 }: {
   userEmail: string | null;
   userIsAdmin: boolean;
+  hasCompany: boolean;
 }) {
   const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
   const [mobileSection, setMobileSection] = useState<
@@ -254,6 +256,7 @@ export function SiteHeaderBar({
           <div className="flex items-center gap-3">
             {userEmail ? (
               <>
+                <div className="relative flex items-center self-stretch">
                 <button
                   type="button"
                   aria-expanded={accountOpen}
@@ -277,6 +280,109 @@ export function SiteHeaderBar({
                     }`}
                   />
                 </button>
+                <div
+                  aria-hidden={!accountOpen}
+                  className={`absolute top-full right-0 z-50 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl p-3 shadow-lg transition-all duration-200 ease-out ${txtBase} bg-ink/85 backdrop-blur-md ${
+                    accountOpen
+                      ? "translate-y-0 scale-100 opacity-100"
+                      : "pointer-events-none -translate-y-2 scale-95 opacity-0"
+                  }`}
+                >
+                  <div
+                    className={`flex items-center gap-3 border-b px-2 pb-3 ${dividerBorder}`}
+                  >
+                    <span
+                      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground"
+                      aria-hidden
+                    >
+                      {accountInitial}
+                    </span>
+                    <span
+                      className="truncate text-base font-bold"
+                      title={accountFullName || (userEmail ?? undefined)}
+                    >
+                      {accountFullName}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1 pt-2">
+                    <Link
+                      href="/account"
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      Account
+                    </Link>
+                    <Link
+                      href={hasCompany ? "/dashboard" : "/onboarding/company"}
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      {hasCompany ? "Company Dashboard" : "Create company"}
+                    </Link>
+                    <Link
+                      href="/refer"
+                      onClick={closeMenu}
+                      className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                    >
+                      Refer a friend
+                    </Link>
+                    {userIsAdmin && (
+                      <>
+                        <div className={`my-1 border-t ${dividerBorder}`} />
+                        <span
+                          className={`px-2 pt-1 text-xs font-bold tracking-widest uppercase ${txtMuted}`}
+                        >
+                          Admin
+                        </span>
+                        <Link
+                          href="/admin/blueprint"
+                          onClick={closeMenu}
+                          className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                        >
+                          Blueprint
+                        </Link>
+                        <Link
+                          href="/admin/users"
+                          onClick={closeMenu}
+                          className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                        >
+                          Users
+                        </Link>
+                        <Link
+                          href="/admin/design"
+                          onClick={closeMenu}
+                          className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                        >
+                          Design
+                        </Link>
+                        <Link
+                          href="/plan"
+                          onClick={closeMenu}
+                          className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                        >
+                          Plan
+                        </Link>
+                        <Link
+                          href="/plan/workflow"
+                          onClick={closeMenu}
+                          className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                        >
+                          Workflow
+                        </Link>
+                      </>
+                    )}
+                    <div className={`my-1 border-t ${dividerBorder}`} />
+                    <form action={signOut}>
+                      <button
+                        type="submit"
+                        className={`w-full rounded-lg p-2 text-left text-base font-bold transition-colors ${txtBase} ${txtHover}`}
+                      >
+                        Uitloggen
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                </div>
                 <button
                   type="button"
                   aria-label="Open menu"
@@ -505,96 +611,6 @@ export function SiteHeaderBar({
             )}
           </div>
         </div>
-        {userEmail && (
-          <div
-            aria-hidden={!accountOpen}
-            className={`absolute top-full right-0 z-50 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl p-3 shadow-lg transition-all duration-200 ease-out ${txtBase} bg-ink/85 backdrop-blur-md ${
-              accountOpen
-                ? "translate-y-0 scale-100 opacity-100"
-                : "pointer-events-none -translate-y-2 scale-95 opacity-0"
-            }`}
-          >
-            <div
-              className={`flex items-center gap-3 border-b px-2 pb-3 ${dividerBorder}`}
-            >
-              <span
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground"
-                aria-hidden
-              >
-                {accountInitial}
-              </span>
-              <span
-                className="truncate text-base font-bold"
-                title={accountFullName || (userEmail ?? undefined)}
-              >
-                {accountFullName}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1 pt-2">
-              <Link
-                href="/dashboard"
-                onClick={closeMenu}
-                className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-              >
-                Account
-              </Link>
-              {userIsAdmin && (
-                <>
-                  <div className={`my-1 border-t ${dividerBorder}`} />
-                  <span
-                    className={`px-2 pt-1 text-xs font-bold tracking-widest uppercase ${txtMuted}`}
-                  >
-                    Admin
-                  </span>
-                  <Link
-                    href="/admin/blueprint"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Blueprint
-                  </Link>
-                  <Link
-                    href="/admin/users"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Users
-                  </Link>
-                  <Link
-                    href="/admin/design"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Design
-                  </Link>
-                  <Link
-                    href="/plan"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Plan
-                  </Link>
-                  <Link
-                    href="/plan/workflow"
-                    onClick={closeMenu}
-                    className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                  >
-                    Workflow
-                  </Link>
-                </>
-              )}
-              <div className={`my-1 border-t ${dividerBorder}`} />
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className={`w-full rounded-lg p-2 text-left text-base font-bold transition-colors ${txtBase} ${txtHover}`}
-                >
-                  Uitloggen
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );

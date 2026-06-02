@@ -17,10 +17,19 @@ export async function SiteHeader() {
   const { data: { user } } = await supabase.auth.getUser();
   const userIsAdmin = await isAdmin(user);
 
+  let hasCompany = false;
+  if (user) {
+    const { data: companies } = await supabase.rpc("get_user_companies", {
+      p_user_id: user.id,
+    });
+    hasCompany = (companies?.length ?? 0) > 0;
+  }
+
   return (
     <SiteHeaderBar
       userEmail={user?.email ?? null}
       userIsAdmin={userIsAdmin}
+      hasCompany={hasCompany}
     />
   );
 }
