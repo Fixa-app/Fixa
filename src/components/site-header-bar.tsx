@@ -532,7 +532,7 @@ export function SiteHeaderBar({
             </div>
             <div className="flex flex-col gap-1 pt-2">
               <Link
-                href="/onboarding/company"
+                href="/dashboard"
                 onClick={closeMenu}
                 className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
               >
