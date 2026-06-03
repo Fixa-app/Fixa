@@ -10,6 +10,7 @@ import {
   Plus,
   Receipt,
   Repeat,
+  Settings,
   UserCog,
   Users,
   Wrench,
@@ -57,14 +58,15 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: "Facturen", href: "/dashboard/invoices", icon: Receipt },
       { label: "Boekhouding", href: "/dashboard/accounting", icon: BookOpen },
+      { label: "Rapporten", href: "/dashboard/reports", icon: BarChart3 },
     ],
   },
   {
     title: "Beheer",
     items: [
       { label: "Klanten", href: "/dashboard/customers", icon: Users },
-      { label: "Rapporten", href: "/dashboard/reports", icon: BarChart3 },
       { label: "Gebruikers", href: "/dashboard/users", icon: UserCog },
+      { label: "Instellingen", href: "/dashboard/settings", icon: Settings },
     ],
   },
 ];
