@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactElement } from "react";
+import { useEffect, useState, type FormEvent, type ReactElement } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 
-type Status = "idle" | "sending" | "sent" | "error";
+const RESEND_SECONDS = 30;
+
+type Step = "email" | "name" | "code";
 
 function GoogleLogo() {
   return (
@@ -41,75 +43,154 @@ function GoogleLogo() {
 
 export function AuthDialog({ children }: { children: ReactElement }) {
   const [open, setOpen] = useState(false);
+  const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [resendIn, setResendIn] = useState(0);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!email) return;
+  // Resend countdown.
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const id = setTimeout(() => setResendIn((n) => n - 1), 1000);
+    return () => clearTimeout(id);
+  }, [resendIn]);
 
-    setStatus("sending");
-    setErrorMessage("");
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      setStatus("error");
-      setErrorMessage(error.message);
-      return;
-    }
-
-    setStatus("sent");
+  function reset() {
+    setStep("email");
+    setEmail("");
+    setFirstName("");
+    setLastName("");
+    setPhone("");
+    setCode("");
+    setIsNewUser(false);
+    setLoading(false);
+    setError("");
+    setResendIn(0);
   }
 
   function handleOpenChange(next: boolean) {
     setOpen(next);
-    if (!next) {
-      setTimeout(() => {
-        setEmail("");
-        setStatus("idle");
-        setErrorMessage("");
-      }, 200);
+    if (!next) setTimeout(reset, 200);
+  }
+
+  function sendCode(createUser: boolean) {
+    const supabase = createClient();
+    return supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: createUser,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        ...(createUser
+          ? {
+              data: {
+                first_name: firstName,
+                last_name: lastName,
+                phone,
+                full_name: `${firstName} ${lastName}`.trim(),
+              },
+            }
+          : {}),
+      },
+    });
+  }
+
+  // Step 1 — email. We try to sign in an existing user; if there's none,
+  // Supabase errors and we route into account creation.
+  async function handleEmailSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    setError("");
+    const supabase = createClient();
+    const { error: signInError } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    setLoading(false);
+    if (signInError) {
+      setIsNewUser(true);
+      setStep("name");
+    } else {
+      setIsNewUser(false);
+      setStep("code");
+      setResendIn(RESEND_SECONDS);
     }
+  }
+
+  // Step 2 (new users) — collect details, create the account, send the code.
+  async function handleNameSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!firstName || !lastName) return;
+    setLoading(true);
+    setError("");
+    const { error: sendError } = await sendCode(true);
+    setLoading(false);
+    if (sendError) {
+      setError(sendError.message);
+      return;
+    }
+    setStep("code");
+    setResendIn(RESEND_SECONDS);
+  }
+
+  // Step 3 — verify the code.
+  async function handleCodeSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (code.length < 6) return;
+    setLoading(true);
+    setError("");
+    const supabase = createClient();
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: "email",
+    });
+    if (verifyError) {
+      setLoading(false);
+      setError("Onjuiste of verlopen code. Probeer het opnieuw.");
+      return;
+    }
+    window.location.assign("/dashboard");
+  }
+
+  async function handleResend() {
+    if (resendIn > 0) return;
+    setError("");
+    setCode("");
+    const { error: sendError } = await sendCode(isNewUser);
+    if (sendError) {
+      setError(sendError.message);
+      return;
+    }
+    setResendIn(RESEND_SECONDS);
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={children} />
       <DialogContent className="sm:max-w-md">
-        {status === "sent" ? (
-          <div className="flex flex-col gap-3">
-            <DialogHeader>
-              <DialogTitle className="font-display text-2xl">
-                Bekijk je inbox
-              </DialogTitle>
-              <DialogDescription className="text-base">
-                We hebben een magic link gestuurd naar{" "}
-                <strong className="text-foreground">{email}</strong>. Klik op de
-                link om in te loggen. Je kunt dit venster sluiten.
-              </DialogDescription>
-            </DialogHeader>
-          </div>
-        ) : (
+        {/* Step 1 — email */}
+        {step === "email" && (
           <div className="flex flex-col gap-6">
             <DialogHeader className="gap-2">
               <DialogTitle className="font-display text-2xl">
                 Welkom bij Fixa
               </DialogTitle>
               <DialogDescription className="text-base leading-relaxed">
-                Log in of maak een nieuw account. Eén klik om te beginnen —
-                geen wachtwoord nodig.
+                Log in of maak een account aan. Geen wachtwoord nodig.
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="auth-email" className="text-sm font-semibold">
                   E-mailadres
@@ -121,21 +202,19 @@ export function AuthDialog({ children }: { children: ReactElement }) {
                   autoComplete="email"
                   autoFocus
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="jij@voorbeeld.nl"
-                  disabled={status === "sending"}
+                  disabled={loading}
                   className="h-12 rounded-xl border-foreground/15 bg-background text-base"
                 />
               </div>
-              {errorMessage && (
-                <p className="text-sm text-destructive">{errorMessage}</p>
-              )}
+              {error && <p className="text-sm text-destructive">{error}</p>}
               <Button
                 type="submit"
-                disabled={status === "sending" || !email}
+                disabled={loading || !email}
                 className="h-12 rounded-xl text-base font-bold"
               >
-                {status === "sending" ? "Versturen..." : "Verstuur magic link"}
+                {loading ? "Bezig..." : "Doorgaan met e-mail"}
               </Button>
             </form>
 
@@ -168,6 +247,161 @@ export function AuthDialog({ children }: { children: ReactElement }) {
               </a>
               .
             </p>
+          </div>
+        )}
+
+        {/* Step 2 — create account (new users) */}
+        {step === "name" && (
+          <div className="flex flex-col gap-6">
+            <DialogHeader className="gap-2">
+              <DialogTitle className="font-display text-2xl">
+                Maak je account aan
+              </DialogTitle>
+              <DialogDescription className="text-base leading-relaxed">
+                Vul je gegevens in om te beginnen. We sturen daarna een code naar{" "}
+                <strong className="text-foreground">{email}</strong>.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleNameSubmit} className="flex flex-col gap-4">
+              <div className="flex gap-3">
+                <div className="flex flex-1 flex-col gap-2">
+                  <Label htmlFor="auth-first" className="text-sm font-semibold">
+                    Voornaam
+                  </Label>
+                  <Input
+                    id="auth-first"
+                    required
+                    autoFocus
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    disabled={loading}
+                    className="h-12 rounded-xl border-foreground/15 bg-background text-base"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col gap-2">
+                  <Label htmlFor="auth-last" className="text-sm font-semibold">
+                    Achternaam
+                  </Label>
+                  <Input
+                    id="auth-last"
+                    required
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    disabled={loading}
+                    className="h-12 rounded-xl border-foreground/15 bg-background text-base"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="auth-phone" className="text-sm font-semibold">
+                  Telefoonnummer
+                </Label>
+                <Input
+                  id="auth-phone"
+                  type="tel"
+                  autoComplete="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="06 12345678"
+                  disabled={loading}
+                  className="h-12 rounded-xl border-foreground/15 bg-background text-base"
+                />
+              </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              <Button
+                type="submit"
+                disabled={loading || !firstName || !lastName}
+                className="h-12 rounded-xl text-base font-bold"
+              >
+                {loading ? "Bezig..." : "Account aanmaken"}
+              </Button>
+            </form>
+
+            <button
+              type="button"
+              onClick={() => {
+                setStep("email");
+                setError("");
+              }}
+              className="text-sm font-semibold text-foreground/60 hover:text-foreground"
+            >
+              ← Ander e-mailadres
+            </button>
+          </div>
+        )}
+
+        {/* Step 3 — verify code */}
+        {step === "code" && (
+          <div className="flex flex-col gap-6">
+            <DialogHeader className="gap-2">
+              <DialogTitle className="font-display text-2xl">
+                Controleer je e-mail
+              </DialogTitle>
+              <DialogDescription className="text-base leading-relaxed">
+                We hebben een code gestuurd naar{" "}
+                <strong className="text-foreground">{email}</strong>. Voer de
+                code in, of gebruik de inlogknop in de e-mail.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleCodeSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="auth-code" className="text-sm font-semibold">
+                  Verificatiecode
+                </Label>
+                <Input
+                  id="auth-code"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  autoFocus
+                  maxLength={6}
+                  value={code}
+                  onChange={(e) =>
+                    setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
+                  placeholder="123456"
+                  disabled={loading}
+                  className="h-12 rounded-xl border-foreground/15 bg-background text-center text-xl font-bold tracking-[0.5em]"
+                />
+              </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              <Button
+                type="submit"
+                disabled={loading || code.length < 6}
+                className="h-12 rounded-xl text-base font-bold"
+              >
+                {loading ? "Bezig..." : "Inloggen"}
+              </Button>
+            </form>
+
+            <div className="text-center text-sm text-foreground/60">
+              {resendIn > 0 ? (
+                <span>Geen code ontvangen? Opnieuw versturen in {resendIn}s</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  className="font-semibold text-foreground hover:underline"
+                >
+                  Opnieuw versturen
+                </button>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setStep("email");
+                setCode("");
+                setError("");
+              }}
+              className="text-sm font-semibold text-foreground/60 hover:text-foreground"
+            >
+              ← Ander e-mailadres
+            </button>
           </div>
         )}
       </DialogContent>
