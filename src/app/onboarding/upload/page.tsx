@@ -109,7 +109,9 @@ export default function OnboardingUploadPage() {
 
         {/* Header + subtitle */}
         <div className="space-y-2">
-          <h1 className="font-display text-3xl font-bold">Upload een offerte</h1>
+          <h1 className="font-display text-3xl font-semibold">
+            Upload een offerte
+          </h1>
           <p className="text-base text-muted-foreground">
             We halen automatisch alles eruit wat we nodig hebben om offertes via
             Fixa te versturen.
@@ -182,7 +184,7 @@ export default function OnboardingUploadPage() {
               </svg>
             )}
           </div>
-          <p className="mt-4 text-base font-medium text-foreground">
+          <p className="mt-4 text-xl font-semibold text-foreground">
             {uploading
               ? "Bezig met verwerken..."
               : file
@@ -215,24 +217,22 @@ export default function OnboardingUploadPage() {
         )}
 
         {/* Actions */}
-        <div className="space-y-3">
+        <div className="flex items-center justify-between gap-4">
+          <Button
+            variant="link"
+            className="px-0"
+            onClick={handleSkip}
+            disabled={uploading}
+          >
+            Overslaan en handmatig invoeren
+          </Button>
           <Button
             size="lg"
-            className="w-full"
             onClick={handleContinue}
             disabled={uploading || !success}
             aria-label="Doorgaan naar bedrijfsgegevens"
           >
             Doorgaan
-          </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            className="w-full"
-            onClick={handleSkip}
-            disabled={uploading}
-          >
-            Overslaan en handmatig invoeren
           </Button>
         </div>
       </div>
