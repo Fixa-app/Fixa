@@ -11,7 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 import {
+  ArrowRight,
   Calendar,
   CheckCircle2,
   FileText,
@@ -35,7 +37,6 @@ export default function DesignPage() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col px-4 py-12 sm:py-16 lg:px-5">
       <PageHeader />
-      <TypographyHero />
       <Section eyebrow="01" title="Stack">
         <StackGrid />
       </Section>
@@ -84,21 +85,6 @@ function PageHeader() {
         screens feel like they belong.
       </p>
     </header>
-  );
-}
-
-function TypographyHero() {
-  return (
-    <div className="flex flex-col gap-4 border-t border-border py-12 sm:py-16">
-      <p className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-        Minder papierwerk, meer vakwerk.
-      </p>
-      <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
-        The display font carries the brand voice. Use it for editorial
-        moments — hero headlines, section titles on marketing. Never for body
-        copy.
-      </p>
-    </div>
   );
 }
 
@@ -163,21 +149,24 @@ function IdentityRows() {
   return (
     <div className="flex flex-col gap-8">
       <IdentityRow
-        label="Public wordmark"
+        label="Logo"
+        sample={
+          <Image
+            src="/fixa-logo.svg"
+            alt="Fixa"
+            width={120}
+            height={48}
+            className="h-10 w-auto"
+          />
+        }
+        note="The Fixa mark. Use on light surfaces; invert on dark backgrounds (e.g. the marketing header)."
+      />
+      <IdentityRow
+        label="Wordmark"
         sample={
           <span className="text-3xl font-semibold tracking-tight">Fixa</span>
         }
-        note="Manrope semibold, slight negative tracking. Marketing site, emails, signed-in product header."
-      />
-      <IdentityRow
-        label="Admin wordmark"
-        sample={
-          <span className="text-3xl font-semibold tracking-tight">
-            Fixa <span className="text-muted-foreground">·</span>{" "}
-            <span className="text-muted-foreground">Admin</span>
-          </span>
-        }
-        note="Wordmark + middle-dot + muted 'Admin'. Dark header background carries the rest of the distinction."
+        note="Manrope semibold, slight negative tracking. For text contexts — emails, footers, places the logo doesn't fit."
       />
     </div>
   );
@@ -380,46 +369,36 @@ function ComponentShowcase() {
   return (
     <div className="flex flex-col gap-10">
       <ComponentBlock
-        title="Primary buttons (marketing)"
-        note="The site CTAs are h-12 rounded-xl px-6 text-base font-bold. Primary = bg-primary; black secondary = bg-black; outline used inside the dark hero photo card."
+        title="Buttons"
+        note="Four styles: Primary (filled), Secondary (filled black), Outline, and Text link. Marketing CTAs add h-12 rounded-xl px-6 text-base font-bold."
       >
         <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <Button className="h-12 rounded-xl px-6 text-base font-bold">
-              Aan de slag
-            </Button>
-            <Button className="h-12 rounded-xl bg-black px-6 text-base font-bold text-white hover:bg-black/80">
-              Boek een demo
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-base font-bold hover:bg-transparent"
-            >
-              Inloggen
-            </Button>
-          </div>
-          <div className="rounded-2xl bg-ink p-6">
-            <Button
-              variant="outline"
-              className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
-            >
-              Boek een demo
-            </Button>
-          </div>
-        </div>
-      </ComponentBlock>
-
-      <ComponentBlock
-        title="Buttons"
-        note="Four styles: Primary (filled), Secondary (filled black), Outline, and Text link."
-      >
-        <div className="flex flex-col gap-4">
+          {/* The four styles */}
           <div className="flex flex-wrap items-center gap-3">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="link">Link</Button>
+            <Button variant="link" className="gap-1">
+              Text link
+              <ArrowRight className="size-4" />
+            </Button>
           </div>
+
+          {/* Marketing CTA sizing */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button className="h-12 rounded-xl px-6 text-base font-bold">
+              Aan de slag
+            </Button>
+            <Button
+              variant="secondary"
+              className="h-12 rounded-xl px-6 text-base font-bold"
+            >
+              Boek een demo
+            </Button>
+          </div>
+
+          {/* Formats (sizes) */}
           <div className="flex flex-wrap items-center gap-3">
             <Button size="xs">XS</Button>
             <Button size="sm">SM</Button>
