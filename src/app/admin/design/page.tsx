@@ -223,9 +223,9 @@ const palette: Swatch[] = [
     textOn: "var(--foreground)",
   },
   {
-    name: "foreground",
+    name: "foreground / secondary",
     hex: "#1F1A14",
-    use: "Body text, headlines, ink",
+    use: "Body text & headlines; also secondary buttons, badges & dark header",
     textOn: "var(--background)",
   },
   {
@@ -251,12 +251,6 @@ const palette: Swatch[] = [
     hex: "#3A1D22",
     use: "Burgundy — footer surface",
     textOn: "var(--burgundy-foreground)",
-  },
-  {
-    name: "secondary",
-    hex: "#1F1A14",
-    use: "Filled black — secondary buttons & badges, dark header",
-    textOn: "var(--secondary-foreground)",
   },
 ];
 
