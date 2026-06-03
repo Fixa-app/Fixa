@@ -17,7 +17,7 @@ function formatCurrency(amount: number) {
     currency: "EUR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amount).replace(/\s/g, "");
 }
 
 type StatusPillVariant =
@@ -43,7 +43,7 @@ function StatusPill({ status, label }: { status: string; label: string }) {
     PILL_STYLES[status as StatusPillVariant] ?? PILL_STYLES["draft"];
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${style}`}
+      className={`inline-flex w-fit items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${style}`}
     >
       {label}
       <ChevronRight className="h-3 w-3" />
