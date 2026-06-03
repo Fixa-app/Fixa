@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   MOCK_QUOTES,
   MOCK_INVOICES,
@@ -60,6 +61,7 @@ type SectionProps = {
   addLabel: string;
   emptyMessage: string;
   emptyAction: string;
+  showAdd?: boolean;
 };
 
 function DashboardSection({
@@ -71,6 +73,7 @@ function DashboardSection({
   addLabel,
   emptyMessage,
   emptyAction,
+  showAdd = true,
 }: SectionProps) {
   const [visible, setVisible] = useState(false);
 
@@ -88,29 +91,35 @@ function DashboardSection({
             {rows.length > 0 ? "Jouw volgende acties" : ""}
           </p>
         </div>
-        <div className="group relative">
-          <button
-            onClick={onAddClick}
-            aria-label={addLabel}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-          <span className="pointer-events-none absolute right-0 top-[-36px] hidden whitespace-nowrap rounded-lg border border-border bg-background px-2 py-1 text-xs group-hover:block">
-            {addLabel}
-          </span>
-        </div>
+        {showAdd && (
+          <div className="group relative">
+            <button
+              onClick={onAddClick}
+              aria-label={addLabel}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+            <span className="pointer-events-none absolute right-0 top-[-36px] hidden whitespace-nowrap rounded-lg border border-border bg-background px-2 py-1 text-xs group-hover:block">
+              {addLabel}
+            </span>
+          </div>
+        )}
       </div>
 
       {rows.length === 0 ? (
         <div className="mt-4">
           <p className="text-sm text-muted-foreground">{emptyMessage}</p>
-          <button
-            onClick={onAddClick}
-            className="mt-3 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
-          >
-            {emptyAction}
-          </button>
+          {showAdd && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onAddClick}
+              className="mt-3"
+            >
+              {emptyAction}
+            </Button>
+          )}
         </div>
       ) : (
         <>
@@ -145,13 +154,10 @@ function DashboardSection({
           </div>
 
           <div className="mt-3 border-t border-border pt-3">
-            <button
-              onClick={onViewAll}
-              className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted"
-            >
+            <Button variant="outline" size="sm" onClick={onViewAll}>
               Volledige lijst
               <ChevronRight className="h-3 w-3" />
-            </button>
+            </Button>
           </div>
         </>
       )}
@@ -198,6 +204,7 @@ export default function DashboardPage() {
         addLabel="Nieuwe offerte toevoegen"
         emptyMessage="Alles op orde. Klaar om je volgende offerte te sturen?"
         emptyAction="Nieuwe offerte"
+        showAdd={true}
       />
 
       <DashboardSection
@@ -209,8 +216,9 @@ export default function DashboardPage() {
         onAddClick={() => router.push("/dashboard/invoices/new")}
         onViewAll={() => router.push("/dashboard/invoices")}
         addLabel="Nieuwe factuur toevoegen"
-        emptyMessage="Geen openstaande facturen. Klaar om de volgende te sturen?"
+        emptyMessage="Geen openstaande facturen."
         emptyAction="Nieuwe factuur"
+        showAdd={false}
       />
     </div>
   );
