@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
+import { CompanySwitcher } from "./company-switcher";
 
 const ROLE_LABELS: Record<string, string> = {
   owner: "Eigenaar",
@@ -12,10 +13,14 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 export function DashboardSidebar({
+  companies,
+  activeCompanyId,
   companyName,
   userName,
   role,
 }: {
+  companies: { id: string; name: string }[];
+  activeCompanyId: string;
   companyName: string;
   userName: string;
   role: string;
@@ -29,19 +34,21 @@ export function DashboardSidebar({
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
       {/* Brand / company */}
-      <div className="flex items-center gap-3 border-b border-border px-4 py-4">
+      <div className="border-b border-border px-4 py-4">
         <Image
           src="/fixa-logo.svg"
           alt="Fixa"
-          width={64}
-          height={64}
-          className="h-7 w-auto"
+          width={120}
+          height={48}
+          className="h-11 w-auto"
         />
-        {companyName && (
-          <span className="truncate text-sm font-bold" title={companyName}>
-            {companyName}
-          </span>
-        )}
+        <div className="mt-3">
+          <CompanySwitcher
+            companies={companies}
+            activeId={activeCompanyId}
+            companyName={companyName}
+          />
+        </div>
       </div>
 
       {/* Navigation */}
