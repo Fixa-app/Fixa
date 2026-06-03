@@ -122,7 +122,6 @@ const stackItems = [
   { label: "Icons", value: "lucide-react" },
   { label: "Display font", value: "Sora (headings)" },
   { label: "Sans font", value: "Manrope (body + nav)" },
-  { label: "Mono font", value: "Geist Mono" },
   { label: "Brand colors", value: "Flame Orange + Stormy Teal + Midnight Violet" },
   { label: "Theme", value: "Light + dark via CSS variables" },
 ];
@@ -270,7 +269,7 @@ function ColorPalette() {
                 }}
               >
                 <span className="text-sm font-semibold">Aa</span>
-                <code className="font-mono text-[10px] tracking-tight uppercase opacity-80">
+                <code className="text-[10px] tracking-tight uppercase opacity-80">
                   {s.hex}
                 </code>
               </div>
@@ -380,15 +379,6 @@ const typeRows: TypeRow[] = [
     weight: "Semibold",
     tracking: "Wider · uppercase",
   },
-  {
-    name: "Code / mono",
-    sample: "fixa-app/fixa · supabase/migrations/2026...sql",
-    className: "font-mono text-sm",
-    font: "Mono · Geist Mono",
-    size: "text-sm · 14px",
-    weight: "Normal",
-    tracking: "Normal",
-  },
 ];
 
 function TypeScale() {
@@ -402,7 +392,7 @@ function TypeScale() {
           <div className={`min-w-0 ${row.className}`}>{row.sample}</div>
           <div className="shrink-0 sm:w-64 sm:text-right">
             <p className="text-sm font-semibold text-foreground">{row.name}</p>
-            <p className="font-mono text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {row.font} · {row.size} · {row.weight} · {row.tracking}
             </p>
           </div>
@@ -703,7 +693,7 @@ function SpacingTable() {
           key={token}
           className="flex flex-col gap-1 border-b border-border py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
         >
-          <code className="font-mono text-sm font-semibold">{token}</code>
+          <code className="text-sm font-semibold">{token}</code>
           <span className="text-sm text-muted-foreground">{use}</span>
         </div>
       ))}
@@ -730,8 +720,8 @@ function BreakpointTable() {
           key={bp.name}
           className="grid grid-cols-[80px_120px_1fr] gap-4 border-b border-border py-3 text-sm"
         >
-          <code className="font-mono font-semibold">{bp.name}</code>
-          <code className="font-mono text-muted-foreground">{bp.min}</code>
+          <code className="font-semibold">{bp.name}</code>
+          <code className="text-muted-foreground">{bp.min}</code>
           <span className="text-muted-foreground">{bp.use}</span>
         </div>
       ))}
