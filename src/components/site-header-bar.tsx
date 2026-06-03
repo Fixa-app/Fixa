@@ -313,11 +313,11 @@ export function SiteHeaderBar({
                       Account
                     </Link>
                     <Link
-                      href={hasCompany ? "/dashboard" : "/onboarding/company"}
+                      href={hasCompany ? "/dashboard" : "/onboarding/upload"}
                       onClick={closeMenu}
                       className={`rounded-lg p-2 text-base font-bold transition-colors ${txtBase} ${txtHover}`}
                     >
-                      {hasCompany ? "Company Dashboard" : "Create company"}
+                      {hasCompany ? "Company Dashboard" : "Onboarding afronden"}
                     </Link>
                     <Link
                       href="/refer"

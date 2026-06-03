@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { parseQuoteWithAI, type ParsedQuoteData } from "@/lib/parse-quote-ai";
 
@@ -14,11 +15,11 @@ export default function OnboardingUploadPage() {
 
   // Check if we already have parsed data
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const hasData = sessionStorage.getItem('onboarding_company');
+    if (typeof window !== "undefined") {
+      const hasData = sessionStorage.getItem("onboarding_company");
       if (hasData) {
         // Show success state if returning from next screens
-        const filename = sessionStorage.getItem('onboarding_filename');
+        const filename = sessionStorage.getItem("onboarding_filename");
         if (filename) {
           setFile(new File([], filename));
           setSuccess(true);
@@ -39,50 +40,63 @@ export default function OnboardingUploadPage() {
     try {
       // Parse immediately
       const parsedData: ParsedQuoteData = await parseQuoteWithAI(selectedFile);
-      
-      console.log('Parsed data:', parsedData);
 
       // Store in sessionStorage
-      sessionStorage.setItem('onboarding_company', JSON.stringify(parsedData.company));
-      sessionStorage.setItem('onboarding_lineItems', JSON.stringify(parsedData.lineItems));
-      sessionStorage.setItem('onboarding_standardText', JSON.stringify(parsedData.standardText));
-      sessionStorage.setItem('onboarding_filename', selectedFile.name);
+      sessionStorage.setItem(
+        "onboarding_company",
+        JSON.stringify(parsedData.company),
+      );
+      sessionStorage.setItem(
+        "onboarding_lineItems",
+        JSON.stringify(parsedData.lineItems),
+      );
+      sessionStorage.setItem(
+        "onboarding_standardText",
+        JSON.stringify(parsedData.standardText),
+      );
+      sessionStorage.setItem("onboarding_filename", selectedFile.name);
 
-      // Show success
       setUploading(false);
       setSuccess(true);
     } catch (err) {
-      console.error('Parsing error:', err);
-      setError('Failed to parse document. Please try again or skip and add manually.');
+      console.error("Parsing error:", err);
+      setError(
+        "Het document kon niet worden gelezen. Probeer het opnieuw of vul handmatig in.",
+      );
       setUploading(false);
       setSuccess(false);
     }
   };
 
   const handleContinue = () => {
-    if (success || sessionStorage.getItem('onboarding_company')) {
-      // Data exists, navigate
-      router.push('/onboarding/company?parsed=true');
+    if (success || sessionStorage.getItem("onboarding_company")) {
+      router.push("/onboarding/company?parsed=true");
     } else {
-      // No file selected, skip to manual
       handleSkip();
     }
   };
 
   const handleSkip = () => {
-    // Clear any previous data
-    sessionStorage.removeItem('onboarding_company');
-    sessionStorage.removeItem('onboarding_lineItems');
-    sessionStorage.removeItem('onboarding_standardText');
-    sessionStorage.removeItem('onboarding_filename');
-    
-    router.push('/onboarding/company?manual=true');
+    sessionStorage.removeItem("onboarding_company");
+    sessionStorage.removeItem("onboarding_lineItems");
+    sessionStorage.removeItem("onboarding_standardText");
+    sessionStorage.removeItem("onboarding_filename");
+
+    router.push("/onboarding/company?manual=true");
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Scrollable content */}
-      <div className="flex-1 space-y-6 pb-32 p-6 mx-auto w-full max-w-2xl">
+    <div className="relative min-h-screen">
+      {/* Close — back to the marketing site (resume later via the account menu) */}
+      <a
+        href={process.env.NEXT_PUBLIC_MARKETING_URL ?? "/"}
+        aria-label="Sluiten"
+        className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      >
+        <X className="size-5" />
+      </a>
+
+      <div className="mx-auto w-full max-w-2xl space-y-6 p-6 pt-16">
         {/* Progress indicator */}
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -93,28 +107,34 @@ export default function OnboardingUploadPage() {
           <span className="ml-4 text-sm text-muted-foreground">1/4</span>
         </div>
 
-        {/* Title */}
-        <h1 className="font-display text-3xl font-bold">
-          Let's build your quote template
-        </h1>
+        {/* Header + subtitle */}
+        <div className="space-y-2">
+          <h1 className="font-display text-3xl font-bold">Upload een offerte</h1>
+          <p className="text-base text-muted-foreground">
+            We halen automatisch alles eruit wat we nodig hebben om offertes via
+            Fixa te versturen.
+          </p>
+        </div>
 
         {/* Upload card */}
         <label
           htmlFor="file-upload"
           className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 transition-all ${
             success
-              ? 'border-green-500 bg-green-500/5'
+              ? "border-green-500 bg-green-500/5"
               : file
-              ? 'border-primary bg-primary/5'
-              : 'border-border bg-card hover:bg-muted/40'
+                ? "border-primary bg-primary/5"
+                : "border-border bg-card hover:bg-muted/40"
           }`}
         >
-          <div className={`flex h-16 w-16 items-center justify-center rounded-full ${
-            uploading ? 'bg-muted' : success ? 'bg-green-500/20' : 'bg-muted'
-          }`}>
+          <div
+            className={`flex h-16 w-16 items-center justify-center rounded-full ${
+              uploading ? "bg-muted" : success ? "bg-green-500/20" : "bg-muted"
+            }`}
+          >
             {uploading ? (
               <svg
-                className="h-8 w-8 text-foreground animate-spin"
+                className="h-8 w-8 animate-spin text-foreground"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -163,15 +183,18 @@ export default function OnboardingUploadPage() {
             )}
           </div>
           <p className="mt-4 text-base font-medium text-foreground">
-            {uploading ? 'Processing...' : file ? file.name : 'Upload quote'}
+            {uploading
+              ? "Bezig met verwerken..."
+              : file
+                ? file.name
+                : "Offerte uploaden"}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             {uploading
-              ? 'Extracting your company info and line items...'
-              : success 
-              ? "Upload different file"
-              : 'Supports PDF, JPEG and PNG'
-            }
+              ? "We halen je bedrijfsgegevens en regels eruit..."
+              : success
+                ? "Ander bestand uploaden"
+                : "Ondersteunt PDF, JPEG en PNG"}
           </p>
           <input
             id="file-upload"
@@ -190,11 +213,18 @@ export default function OnboardingUploadPage() {
             <p className="text-sm text-destructive">{error}</p>
           </div>
         )}
-      </div>
 
-      {/* Sticky footer with buttons */}
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto w-full max-w-2xl p-6 space-y-3">
+        {/* Actions */}
+        <div className="space-y-3">
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={handleContinue}
+            disabled={uploading || !success}
+            aria-label="Doorgaan naar bedrijfsgegevens"
+          >
+            Doorgaan
+          </Button>
           <Button
             variant="ghost"
             size="lg"
@@ -202,16 +232,7 @@ export default function OnboardingUploadPage() {
             onClick={handleSkip}
             disabled={uploading}
           >
-            Skip and add manually
-          </Button>
-          <Button
-            size="lg"
-            className="w-full"
-            onClick={handleContinue}
-            disabled={uploading || !success}
-            aria-label="Continue to company info"
-          >
-            Continue
+            Overslaan en handmatig invoeren
           </Button>
         </div>
       </div>
