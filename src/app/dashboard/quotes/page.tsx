@@ -157,13 +157,18 @@ function QuotesContent() {
         {/* Filter + Sort bar */}
         <div className="mb-4 flex items-center gap-1">
           <button
-            onClick={() => setFilterOpen(true)}
-            className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
-          >
-            <span className="text-muted-foreground">Filter:</span>
-            <span className="font-bold">{filterLabel}</span>
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
-          </button>
+  onClick={() => setFilterOpen(true)}
+  className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
+>
+  <span className="relative text-muted-foreground">
+    Filter:
+    {filter !== "all" && (
+      <span className="absolute -top-0.5 -right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+    )}
+  </span>
+  <span className="font-bold">{filterLabel}</span>
+  <ChevronDown className="h-3 w-3 text-muted-foreground" />
+</button>
           <button
             onClick={() => setSortOpen(true)}
             className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
