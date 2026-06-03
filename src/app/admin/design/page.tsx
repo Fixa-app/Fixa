@@ -213,7 +213,13 @@ const palette: Swatch[] = [
   {
     name: "card surface",
     hex: "#E2DFD4",
-    use: "AI cards, accordion open rows, WhyFixa visual",
+    use: "Raised cards, drawers, dialogs",
+    textOn: "var(--foreground)",
+  },
+  {
+    name: "section surface",
+    hex: "#E4E3DE",
+    use: "Grouped sections / panels — between page and card",
     textOn: "var(--foreground)",
   },
   {
@@ -247,10 +253,10 @@ const palette: Swatch[] = [
     textOn: "var(--burgundy-foreground)",
   },
   {
-    name: "ink",
+    name: "secondary",
     hex: "#1F1A14",
-    use: "Warm charcoal — scrolled header, dark dropdown glass",
-    textOn: "var(--ink-foreground)",
+    use: "Filled black — secondary buttons & badges, dark header",
+    textOn: "var(--secondary-foreground)",
   },
 ];
 
@@ -259,7 +265,7 @@ function ColorPalette() {
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {palette.map((s) => {
-          const isTokenBg = ["background", "foreground", "primary", "teal", "violet", "burgundy", "ink"].includes(s.name);
+          const isTokenBg = ["background", "foreground", "primary", "teal", "violet", "burgundy", "secondary"].includes(s.name);
           return (
             <div key={s.name} className="flex flex-col gap-2">
               <div
@@ -298,22 +304,22 @@ function ColorPalette() {
 
 const typeRows = [
   {
-    sample: "Headline 6xl",
+    sample: "Hero display",
     className: "font-display text-6xl font-medium leading-[1.05] tracking-tight",
     spec: "font-display · text-6xl · font-medium",
   },
   {
-    sample: "Headline 4xl",
+    sample: "Display",
     className: "font-display text-4xl font-medium leading-[1.1] tracking-tight",
     spec: "font-display · text-4xl · font-medium",
   },
   {
-    sample: "Page title",
+    sample: "Page header",
     className: "text-3xl font-semibold tracking-tight",
     spec: "text-3xl · font-semibold",
   },
   {
-    sample: "Section title",
+    sample: "Section header",
     className: "text-xl font-semibold tracking-tight",
     spec: "text-xl · font-semibold",
   },
@@ -370,41 +376,41 @@ function ComponentShowcase() {
     <div className="flex flex-col gap-10">
       <ComponentBlock
         title="Buttons"
-        note="Four styles: Primary (filled), Secondary (filled black), Outline, and Text link. Marketing CTAs add h-12 rounded-xl px-6 text-base font-bold."
+        note="Four styles — Primary (orange), Secondary (black), Tertiary (outline), Text link (black, at the button's text size). Two sizes: main + small."
       >
         <div className="flex flex-col gap-6">
-          {/* The four styles */}
+          {/* The four styles — main size */}
           <div className="flex flex-wrap items-center gap-3">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="link">Link</Button>
+            <Button variant="outline">Tertiary</Button>
+            <Button variant="link">Text link</Button>
             <Button variant="link" className="gap-1">
               Text link
               <ArrowRight className="size-4" />
             </Button>
           </div>
 
-          {/* Marketing CTA sizing */}
+          {/* Small size */}
           <div className="flex flex-wrap items-center gap-3">
-            <Button className="h-12 rounded-xl px-6 text-base font-bold">
-              Aan de slag
+            <Button size="sm">Primary</Button>
+            <Button size="sm" variant="secondary">
+              Secondary
             </Button>
-            <Button
-              variant="secondary"
-              className="h-12 rounded-xl px-6 text-base font-bold"
-            >
-              Boek een demo
+            <Button size="sm" variant="outline">
+              Tertiary
+            </Button>
+            <Button size="sm" variant="link">
+              Text link
             </Button>
           </div>
 
-          {/* Formats (sizes) */}
+          {/* Icon (utility) */}
           <div className="flex flex-wrap items-center gap-3">
-            <Button size="xs">XS</Button>
-            <Button size="sm">SM</Button>
-            <Button size="default">Default</Button>
-            <Button size="lg">LG</Button>
             <Button size="icon" aria-label="Settings">
+              <Settings />
+            </Button>
+            <Button size="icon-sm" variant="outline" aria-label="Settings">
               <Settings />
             </Button>
           </div>

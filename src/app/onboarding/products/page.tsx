@@ -227,7 +227,6 @@ function ProductsServicesContent() {
         <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl p-6">
             <Button
-              size="lg"
               className="w-full"
               onClick={handleContinue}
               aria-label="Continue to template preview"

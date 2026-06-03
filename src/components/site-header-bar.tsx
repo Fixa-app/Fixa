@@ -173,7 +173,7 @@ export function SiteHeaderBar({
 
   const surfaceClasses = isTransparent
     ? "bg-transparent"
-    : "bg-ink/70 backdrop-blur-md";
+    : "bg-secondary/70 backdrop-blur-md";
   const fullWidthOpen =
     openMenu !== null && openMenu !== "account";
 
@@ -282,7 +282,7 @@ export function SiteHeaderBar({
                 </button>
                 <div
                   aria-hidden={!accountOpen}
-                  className={`absolute top-full right-0 z-50 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl p-3 shadow-lg transition-all duration-200 ease-out ${txtBase} bg-ink/85 backdrop-blur-md ${
+                  className={`absolute top-full right-0 z-50 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl p-3 shadow-lg transition-all duration-200 ease-out ${txtBase} bg-secondary/85 backdrop-blur-md ${
                     accountOpen
                       ? "translate-y-0 scale-100 opacity-100"
                       : "pointer-events-none -translate-y-2 scale-95 opacity-0"

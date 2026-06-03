@@ -43,6 +43,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -52,8 +54,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-cream: var(--cream);
   --color-cream-foreground: var(--cream-foreground);
-  --color-ink: var(--ink);
-  --color-ink-foreground: var(--ink-foreground);
   --color-oxblood: var(--oxblood);
   --color-oxblood-foreground: var(--oxblood-foreground);
   --color-teal: var(--teal);
@@ -79,8 +79,10 @@
 :root {
   --background: #f0f0eb;
   --foreground: oklch(0.20 0.013 60);
-  --card: oklch(0.97 0.015 90);
+  --card: #e2dfd4;
   --card-foreground: oklch(0.20 0.013 60);
+  --surface: #e4e3de;
+  --surface-foreground: oklch(0.20 0.013 60);
   --popover: oklch(0.97 0.015 90);
   --popover-foreground: oklch(0.20 0.013 60);
   --primary: #fc5201;
@@ -88,8 +90,8 @@
   --primary-dark-surface: #ff6f2c;
   --primary-dark: #9c2d05;
   --primary-dark-foreground: oklch(1 0 0);
-  --secondary: oklch(0.90 0.020 85);
-  --secondary-foreground: oklch(0.22 0.013 60);
+  --secondary: #1f1a14;
+  --secondary-foreground: #f0f0eb;
   --muted: oklch(0.90 0.020 85);
   --muted-foreground: oklch(0.56 0.013 65);
   --accent: oklch(0.90 0.020 85);
@@ -115,8 +117,6 @@
 
   --cream: oklch(0.93 0.025 90);
   --cream-foreground: oklch(0.20 0.013 60);
-  --ink: oklch(0.20 0.013 60);
-  --ink-foreground: oklch(0.95 0.025 90);
   --oxblood: oklch(0.32 0.115 25);
   --oxblood-foreground: oklch(0.95 0.025 85);
   --teal: #0d424e;
