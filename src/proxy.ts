@@ -27,9 +27,14 @@ export async function proxy(request: NextRequest) {
     if (!isAppHost && isAppPath(pathname)) {
       return NextResponse.redirect(new URL(pathname + search, appUrl));
     }
-    // Marketing routes don't live on the app subdomain (let /auth complete on
-    // whichever host the login was started from).
-    if (isAppHost && !isAppPath(pathname) && !pathname.startsWith("/auth")) {
+    // Marketing routes don't live on the app subdomain. Keep /auth (login can
+    // complete on either host) and /api (same-origin calls from the app) put.
+    if (
+      isAppHost &&
+      !isAppPath(pathname) &&
+      !pathname.startsWith("/auth") &&
+      !pathname.startsWith("/api")
+    ) {
       if (pathname === "/") {
         return NextResponse.redirect(new URL("/dashboard", appUrl));
       }
