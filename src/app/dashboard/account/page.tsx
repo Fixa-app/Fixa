@@ -1,11 +1,11 @@
 import { AccountPanel } from "@/components/account-panel";
 
-export default function AccountPage() {
+export default function DashboardAccountPage() {
   return (
-    <main className="flex-1 px-4 py-12">
+    <div className="px-6 py-8 md:px-10">
       <div className="mx-auto w-full max-w-2xl">
         <AccountPanel />
       </div>
-    </main>
+    </div>
   );
 }

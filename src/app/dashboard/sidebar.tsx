@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Rocket } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
+import { CompanySwitcher } from "./company-switcher";
 
 const ROLE_LABELS: Record<string, string> = {
   owner: "Eigenaar",
@@ -12,37 +14,68 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 export function DashboardSidebar({
+  companies,
+  activeCompanyId,
   companyName,
   userName,
   role,
+  onboardingCompleted,
+  onboardingTotal,
 }: {
+  companies: { id: string; name: string }[];
+  activeCompanyId: string;
   companyName: string;
   userName: string;
   role: string;
+  onboardingCompleted: number;
+  onboardingTotal: number;
 }) {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/dashboard"
       ? pathname === "/dashboard"
       : pathname === href || pathname.startsWith(href + "/");
+  const firstName = userName.split(" ")[0] || userName;
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
       {/* Brand / company */}
-      <div className="flex items-center gap-3 border-b border-border px-4 py-4">
+      <div className="border-b border-border px-4 py-4">
         <Image
           src="/fixa-logo.svg"
           alt="Fixa"
-          width={64}
-          height={64}
-          className="h-7 w-auto"
+          width={120}
+          height={48}
+          className="h-11 w-auto"
         />
-        {companyName && (
-          <span className="truncate text-sm font-bold" title={companyName}>
-            {companyName}
-          </span>
-        )}
+        <div className="mt-3">
+          <CompanySwitcher
+            companies={companies}
+            activeId={activeCompanyId}
+            companyName={companyName}
+          />
+        </div>
       </div>
+
+      {/* Onboarding (sticky, hidden once complete) */}
+      {onboardingCompleted < onboardingTotal && (
+        <div className="px-3 py-3">
+          <Link
+            href="/dashboard/onboarding"
+            className={`flex items-center justify-between gap-2 rounded-xl border border-primary/30 px-3 py-2.5 text-primary transition-colors hover:bg-primary/10 ${
+              isActive("/dashboard/onboarding") ? "bg-primary/10" : "bg-primary/5"
+            }`}
+          >
+            <span className="flex items-center gap-2 text-sm font-bold">
+              <Rocket className="size-4 shrink-0" />
+              Onboarding
+            </span>
+            <span className="text-sm font-bold">
+              {onboardingCompleted}/{onboardingTotal}
+            </span>
+          </Link>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-4">
@@ -75,21 +108,30 @@ export function DashboardSidebar({
         ))}
       </nav>
 
-      {/* User footer */}
+      {/* Account */}
       <div className="border-t border-border p-3">
-        <div className="flex items-center gap-3 px-2 py-1">
+        <Link
+          href="/dashboard/account"
+          className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
+            isActive("/dashboard/account")
+              ? "bg-foreground/[0.06]"
+              : "hover:bg-foreground/[0.06]"
+          }`}
+        >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-            {(userName[0] ?? "?").toUpperCase()}
+            {(firstName[0] ?? "?").toUpperCase()}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold">{userName}</p>
+            <p className="truncate text-base font-bold text-foreground">
+              {firstName}
+            </p>
             {role && (
-              <p className="text-xs tracking-wide text-muted-foreground uppercase">
+              <p className="truncate text-sm text-muted-foreground">
                 {ROLE_LABELS[role] ?? role}
               </p>
             )}
           </div>
-        </div>
+        </Link>
       </div>
     </aside>
   );
