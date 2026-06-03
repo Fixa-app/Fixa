@@ -21,7 +21,12 @@ export type NavSection = { title?: string; items: NavItem[] };
 // Mirrors the Pro dashboard on /admin/blueprint (Leads → Sales → Operations →
 // Financial, with Management running parallel).
 export const NAV_SECTIONS: NavSection[] = [
-  { items: [{ label: "Home", href: "/dashboard", icon: Home }] },
+  {
+    items: [
+      { label: "Home", href: "/dashboard", icon: Home },
+      { label: "Berichten", href: "/dashboard/inbox", icon: Bell },
+    ],
+  },
   {
     title: "Aanvragen",
     items: [
@@ -45,7 +50,6 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: "Opdrachten", href: "/dashboard/jobs", icon: Wrench },
       { label: "Planning", href: "/dashboard/schedule", icon: Calendar },
-      { label: "Inbox", href: "/dashboard/inbox", icon: Bell },
     ],
   },
   {
