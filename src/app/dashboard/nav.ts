@@ -27,40 +27,44 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     title: "Leads",
     items: [
-      { label: "New request", href: "/dashboard/new-request", icon: Plus },
-      { label: "Requests", href: "/dashboard/requests", icon: Inbox },
+      { label: "Nieuwe aanvraag", href: "/dashboard/new-request", icon: Plus },
+      { label: "Aanvragen", href: "/dashboard/requests", icon: Inbox },
       { label: "Intakes", href: "/dashboard/intakes", icon: CalendarCheck },
       { label: "Website", href: "/dashboard/website", icon: Globe },
     ],
   },
   {
-    title: "Sales",
+    title: "Verkoop",
     items: [
-      { label: "Quotes", href: "/dashboard/quotes", icon: FileText },
-      { label: "Service plans", href: "/dashboard/service-plans", icon: Repeat },
+      { label: "Offertes", href: "/dashboard/quotes", icon: FileText },
+      {
+        label: "Servicecontracten",
+        href: "/dashboard/service-plans",
+        icon: Repeat,
+      },
     ],
   },
   {
-    title: "Operations",
+    title: "Uitvoering",
     items: [
-      { label: "Jobs", href: "/dashboard/jobs", icon: Wrench },
-      { label: "Schedule", href: "/dashboard/schedule", icon: Calendar },
+      { label: "Opdrachten", href: "/dashboard/jobs", icon: Wrench },
+      { label: "Planning", href: "/dashboard/schedule", icon: Calendar },
       { label: "Inbox", href: "/dashboard/inbox", icon: Bell },
     ],
   },
   {
-    title: "Financial",
+    title: "Financieel",
     items: [
-      { label: "Invoices", href: "/dashboard/invoices", icon: Receipt },
-      { label: "Accounting", href: "/dashboard/accounting", icon: BookOpen },
+      { label: "Facturen", href: "/dashboard/invoices", icon: Receipt },
+      { label: "Boekhouding", href: "/dashboard/accounting", icon: BookOpen },
     ],
   },
   {
-    title: "Management",
+    title: "Beheer",
     items: [
-      { label: "Customers", href: "/dashboard/customers", icon: Users },
-      { label: "Reports", href: "/dashboard/reports", icon: BarChart3 },
-      { label: "Users", href: "/dashboard/users", icon: UserCog },
+      { label: "Klanten", href: "/dashboard/customers", icon: Users },
+      { label: "Rapporten", href: "/dashboard/reports", icon: BarChart3 },
+      { label: "Gebruikers", href: "/dashboard/users", icon: UserCog },
     ],
   },
 ];

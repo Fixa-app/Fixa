@@ -5,6 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
 
+const ROLE_LABELS: Record<string, string> = {
+  owner: "Eigenaar",
+  admin: "Beheerder",
+  member: "Lid",
+};
+
 export function DashboardSidebar({
   companyName,
   userName,
@@ -21,7 +27,7 @@ export function DashboardSidebar({
       : pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-card lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
       {/* Brand / company */}
       <div className="flex items-center gap-3 border-b border-border px-4 py-4">
         <Image
@@ -54,10 +60,10 @@ export function DashboardSidebar({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
                     active
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                      ? "bg-foreground/[0.06] text-foreground"
+                      : "text-foreground hover:text-foreground/70"
                   }`}
                 >
                   <Icon className="size-4 shrink-0" />
@@ -79,7 +85,7 @@ export function DashboardSidebar({
             <p className="truncate text-sm font-bold">{userName}</p>
             {role && (
               <p className="text-xs tracking-wide text-muted-foreground uppercase">
-                {role}
+                {ROLE_LABELS[role] ?? role}
               </p>
             )}
           </div>

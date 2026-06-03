@@ -15,21 +15,21 @@ export default function DashboardPage() {
   }, []);
 
   const stats = [
-    { label: "Open requests", value: "0" },
-    { label: "Quotes awaiting response", value: "0" },
-    { label: "Revenue this month", value: "€0.00" },
+    { label: "Open aanvragen", value: "0" },
+    { label: "Offertes in afwachting", value: "0" },
+    { label: "Omzet deze maand", value: "€0,00" },
   ];
 
   return (
     <div className="space-y-6 px-6 py-8 md:px-10">
-      <h1 className="font-display text-3xl font-bold">Overview</h1>
+      <h1 className="font-display text-3xl font-bold">Overzicht</h1>
 
       {showNotification && (
         <div
           role="alert"
           className="animate-in fade-in rounded-xl border border-green-500/40 bg-green-500/10 p-4 text-sm font-medium duration-500"
         >
-          🎉 Your company is set up. Welcome to Fixa!
+          🎉 Je bedrijf is ingesteld. Welkom bij Fixa!
         </div>
       )}
 
@@ -50,28 +50,28 @@ export default function DashboardPage() {
           href="/dashboard/quotes"
           className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/40"
         >
-          <h2 className="text-xl font-bold">Quotes</h2>
+          <h2 className="text-xl font-bold">Offertes</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            You haven&apos;t sent any quotes yet.
+            Je hebt nog geen offertes verstuurd.
           </p>
         </Link>
         <Link
           href="/dashboard/invoices"
           className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/40"
         >
-          <h2 className="text-xl font-bold">Invoices</h2>
+          <h2 className="text-xl font-bold">Facturen</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            No invoices yet. Send one after your first job.
+            Nog geen facturen. Verstuur er een na je eerste klus.
           </p>
         </Link>
       </div>
 
       <div className="rounded-2xl border border-border bg-card p-6">
         <h2 className="text-sm font-bold tracking-widest text-muted-foreground uppercase">
-          Activity
+          Activiteit
         </h2>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          No activity yet. New requests and updates will appear here.
+          Nog geen activiteit. Nieuwe aanvragen en updates verschijnen hier.
         </p>
       </div>
     </div>
