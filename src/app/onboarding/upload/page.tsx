@@ -220,7 +220,7 @@ export default function OnboardingUploadPage() {
         <div className="flex items-center justify-between gap-4">
           <Button
             variant="link"
-            className="px-0 text-base font-bold"
+            className="px-0 text-base font-bold text-foreground"
             onClick={handleSkip}
             disabled={uploading}
           >
