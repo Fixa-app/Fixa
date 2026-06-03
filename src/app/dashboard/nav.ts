@@ -1,9 +1,12 @@
 import {
+  Calendar,
   FileText,
   Home,
+  Inbox,
   Receipt,
   Settings,
   Users,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -16,7 +19,6 @@ export type NavItem = {
 
 export type NavSection = {
   title?: string;
-  comingSoon?: boolean;
   items: NavItem[];
 };
 
@@ -24,33 +26,11 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { label: "Home", href: "/dashboard", icon: Home },
-    ],
-  },
-  {
-    title: "Aanvragen",
-    comingSoon: true,
-    items: [],
-  },
-  {
-    title: "Verkoop",
-    items: [
+      { label: "Aanvragen", href: "/dashboard/requests", icon: Inbox, comingSoon: true },
       { label: "Offertes", href: "/dashboard/quotes", icon: FileText },
-    ],
-  },
-  {
-    title: "Uitvoering",
-    comingSoon: true,
-    items: [],
-  },
-  {
-    title: "Financieel",
-    items: [
+      { label: "Opdrachten", href: "/dashboard/jobs", icon: Wrench, comingSoon: true },
+      { label: "Agenda", href: "/dashboard/schedule", icon: Calendar, comingSoon: true },
       { label: "Facturen", href: "/dashboard/invoices", icon: Receipt },
-    ],
-  },
-  {
-    title: "Beheer",
-    items: [
       { label: "Klanten", href: "/dashboard/customers", icon: Users },
       { label: "Instellingen", href: "/dashboard/settings", icon: Settings },
     ],
