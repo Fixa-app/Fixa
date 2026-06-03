@@ -6,6 +6,10 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
 
+  // After login, land on the pro app (app.hifixa.com) when configured; the
+  // session cookie is parent-domain scoped, so it's valid across both hosts.
+  const appBase = process.env.NEXT_PUBLIC_APP_URL ?? origin;
+
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -26,12 +30,12 @@ export async function GET(request: Request) {
         .single();
 
       if (membership) {
-        return NextResponse.redirect(`${origin}/dashboard`);
+        return NextResponse.redirect(`${appBase}/dashboard`);
       } else {
-        return NextResponse.redirect(`${origin}/onboarding/upload?uid=${user?.id}&has_key=${!!process.env.SUPABASE_SERVICE_ROLE_KEY}&membership=${JSON.stringify(membership)}`);
+        return NextResponse.redirect(`${appBase}/onboarding/upload`);
       }
     }
   }
 
-return NextResponse.redirect(`${origin}/onboarding/upload`);
+  return NextResponse.redirect(`${appBase}/onboarding/upload`);
 }

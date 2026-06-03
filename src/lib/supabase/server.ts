@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { COOKIE_DOMAIN } from "./cookie-options";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -15,7 +16,10 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
+              cookieStore.set(name, value, {
+                ...options,
+                ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+              }),
             );
           } catch {
             // Server Components can't set cookies; middleware refreshes the session instead.
