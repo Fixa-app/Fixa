@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput } from "@/components/phone-input";
 import { createClient } from "@/lib/supabase/client";
 
 const RESEND_SECONDS = 30;
@@ -47,6 +48,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [dialCode, setDialCode] = useState("+31");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
@@ -66,6 +68,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
     setEmail("");
     setFirstName("");
     setLastName("");
+    setDialCode("+31");
     setPhone("");
     setCode("");
     setIsNewUser(false);
@@ -91,7 +94,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
               data: {
                 first_name: firstName,
                 last_name: lastName,
-                phone,
+                phone: phone ? `${dialCode} ${phone}`.trim() : "",
                 full_name: `${firstName} ${lastName}`.trim(),
               },
             }
@@ -299,15 +302,13 @@ export function AuthDialog({ children }: { children: ReactElement }) {
                 <Label htmlFor="auth-phone" className="text-sm font-semibold">
                   Telefoonnummer
                 </Label>
-                <Input
+                <PhoneInput
                   id="auth-phone"
-                  type="tel"
-                  autoComplete="tel"
+                  dialCode={dialCode}
+                  onDialCodeChange={setDialCode}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="06 12345678"
+                  onChange={setPhone}
                   disabled={loading}
-                  className="h-12 rounded-xl border-foreground/15 bg-background text-base"
                 />
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
