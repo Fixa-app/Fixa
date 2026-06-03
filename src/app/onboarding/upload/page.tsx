@@ -220,14 +220,14 @@ export default function OnboardingUploadPage() {
         <div className="flex items-center justify-between gap-4">
           <Button
             variant="link"
-            className="px-0"
+            className="px-0 text-base font-bold"
             onClick={handleSkip}
             disabled={uploading}
           >
             Overslaan en handmatig invoeren
           </Button>
           <Button
-            size="lg"
+            className="h-12 rounded-xl px-6 text-base font-bold"
             onClick={handleContinue}
             disabled={uploading || !success}
             aria-label="Doorgaan naar bedrijfsgegevens"
