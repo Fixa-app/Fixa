@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, ChevronDown, Check } from "lucide-react";
+import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import {
   MOCK_QUOTES,
   QUOTE_STATUS_LABELS,
-  type MockQuote,
 } from "@/lib/mock-data";
 import type { Database } from "@/lib/database.types";
 
@@ -65,13 +65,12 @@ function formatCurrency(amount: number) {
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
+  const diffDays = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+  );
   if (diffDays === 0) return "Updated today";
   if (diffDays === 1) return "Updated 1 day ago";
   if (diffDays <= 7) return `Updated ${diffDays} days ago`;
-
   return `Updated ${date.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
@@ -80,82 +79,33 @@ function formatDate(dateStr: string) {
 }
 
 function StatusPill({ status }: { status: QuoteStatus }) {
-  const style = PILL_STYLES[status as StatusPillVariant] ?? PILL_STYLES["draft"];
-  const label = QUOTE_STATUS_LABELS[status];
+  const style =
+    PILL_STYLES[status as StatusPillVariant] ?? PILL_STYLES["draft"];
   return (
     <span
       className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-medium ${style}`}
     >
-      {label}
+      {QUOTE_STATUS_LABELS[status]}
     </span>
   );
 }
 
-type DropdownProps = {
-  label: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onChange: (value: string) => void;
-};
-
-function Dropdown({ label, value, options, onChange }: DropdownProps) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
-      >
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-bold">{value}</span>
-        <ChevronDown className="h-3 w-3 text-muted-foreground" />
-      </button>
-
-      {open && (
-        <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute left-0 top-full z-20 mt-1 min-w-[180px] rounded-xl border border-border bg-background shadow-md">
-            <p className="border-b border-border px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wide">
-              {label.replace(":", "")}
-            </p>
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                }}
-                className={`flex w-full items-center px-4 py-2.5 text-sm transition-colors hover:bg-muted ${
-                  opt.label === value ? "font-bold" : ""
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-export default function QuotesPage() {
+function QuotesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialFilter = searchParams.get("filter") ?? "all";
 
   const [filter, setFilter] = useState<string>(initialFilter);
   const [sort, setSort] = useState<SortOption>("newest");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    setVisible(false);
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
-  }, [filter]);
+  }, [filter, sort]);
 
   const filterOptions = [
     { value: "all", label: "All quotes" },
@@ -174,7 +124,6 @@ export default function QuotesPage() {
       filter === "all"
         ? MOCK_QUOTES
         : MOCK_QUOTES.filter((q) => q.status === filter);
-
     switch (sort) {
       case "newest":
         return [...quotes].sort(
@@ -201,95 +150,192 @@ export default function QuotesPage() {
       : QUOTE_STATUS_LABELS[filter as QuoteStatus];
 
   return (
-    <div className="px-4 py-8 md:px-10">
-      <h1 className="font-display text-3xl font-bold mb-6">Offertes</h1>
+    <>
+      <div className="px-4 py-8 md:px-10">
+        <h1 className="font-display text-3xl font-bold mb-6">Offertes</h1>
 
-      {/* Filter + Sort bar */}
-      <div className="mb-4 flex items-center gap-2">
-        <Dropdown
-          label="Filter:"
-          value={filterLabel}
-          options={filterOptions}
-          onChange={(v) => {
-            setFilter(v);
-            setVisible(false);
-          }}
-        />
-        <Dropdown
-          label="Sort:"
-          value={SORT_LABELS[sort]}
-          options={sortOptions}
-          onChange={(v) => {
-            setSort(v as SortOption);
-            setVisible(false);
-          }}
-        />
-      </div>
-
-      {/* List card */}
-      <div className="rounded-2xl bg-muted/50 p-5">
-        <div className="mb-4 flex items-start justify-between">
-          <div>
-            <h2 className="font-display text-2xl font-bold">
-              {filter === "all" ? "All quotes" : "Filtered quotes"}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {filtered.length} {filtered.length === 1 ? "result" : "results"}
-            </p>
-          </div>
+        {/* Filter + Sort bar */}
+        <div className="mb-4 flex items-center gap-1">
           <button
-            onClick={() => router.push("/dashboard/quotes/new")}
-            aria-label="Create new quote"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
+            onClick={() => setFilterOpen(true)}
+            className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
           >
-            <Plus className="h-4 w-4" />
+            <span className="text-muted-foreground">Filter:</span>
+            <span className="font-bold">{filterLabel}</span>
+            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+          </button>
+          <button
+            onClick={() => setSortOpen(true)}
+            className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
+          >
+            <span className="text-muted-foreground">Sort:</span>
+            <span className="font-bold">{SORT_LABELS[sort]}</span>
+            <ChevronDown className="h-3 w-3 text-muted-foreground" />
           </button>
         </div>
 
-        {filtered.length === 0 ? (
-          <div className="py-6 text-center">
-            <p className="text-sm text-muted-foreground mb-3">
-              No quotes found for this filter.
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setFilter("all")}
+        {/* List card */}
+        <div className="rounded-2xl bg-muted/50 p-5">
+          <div className="mb-4 flex items-start justify-between">
+            <div>
+              <h2 className="font-display text-2xl font-bold">
+                {filter === "all" ? "All quotes" : "Filtered quotes"}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {filtered.length}{" "}
+                {filtered.length === 1 ? "result" : "results"}
+              </p>
+            </div>
+            <button
+              onClick={() => router.push("/dashboard/quotes/new")}
+              aria-label="Create new quote"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
             >
-              Clear filter
-            </Button>
+              <Plus className="h-4 w-4" />
+            </button>
           </div>
-        ) : (
-          <div className="space-y-0">
-            {filtered.map((quote, i) => (
-              <button
-                key={quote.id}
-                onClick={() => router.push(`/dashboard/quotes/${quote.id}`)}
-                aria-label={`Quote from ${quote.client_name}, status ${QUOTE_STATUS_LABELS[quote.status]}, total ${formatCurrency(quote.total_amount)}`}
-                className={`flex w-full items-center justify-between gap-4 rounded-xl px-3 py-4 text-left transition-colors hover:bg-background active:scale-[0.99] ${
-                  i % 2 === 0 ? "bg-transparent" : "bg-background/50"
-                }`}
-                style={{
-                  opacity: visible ? 1 : 0,
-                  transform: visible ? "translateY(0)" : "translateY(4px)",
-                  transition: `opacity 0.2s ease ${i * 150}ms, transform 0.2s ease ${i * 150}ms`,
-                }}
+
+          {filtered.length === 0 ? (
+            <div className="py-6 text-center">
+              <p className="text-sm text-muted-foreground mb-3">
+                No quotes found for this filter.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFilter("all")}
               >
-                <div className="min-w-0 flex-1">
-                  <p className="font-bold truncate">{quote.client_name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {formatDate(quote.updated_at)}
-                  </p>
-                  <p className="text-sm font-medium mt-0.5">
-                    {formatCurrency(quote.total_amount)}
-                  </p>
-                </div>
-                <StatusPill status={quote.status} />
-              </button>
-            ))}
-          </div>
-        )}
+                Clear filter
+              </Button>
+            </div>
+          ) : (
+            <div>
+              {filtered.map((quote, i) => (
+                <button
+                  key={quote.id}
+                  onClick={() =>
+                    router.push(`/dashboard/quotes/${quote.id}`)
+                  }
+                  aria-label={`Quote from ${quote.client_name}, status ${QUOTE_STATUS_LABELS[quote.status]}, total ${formatCurrency(quote.total_amount)}`}
+                  className={`flex w-full items-center justify-between gap-4 rounded-xl px-3 py-4 text-left transition-colors hover:bg-background active:scale-[0.99] ${
+                    i % 2 !== 0 ? "bg-background/50" : ""
+                  }`}
+                  style={{
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? "translateY(0)" : "translateY(4px)",
+                    transition: `opacity 0.2s ease ${i * 150}ms, transform 0.2s ease ${i * 150}ms`,
+                  }}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold truncate">{quote.client_name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDate(quote.updated_at)}
+                    </p>
+                    <p className="text-sm font-medium mt-0.5">
+                      {formatCurrency(quote.total_amount)}
+                    </p>
+                  </div>
+                  <StatusPill status={quote.status} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Filter drawer */}
+      <Drawer.Root open={filterOpen} onOpenChange={setFilterOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="p-6">
+              <Drawer.Title className="mb-4 font-display text-lg font-semibold">
+                Filter by:
+              </Drawer.Title>
+              <div className="space-y-1">
+                {filterOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      setFilter(opt.value);
+                      setFilterOpen(false);
+                    }}
+                    className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-colors hover:bg-muted"
+                  >
+                    <span className={filter === opt.value ? "font-bold" : ""}>
+                      {opt.label}
+                    </span>
+                    {filter === opt.value && (
+                      <Check className="h-4 w-4 text-primary" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 pb-safe">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setFilterOpen(false)}
+                >
+                  Sluiten
+                </Button>
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {/* Sort drawer */}
+      <Drawer.Root open={sortOpen} onOpenChange={setSortOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="p-6">
+              <Drawer.Title className="mb-4 font-display text-lg font-semibold">
+                Sort by:
+              </Drawer.Title>
+              <div className="space-y-1">
+                {sortOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      setSort(opt.value);
+                      setSortOpen(false);
+                    }}
+                    className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-colors hover:bg-muted"
+                  >
+                    <span className={sort === opt.value ? "font-bold" : ""}>
+                      {opt.label}
+                    </span>
+                    {sort === opt.value && (
+                      <Check className="h-4 w-4 text-primary" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 pb-safe">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setSortOpen(false)}
+                >
+                  Sluiten
+                </Button>
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+    </>
+  );
+}
+
+export default function QuotesPage() {
+  return (
+    <Suspense fallback={<div />}>
+      <QuotesContent />
+    </Suspense>
   );
 }
