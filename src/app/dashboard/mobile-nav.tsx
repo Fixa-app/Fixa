@@ -56,13 +56,7 @@ export function MobileNav({
           className="h-7 w-auto"
         />
 
-        <Link
-          href="/dashboard/account"
-          aria-label="Account"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
-        >
-          {(firstName[0] ?? "?").toUpperCase()}
-        </Link>
+        <div className="w-10" />
       </header>
 
       {/* Mobile nav drawer */}
