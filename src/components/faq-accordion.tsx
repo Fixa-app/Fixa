@@ -41,7 +41,7 @@ export function FAQAccordion() {
           <div
             key={faq.q}
             className={`rounded-2xl px-5 transition-colors ${
-              open ? "bg-[#E2DFD4]" : "hover:bg-[#E2DFD4]"
+              open ? "bg-card" : "hover:bg-card"
             }`}
           >
             <button

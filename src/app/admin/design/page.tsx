@@ -211,7 +211,7 @@ const palette: Swatch[] = [
   },
   {
     name: "card surface",
-    hex: "#E2DFD4",
+    hex: "#ECEBE6",
     use: "Raised cards, drawers, dialogs",
     textOn: "var(--foreground)",
   },
@@ -557,7 +557,7 @@ function HomepageShowcase() {
 
       <ComponentBlock
         title="Product accordion"
-        note="Expanding feature list. Active row + mockup pane use bg-[#E2DFD4]. Inline mockup appears under Lees meer below lg."
+        note="Expanding feature list. Active row + mockup pane use bg-card. Inline mockup appears under Lees meer below lg."
       >
         <ProductAccordion />
       </ComponentBlock>

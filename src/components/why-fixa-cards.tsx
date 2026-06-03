@@ -43,7 +43,7 @@ export function WhyFixaCards() {
 
   return (
     <div className="grid gap-0 md:grid-cols-2 md:items-stretch md:gap-4">
-      <div className="flex aspect-square flex-col gap-6 overflow-hidden rounded-3xl bg-[#E2DFD4] p-6 max-md:rounded-b-none md:aspect-auto md:p-8">
+      <div className="flex aspect-square flex-col gap-6 overflow-hidden rounded-3xl bg-card p-6 max-md:rounded-b-none md:aspect-auto md:p-8">
         <style>{`
           @keyframes whyfixa-progress {
             from { transform: scaleX(0); }
