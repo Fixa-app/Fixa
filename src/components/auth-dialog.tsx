@@ -88,7 +88,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
       email,
       options: {
         shouldCreateUser: createUser,
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin}/auth/callback`,
         ...(createUser
           ? {
               data: {
@@ -115,7 +115,7 @@ export function AuthDialog({ children }: { children: ReactElement }) {
       email,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin}/auth/callback`,
       },
     });
     setLoading(false);
