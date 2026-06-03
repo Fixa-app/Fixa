@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { IndustriesCarousel } from "@/components/industries-carousel";
@@ -14,23 +13,8 @@ import { FAQAccordion } from "@/components/faq-accordion";
 import { PricingCalculator } from "@/components/pricing-calculator";
 import { ReferralsCards } from "@/components/referrals-cards";
 import { WhyFixaCards } from "@/components/why-fixa-cards";
-import { createClient } from "@/lib/supabase/server";
 
-export default async function Home() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    const { data: companies } = await supabase.rpc("get_user_companies", {
-      p_user_id: user.id,
-    });
-    if (!companies || companies.length === 0) {
-      redirect("/onboarding/company");
-    }
-  }
-
+export default function Home() {
   return (
     <>
       <main className="flex-1">
