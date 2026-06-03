@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSidebar } from "./sidebar";
 import { ONBOARDING_TOTAL, onboardingCompletedCount } from "./onboarding-steps";
+import { MobileNav } from "./mobile-nav";
 
 export default async function DashboardLayout({
   children,
@@ -46,10 +47,18 @@ export default async function DashboardLayout({
     : "";
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <DashboardSidebar
-        companies={companies}
-        activeCompanyId={activeCompanyId}
+  <div className="flex min-h-screen flex-col bg-background lg:flex-row">
+    <DashboardSidebar
+      companies={companies}
+      activeCompanyId={activeCompanyId}
+      companyName={companyName}
+      userName={userName}
+      role={role}
+      onboardingCompleted={onboardingCompletedCount(!!activeCompanyId)}
+      onboardingTotal={ONBOARDING_TOTAL}
+    />
+    <div className="flex flex-1 flex-col min-w-0">
+      <MobileNav
         companyName={companyName}
         userName={userName}
         role={role}
@@ -58,5 +67,6 @@ export default async function DashboardLayout({
       />
       <main className="min-w-0 flex-1">{children}</main>
     </div>
-  );
+  </div>
+);
 }
