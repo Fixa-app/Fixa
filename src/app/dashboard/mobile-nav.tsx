@@ -114,37 +114,38 @@ export function MobileNav({
             )}
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-4">
+            <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
               {NAV_SECTIONS.map((section, i) => (
-  <div key={section.title ?? `top-${i}`} className="space-y-1">
-    {section.title && (
-  <p className="px-2 pb-1 text-xs font-bold tracking-widest text-muted-foreground uppercase">
-    {section.title}
-  </p>
-)}
-    {section.items.map((item) => {
+                <div key={section.title ?? `top-${i}`} className="space-y-1">
+                  {section.title && (
+                    <p className="px-2 pb-1 text-xs font-bold tracking-widest text-muted-foreground uppercase">
+                      {section.title}
+                    </p>
+                  )}
+                  {section.items.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(item.href);
                     return (
                       <Link
-  key={item.href}
-  href={item.href}
-  className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-    item.comingSoon
-      ? "pointer-events-none text-muted-foreground"
-      : active
-      ? "bg-foreground/[0.06] text-foreground"
-      : "text-foreground hover:text-foreground/70"
-  }`}
->
-  <Icon className="size-4 shrink-0" />
-  <span className="flex-1">{item.label}</span>
-  {item.comingSoon && (
-    <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-      binnenkort
-    </span>
-  )}
-</Link>
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+                          item.comingSoon
+                            ? "pointer-events-none text-muted-foreground"
+                            : active
+                            ? "bg-foreground/[0.06] text-foreground"
+                            : "text-foreground hover:text-foreground/70"
+                        }`}
+                      >
+                        <Icon className="size-4 shrink-0" />
+                        <span className="flex-1">{item.label}</span>
+                        {item.comingSoon && (
+                          <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                            binnenkort
+                          </span>
+                        )}
+                      </Link>
                     );
                   })}
                 </div>
