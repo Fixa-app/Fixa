@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSidebar } from "./sidebar";
+import { ONBOARDING_TOTAL, onboardingCompletedCount } from "./onboarding-steps";
 
 export default async function DashboardLayout({
   children,
@@ -52,6 +53,8 @@ export default async function DashboardLayout({
         companyName={companyName}
         userName={userName}
         role={role}
+        onboardingCompleted={onboardingCompletedCount(!!activeCompanyId)}
+        onboardingTotal={ONBOARDING_TOTAL}
       />
       <main className="min-w-0 flex-1">{children}</main>
     </div>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Rocket } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
 import { CompanySwitcher } from "./company-switcher";
@@ -18,12 +19,16 @@ export function DashboardSidebar({
   companyName,
   userName,
   role,
+  onboardingCompleted,
+  onboardingTotal,
 }: {
   companies: { id: string; name: string }[];
   activeCompanyId: string;
   companyName: string;
   userName: string;
   role: string;
+  onboardingCompleted: number;
+  onboardingTotal: number;
 }) {
   const pathname = usePathname();
   const isActive = (href: string) =>
@@ -51,6 +56,26 @@ export function DashboardSidebar({
           />
         </div>
       </div>
+
+      {/* Onboarding (sticky, hidden once complete) */}
+      {onboardingCompleted < onboardingTotal && (
+        <div className="px-3 py-3">
+          <Link
+            href="/dashboard/onboarding"
+            className={`flex items-center justify-between gap-2 rounded-xl border border-primary/30 px-3 py-2.5 text-primary transition-colors hover:bg-primary/10 ${
+              isActive("/dashboard/onboarding") ? "bg-primary/10" : "bg-primary/5"
+            }`}
+          >
+            <span className="flex items-center gap-2 text-sm font-bold">
+              <Rocket className="size-4 shrink-0" />
+              Onboarding
+            </span>
+            <span className="text-sm font-bold">
+              {onboardingCompleted}/{onboardingTotal}
+            </span>
+          </Link>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-4">
