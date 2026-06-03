@@ -30,6 +30,7 @@ export function DashboardSidebar({
     href === "/dashboard"
       ? pathname === "/dashboard"
       : pathname === href || pathname.startsWith(href + "/");
+  const firstName = userName.split(" ")[0] || userName;
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
@@ -82,21 +83,30 @@ export function DashboardSidebar({
         ))}
       </nav>
 
-      {/* User footer */}
+      {/* Account */}
       <div className="border-t border-border p-3">
-        <div className="flex items-center gap-3 px-2 py-1">
+        <Link
+          href="/dashboard/account"
+          className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
+            isActive("/dashboard/account")
+              ? "bg-foreground/[0.06]"
+              : "hover:bg-foreground/[0.06]"
+          }`}
+        >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-            {(userName[0] ?? "?").toUpperCase()}
+            {(firstName[0] ?? "?").toUpperCase()}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold">{userName}</p>
+            <p className="truncate text-base font-bold text-foreground">
+              {firstName}
+            </p>
             {role && (
-              <p className="text-xs tracking-wide text-muted-foreground uppercase">
+              <p className="truncate text-sm text-muted-foreground">
                 {ROLE_LABELS[role] ?? role}
               </p>
             )}
           </div>
-        </div>
+        </Link>
       </div>
     </aside>
   );
