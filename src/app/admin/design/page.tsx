@@ -410,16 +410,14 @@ function ComponentShowcase() {
       </ComponentBlock>
 
       <ComponentBlock
-        title="shadcn button variants"
-        note="The base primitives. Use these inside the product app; pick the marketing pattern above when it lands on a public page."
+        title="Buttons"
+        note="Four styles: Primary (filled), Secondary (filled black), Outline, and Text link."
       >
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            <Button>Default</Button>
-            <Button variant="outline">Outline</Button>
+            <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="destructive">Destructive</Button>
+            <Button variant="outline">Outline</Button>
             <Button variant="link">Link</Button>
           </div>
           <div className="flex flex-wrap items-center gap-3">
