@@ -3,9 +3,7 @@ import {
   Bell,
   BookOpen,
   Calendar,
-  CalendarCheck,
   FileText,
-  Globe,
   Home,
   Inbox,
   type LucideIcon,
@@ -25,12 +23,10 @@ export type NavSection = { title?: string; items: NavItem[] };
 export const NAV_SECTIONS: NavSection[] = [
   { items: [{ label: "Home", href: "/dashboard", icon: Home }] },
   {
-    title: "Leads",
+    title: "Aanvragen",
     items: [
       { label: "Nieuwe aanvraag", href: "/dashboard/new-request", icon: Plus },
       { label: "Aanvragen", href: "/dashboard/requests", icon: Inbox },
-      { label: "Intakes", href: "/dashboard/intakes", icon: CalendarCheck },
-      { label: "Website", href: "/dashboard/website", icon: Globe },
     ],
   },
   {
