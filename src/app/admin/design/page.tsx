@@ -296,67 +296,116 @@ function ColorPalette() {
 
 /* ----------------------------- Typography ----------------------------- */
 
-const typeRows = [
+type TypeRow = {
+  name: string;
+  sample: string;
+  className: string;
+  font: string;
+  size: string;
+  weight: string;
+  tracking: string;
+};
+
+const typeRows: TypeRow[] = [
   {
+    name: "Hero display",
     sample: "Hero display",
     className: "font-display text-6xl font-medium leading-[1.05] tracking-tight",
-    spec: "font-display · text-6xl · font-medium",
+    font: "Display · Sora",
+    size: "text-6xl · 60px",
+    weight: "Medium",
+    tracking: "Tight",
   },
   {
+    name: "Display",
     sample: "Display",
     className: "font-display text-4xl font-medium leading-[1.1] tracking-tight",
-    spec: "font-display · text-4xl · font-medium",
+    font: "Display · Sora",
+    size: "text-4xl · 36px",
+    weight: "Medium",
+    tracking: "Tight",
   },
   {
+    name: "Page header",
     sample: "Page header",
     className: "text-3xl font-semibold tracking-tight",
-    spec: "text-3xl · font-semibold",
+    font: "Sans · Manrope",
+    size: "text-3xl · 30px",
+    weight: "Semibold",
+    tracking: "Tight",
   },
   {
+    name: "Section header",
     sample: "Section header",
     className: "text-xl font-semibold tracking-tight",
-    spec: "text-xl · font-semibold",
+    font: "Sans · Manrope",
+    size: "text-xl · 20px",
+    weight: "Semibold",
+    tracking: "Tight",
   },
   {
+    name: "Body",
     sample: "Body text. The default paragraph size used across most copy.",
     className: "text-base",
-    spec: "text-base · font-normal",
+    font: "Sans · Manrope",
+    size: "text-base · 16px",
+    weight: "Normal",
+    tracking: "Normal",
   },
   {
+    name: "Caption",
     sample: "Small text. Captions, descriptions, helper copy.",
     className: "text-sm text-muted-foreground",
-    spec: "text-sm · text-muted-foreground",
+    font: "Sans · Manrope",
+    size: "text-sm · 14px",
+    weight: "Normal",
+    tracking: "Normal",
   },
   {
+    name: "Nav link",
     sample: "Voor wie · Product · Prijzen",
     className: "text-base font-bold",
-    spec: "text-base · font-bold (nav link)",
+    font: "Sans · Manrope",
+    size: "text-base · 16px",
+    weight: "Bold",
+    tracking: "Normal",
   },
   {
+    name: "Eyebrow / label",
     sample: "Eyebrow / label",
     className:
       "text-xs font-semibold tracking-wider text-muted-foreground uppercase",
-    spec: "text-xs · font-semibold · tracking-wider · uppercase",
+    font: "Sans · Manrope",
+    size: "text-xs · 12px",
+    weight: "Semibold",
+    tracking: "Wider · uppercase",
   },
   {
+    name: "Code / mono",
     sample: "fixa-app/fixa · supabase/migrations/2026...sql",
     className: "font-mono text-sm",
-    spec: "font-mono · text-sm",
+    font: "Mono · Geist Mono",
+    size: "text-sm · 14px",
+    weight: "Normal",
+    tracking: "Normal",
   },
 ];
 
 function TypeScale() {
   return (
     <div className="flex flex-col">
-      {typeRows.map((row, i) => (
+      {typeRows.map((row) => (
         <div
-          key={i}
-          className="flex flex-col gap-1 border-b border-border py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+          key={row.name}
+          className="flex flex-col gap-3 border-b border-border py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
         >
-          <div className={row.className}>{row.sample}</div>
-          <code className="shrink-0 font-mono text-xs text-muted-foreground">
-            {row.spec}
-          </code>
+          <div className={`min-w-0 ${row.className}`}>{row.sample}</div>
+          <div className="shrink-0 sm:w-64 sm:text-right">
+            <p className="text-sm font-semibold text-foreground">{row.name}</p>
+            <p className="font-mono text-xs text-muted-foreground">
+              {row.font} · {row.size} · {row.weight} · {row.tracking}
+            </p>
+          </div>
         </div>
       ))}
     </div>
