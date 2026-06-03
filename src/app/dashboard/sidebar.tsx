@@ -80,13 +80,20 @@ export function DashboardSidebar({
       {/* Navigation */}
       <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-4">
         {NAV_SECTIONS.map((section, i) => (
-          <div key={section.title ?? `top-${i}`} className="space-y-1">
-            {section.title && (
-              <p className="px-2 pb-1 text-xs font-bold tracking-widest text-muted-foreground uppercase">
-                {section.title}
-              </p>
-            )}
-            {section.items.map((item) => {
+  <div key={section.title ?? `top-${i}`} className="space-y-1">
+    {section.title && (
+      <div className="flex items-center gap-2 px-2 pb-1">
+        <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+          {section.title}
+        </p>
+        {section.comingSoon && (
+          <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            binnenkort
+          </span>
+        )}
+      </div>
+    )}
+    {section.items.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
               return (
