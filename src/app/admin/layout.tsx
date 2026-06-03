@@ -20,5 +20,5 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return <main className="flex-1 bg-muted/20">{children}</main>;
+  return <main className="flex-1 bg-background">{children}</main>;
 }
