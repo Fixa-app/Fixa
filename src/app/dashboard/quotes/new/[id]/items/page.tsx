@@ -416,15 +416,15 @@ export default function NewQuoteItemsPage() {
         {/* Sticky footer */}
         <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
-            <Button className="w-full" onClick={handleSave} disabled={saving}>
-              {saving ? "Bezig..." : "Concept opslaan"}
-            </Button>
             <button
               onClick={() => setShowDiscard(true)}
               className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
             >
               Verwijderen
             </button>
+            <Button className="w-full" onClick={handleSave} disabled={saving}>
+              {saving ? "Bezig..." : "Concept opslaan"}
+            </Button>
           </div>
         </div>
       </div>
