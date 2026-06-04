@@ -19,11 +19,13 @@ import {
   FileText,
   Inbox,
   Mail,
+  Paintbrush,
   Receipt,
   Settings,
   Users,
   Workflow,
   Wrench,
+  Zap,
 } from "lucide-react";
 import { AuthDialog } from "@/components/auth-dialog";
 import { FAQAccordion } from "@/components/faq-accordion";
@@ -454,15 +456,43 @@ function ComponentShowcase() {
             </Button>
           </div>
 
-          {/* Nav link with icon */}
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="#"
-              className="inline-flex items-center gap-3 text-base font-bold text-foreground transition-colors hover:text-foreground/70"
-            >
-              <Wrench className="size-5" strokeWidth={2} />
-              Loodgieters
-            </a>
+        </div>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Navigation links"
+        note="Inline links use the Nav link style (text-base font-bold). Menu items pair an icon with the label — industries menu, dashboard sidebar, account dropdown."
+      >
+        <div className="flex flex-col gap-6">
+          {/* Inline nav links (marketing header) */}
+          <div className="flex flex-wrap items-center gap-6">
+            {["Bedrijfstypen", "Product", "Prijzen"].map((label) => (
+              <a
+                key={label}
+                href="#"
+                className="text-base font-bold text-foreground transition-colors hover:text-foreground/70"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+
+          {/* Icon + nav link (industries menu / sidebar) */}
+          <div className="flex flex-wrap items-center gap-6">
+            {[
+              { icon: Wrench, label: "Loodgieters" },
+              { icon: Zap, label: "Elektriciens" },
+              { icon: Paintbrush, label: "Schilders" },
+            ].map(({ icon: Icon, label }) => (
+              <a
+                key={label}
+                href="#"
+                className="inline-flex items-center gap-3 text-base font-bold text-foreground transition-colors hover:text-foreground/70"
+              >
+                <Icon className="size-5" strokeWidth={2} />
+                {label}
+              </a>
+            ))}
           </div>
         </div>
       </ComponentBlock>
