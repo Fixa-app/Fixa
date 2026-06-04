@@ -25,6 +25,7 @@ import {
   Users,
   Workflow,
   Wrench,
+  X,
   Zap,
 } from "lucide-react";
 import { AuthDialog } from "@/components/auth-dialog";
@@ -570,6 +571,33 @@ function ComponentShowcase() {
             </DialogHeader>
           </DialogContent>
         </Dialog>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Pop-up"
+        note="The modal surface — rounded-3xl bg-popover p-6, max-w-md, with a close affordance. Shown statically here; trigger it live via Dialog or the Auth dialog."
+      >
+        <div className="relative w-full max-w-md rounded-3xl border border-border bg-popover p-6 shadow-xl">
+          <button
+            type="button"
+            aria-label="Sluiten"
+            className="absolute top-4 right-4 flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+          <div className="flex flex-col gap-2 pr-8">
+            <h3 className="font-heading text-xl font-semibold">Pop-up titel</h3>
+            <p className="text-base text-muted-foreground">
+              Een gerichte interactie. Sluit via de achtergrond of de X-knop.
+            </p>
+          </div>
+          <div className="mt-6 flex items-center justify-end gap-3">
+            <Button variant="link" className="text-foreground">
+              Annuleren
+            </Button>
+            <Button>Bevestigen</Button>
+          </div>
+        </div>
       </ComponentBlock>
 
       <ComponentBlock title="Separator" note="Subtle divider between sections.">
