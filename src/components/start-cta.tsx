@@ -16,7 +16,8 @@ export function StartCta() {
         </div>
         <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
           <Button
-            className="h-12 rounded-xl bg-black px-6 text-base font-bold text-white hover:bg-black/80"
+            variant="outline"
+            className="h-12 rounded-xl px-6 text-base font-bold"
             nativeButton={false}
             render={<a href="#contact" />}
           >
