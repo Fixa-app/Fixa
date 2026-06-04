@@ -272,7 +272,7 @@ function ColorPalette() {
                 </code>
               </div>
               <div className="flex flex-col gap-0.5">
-                <code className="text-sm font-semibold">{s.name}</code>
+                <span className="text-sm font-semibold">{s.name}</span>
                 <span className="text-sm leading-snug text-muted-foreground">
                   {s.use}
                 </span>
@@ -666,7 +666,7 @@ function IconShowcase() {
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4"
           >
             <Icon className="size-5 text-foreground/80" />
-            <code className="text-sm font-semibold">{label}</code>
+            <span className="text-sm font-semibold">{label}</span>
           </div>
         ))}
       </div>
@@ -710,7 +710,7 @@ function SpacingTable() {
           key={token}
           className="flex flex-col gap-1 border-b border-border py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
         >
-          <code className="text-sm font-semibold">{token}</code>
+          <span className="text-sm font-semibold">{token}</span>
           <span className="text-sm text-muted-foreground">{use}</span>
         </div>
       ))}
@@ -737,7 +737,7 @@ function BreakpointTable() {
           key={bp.name}
           className="grid grid-cols-[80px_120px_1fr] gap-4 border-b border-border py-3 text-sm"
         >
-          <code className="font-semibold">{bp.name}</code>
+          <span className="font-semibold">{bp.name}</span>
           <code className="text-muted-foreground">{bp.min}</code>
           <span className="text-muted-foreground">{bp.use}</span>
         </div>
