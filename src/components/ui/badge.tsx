@@ -13,11 +13,11 @@ const badgeVariants = cva(
           "border-primary/15 bg-primary/10 text-primary [a]:hover:bg-primary/20",
         secondary:
           "border-secondary/15 bg-secondary/10 text-secondary [a]:hover:bg-secondary/20",
-        teal: "border-teal/15 bg-teal/10 text-teal [a]:hover:bg-teal/20",
+        teal: "border-[#0d9488]/15 bg-[#0d9488]/10 text-[#0d9488] [a]:hover:bg-[#0d9488]/20",
         violet:
-          "border-violet/15 bg-violet/10 text-violet [a]:hover:bg-violet/20",
+          "border-[#7c3aed]/15 bg-[#7c3aed]/10 text-[#7c3aed] [a]:hover:bg-[#7c3aed]/20",
         burgundy:
-          "border-burgundy/15 bg-burgundy/10 text-burgundy [a]:hover:bg-burgundy/20",
+          "border-[#be123c]/15 bg-[#be123c]/10 text-[#be123c] [a]:hover:bg-[#be123c]/20",
         destructive:
           "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
         outline:
