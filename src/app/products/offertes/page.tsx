@@ -63,7 +63,7 @@ export default function OffertesPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="px-4 pt-4 lg:-mt-[72px] lg:pt-0">
-          <div className="relative mx-auto grid min-h-[600px] w-full max-w-[1920px] overflow-hidden rounded-3xl sm:min-h-[680px] lg:grid-cols-2">
+          <div className="relative mx-auto grid min-h-[600px] w-full max-w-[1920px] overflow-hidden rounded-3xl sm:min-h-[680px] lg:grid-cols-[calc(50%_-_2rem)_calc(50%_+_2rem)]">
             <div className="relative order-1 min-h-[280px] lg:min-h-0">
               <Image
                 src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?q=80&w=1600&auto=format&fit=crop"
@@ -74,7 +74,8 @@ export default function OffertesPage() {
                 className="object-cover"
               />
             </div>
-            <div className="order-2 flex flex-col items-start justify-center gap-6 bg-violet px-6 py-14 text-white sm:px-10 sm:py-16 lg:px-16">
+            {/* lg pl (44px) = column-split offset (2rem) + media-grid half-gap (12px), so the headline lands on the max-w-6xl right-column line */}
+            <div className="order-2 flex flex-col items-start justify-center gap-6 bg-violet px-6 py-14 text-white sm:px-10 sm:py-16 lg:py-16 lg:pr-16 lg:pl-11">
               <span className="inline-flex items-center gap-2 text-primary">
                 <FileText className="size-5" strokeWidth={2} />
                 <span className="text-base font-bold">Offertes</span>
