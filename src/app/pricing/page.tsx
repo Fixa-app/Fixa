@@ -91,9 +91,9 @@ export default function PricingPage() {
             </div>
             <div className="flex flex-col items-start gap-5 rounded-3xl bg-teal p-8 text-white md:flex-row md:items-center md:justify-between md:gap-10 md:p-12">
               <div className="flex flex-col gap-3">
-                <h3 className="max-w-2xl font-display text-3xl leading-tight font-medium tracking-tight">
-                  Verstuur je eerste factuur deze of volgende maand en betaal
-                  pas eind dit jaar.
+                <h3 className="max-w-2xl font-display text-3xl leading-[1.05] font-medium tracking-tight">
+                  Verstuur je eerste factuur in juni of juli en betaal geen
+                  kosten in 2026.
                 </h3>
                 <p className="max-w-xl text-base leading-relaxed text-white/80">
                   Je eerste factuur versturen kost je nog geen 5 minuten. Upload
@@ -102,7 +102,7 @@ export default function PricingPage() {
                 </p>
               </div>
               <AuthDialog>
-                <Button className="h-12 shrink-0 rounded-xl bg-white px-6 text-base font-bold text-foreground hover:bg-white/90">
+                <Button className="h-12 shrink-0 rounded-xl px-6 text-base font-bold">
                   Aan de slag
                 </Button>
               </AuthDialog>
@@ -118,10 +118,11 @@ export default function PricingPage() {
             </h2>
             <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
               {included.map(({ icon: Icon, name }) => (
-                <div key={name} className="flex items-center gap-4">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-foreground/15">
-                    <Icon className="size-6 text-foreground/80" strokeWidth={2} />
-                  </span>
+                <div key={name} className="flex items-center gap-3">
+                  <Icon
+                    className="size-6 shrink-0 text-foreground/80"
+                    strokeWidth={2}
+                  />
                   <span className="text-2xl font-semibold tracking-tight">
                     {name}
                   </span>
