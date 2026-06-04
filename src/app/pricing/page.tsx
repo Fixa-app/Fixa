@@ -89,6 +89,24 @@ export default function PricingPage() {
                 </div>
               ))}
             </div>
+            <div className="flex flex-col items-start gap-5 rounded-3xl bg-teal p-8 text-white md:flex-row md:items-center md:justify-between md:gap-10 md:p-12">
+              <div className="flex flex-col gap-3">
+                <h3 className="max-w-2xl font-display text-3xl leading-tight font-medium tracking-tight">
+                  Verstuur je eerste factuur deze of volgende maand en betaal
+                  pas eind dit jaar.
+                </h3>
+                <p className="max-w-xl text-base leading-relaxed text-white/80">
+                  Je eerste factuur versturen kost je nog geen 5 minuten. Upload
+                  je bestaande factuur, vul de gegevens aan en verstuur — daarna
+                  loopt het vanzelf.
+                </p>
+              </div>
+              <AuthDialog>
+                <Button className="h-12 shrink-0 rounded-xl bg-white px-6 text-base font-bold text-foreground hover:bg-white/90">
+                  Aan de slag
+                </Button>
+              </AuthDialog>
+            </div>
           </div>
         </section>
 
