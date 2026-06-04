@@ -661,8 +661,8 @@ function ComponentBlock({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <p className="text-sm text-muted-foreground">{note}</p>
+        <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
+        <p className="text-base text-muted-foreground">{note}</p>
       </div>
       <div>{children}</div>
     </div>
