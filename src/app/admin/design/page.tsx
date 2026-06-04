@@ -403,7 +403,7 @@ function TypeScale() {
       {typeRows.map((row) => (
         <div
           key={row.name}
-          className="flex flex-col gap-3 border-b border-border py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+          className="flex flex-col gap-3 border-b border-border py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
         >
           <div className={`min-w-0 ${row.className}`}>{row.sample}</div>
           <div className="shrink-0 sm:w-64 sm:text-right">
