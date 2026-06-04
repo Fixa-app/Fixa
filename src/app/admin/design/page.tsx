@@ -251,6 +251,24 @@ const palette: Swatch[] = [
     use: "Burgundy — footer surface",
     textOn: "var(--burgundy-foreground)",
   },
+  {
+    name: "teal-bright",
+    hex: "#0D9488",
+    use: "Bright teal — accents & badges on light surfaces",
+    textOn: "var(--teal-bright-foreground)",
+  },
+  {
+    name: "violet-bright",
+    hex: "#7C3AED",
+    use: "Bright violet — accents & badges on light surfaces",
+    textOn: "var(--violet-bright-foreground)",
+  },
+  {
+    name: "burgundy-bright",
+    hex: "#BE123C",
+    use: "Bright burgundy — accents & badges on light surfaces",
+    textOn: "var(--burgundy-bright-foreground)",
+  },
 ];
 
 function ColorPalette() {
