@@ -664,7 +664,9 @@ function ComponentBlock({
         <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
         <p className="text-base text-muted-foreground">{note}</p>
       </div>
-      <div>{children}</div>
+      <div className="rounded-3xl border border-border p-6 sm:p-8">
+        {children}
+      </div>
     </div>
   );
 }
