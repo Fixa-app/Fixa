@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/lib/database.types";
 
@@ -157,6 +158,24 @@ function NewQuoteStep1Content() {
     return (
       <div className="flex min-h-screen flex-col">
         <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
+          {/* Header met progress bar */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSelectedClient(null)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Terug naar klant zoeken"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <div className="flex flex-1 items-center justify-between">
+              <div className="flex-1">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full w-1/3 bg-primary transition-all" />
+                </div>
+              </div>
+              <span className="ml-4 text-sm text-muted-foreground">1/3</span>
+            </div>
+          </div>
           <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
           <div>
@@ -259,6 +278,24 @@ function NewQuoteStep1Content() {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
+        {/* Header met progress bar */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push("/dashboard/quotes")}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Terug naar offertes"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <div className="flex flex-1 items-center justify-between">
+            <div className="flex-1">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full w-1/3 bg-primary transition-all" />
+              </div>
+            </div>
+            <span className="ml-4 text-sm text-muted-foreground">1/3</span>
+          </div>
+        </div>
         <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
         <input
