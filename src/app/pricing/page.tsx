@@ -1,16 +1,7 @@
-import {
-  BarChart3,
-  Calendar,
-  CalendarCheck,
-  Clock,
-  CreditCard,
-  FileText,
-  type LucideIcon,
-  Sparkles,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { PricingCalculator } from "@/components/pricing-calculator";
+import { PricingFeatures } from "@/components/pricing-features";
 import { FAQAccordion } from "@/components/faq-accordion";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -31,16 +22,6 @@ const reasons: { title: string; body: string }[] = [
     title: "Grote besparing voor kleine bedrijven",
     body: "Juist als starter of klein bedrijf profiteer je: lage vaste lasten en je betaalt naar wat je bedrijf aankan.",
   },
-];
-
-const included: { icon: LucideIcon; name: string }[] = [
-  { icon: CalendarCheck, name: "Online aanvragen" },
-  { icon: FileText, name: "Offertes" },
-  { icon: Calendar, name: "Planning" },
-  { icon: Clock, name: "Schedule" },
-  { icon: CreditCard, name: "Betalingen" },
-  { icon: BarChart3, name: "Rapporten" },
-  { icon: Sparkles, name: "Fixa Assist AI" },
 ];
 
 export default function PricingPage() {
@@ -116,19 +97,7 @@ export default function PricingPage() {
             <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
               Alles is inbegrepen.
             </h2>
-            <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-              {included.map(({ icon: Icon, name }) => (
-                <div key={name} className="flex items-center gap-3">
-                  <Icon
-                    className="size-6 shrink-0 text-foreground/80"
-                    strokeWidth={2}
-                  />
-                  <span className="text-2xl font-semibold tracking-tight">
-                    {name}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <PricingFeatures />
           </div>
         </section>
 
