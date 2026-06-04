@@ -92,7 +92,7 @@ export function PricingFeatures() {
 
   return (
     <>
-      <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <button
             key={feature.key}
@@ -121,10 +121,13 @@ export function PricingFeatures() {
           {active && (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3">
-                <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                  <active.icon className="size-6" strokeWidth={2} />
-                </span>
-                <DialogTitle>{active.name}</DialogTitle>
+                <DialogTitle className="flex items-center gap-3 font-sans text-2xl font-semibold tracking-tight">
+                  <active.icon
+                    className="size-6 shrink-0 text-foreground/80"
+                    strokeWidth={2}
+                  />
+                  {active.name}
+                </DialogTitle>
                 <DialogDescription className="text-base leading-relaxed">
                   {active.body}
                 </DialogDescription>
