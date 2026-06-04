@@ -168,7 +168,9 @@ export default function OffertesPage() {
                       <p className="text-base text-muted-foreground">{body}</p>
                     </div>
                     <div className="flex aspect-[4/3] items-center justify-center">
-                      <Mockup />
+                      <div className="w-full origin-center scale-[1.35]">
+                        <Mockup />
+                      </div>
                     </div>
                   </article>
                 ))}
