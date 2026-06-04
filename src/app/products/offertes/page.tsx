@@ -61,7 +61,7 @@ export default function OffertesPage() {
         {/* Hero */}
         <section className="px-4 pt-16 sm:pt-24">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:px-5">
-            <div className="relative order-2 aspect-[4/3] overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 lg:order-1">
+            <div className="relative order-2 min-h-[600px] overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 sm:min-h-[680px] lg:order-1">
               <OffertesMockup />
             </div>
             <div className="order-1 flex flex-col items-start gap-6 lg:order-2">
