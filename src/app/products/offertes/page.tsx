@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
@@ -62,9 +63,16 @@ export default function OffertesPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="px-4 pt-16 sm:pt-24 lg:-mt-[72px] lg:pt-0">
-          <div className="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:px-5">
-            <div className="relative order-2 min-h-[600px] overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 sm:min-h-[680px] lg:order-1">
-              <OffertesMockup />
+          <div className="mx-auto grid w-full max-w-[1920px] items-center gap-10 lg:grid-cols-2 lg:px-5">
+            <div className="relative order-2 min-h-[600px] overflow-hidden rounded-3xl bg-card sm:min-h-[680px] lg:order-1">
+              <Image
+                src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?q=80&w=1600&auto=format&fit=crop"
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+              />
             </div>
             <div className="order-1 flex flex-col items-start gap-6 lg:order-2">
               <span className="inline-flex items-center gap-2 text-primary">
