@@ -267,13 +267,13 @@ function ColorPalette() {
                 }}
               >
                 <span className="text-sm font-semibold">Aa</span>
-                <code className="text-[10px] tracking-tight uppercase opacity-80">
+                <code className="text-xs tracking-tight uppercase opacity-80">
                   {s.hex}
                 </code>
               </div>
               <div className="flex flex-col gap-0.5">
                 <code className="text-sm font-semibold">{s.name}</code>
-                <span className="text-xs leading-snug text-muted-foreground">
+                <span className="text-sm leading-snug text-muted-foreground">
                   {s.use}
                 </span>
               </div>
@@ -408,7 +408,7 @@ function TypeScale() {
           <div className={`min-w-0 ${row.className}`}>{row.sample}</div>
           <div className="shrink-0 sm:w-64 sm:text-right">
             <p className="text-sm font-semibold text-foreground">{row.name}</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {row.font} · {row.size} · {row.weight} · {row.tracking}
             </p>
           </div>
@@ -665,7 +665,7 @@ function IconShowcase() {
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4"
           >
             <Icon className="size-5 text-foreground/80" />
-            <code className="text-xs">{label}</code>
+            <code className="text-sm">{label}</code>
           </div>
         ))}
       </div>
