@@ -47,7 +47,7 @@ const groups: Group[] = [
         name: "Offertes",
         icon: FileText,
         body: "Stel offertes op met line items, deel ze digitaal en zie wanneer ze gelezen worden.",
-        href: "#",
+        href: "/products/offertes",
       },
     ],
   },

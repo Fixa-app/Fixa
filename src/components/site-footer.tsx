@@ -22,7 +22,7 @@ const footerColumns: {
     title: "Features",
     links: [
       { name: "Online aanvragen", href: "#" },
-      { name: "Offertes", href: "#" },
+      { name: "Offertes", href: "/products/offertes" },
       { name: "Planning", href: "#" },
       { name: "Schedule", href: "#" },
       { name: "Betalingen", href: "#" },
