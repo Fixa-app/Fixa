@@ -126,7 +126,7 @@
   --oxblood-foreground: oklch(0.95 0.025 85);
   --teal: #0d424e;
   --teal-foreground: oklch(1 0 0);
-  --burgundy: #3a1d22;
+  --burgundy: #5e1a33;
   --burgundy-foreground: oklch(1 0 0);
   --sage: oklch(0.66 0.035 145);
   --sage-foreground: oklch(0.20 0.013 60);
@@ -137,7 +137,7 @@
   --tangerine-foreground: oklch(1 0 0);
   --mint: #10b981;
   --mint-foreground: oklch(1 0 0);
-  --violet: #2f203c;
+  --violet: #3a2a66;
   --violet-foreground: oklch(1 0 0);
 
   --teal-light: #d8e5e7;

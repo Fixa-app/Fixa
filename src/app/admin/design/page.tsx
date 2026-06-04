@@ -242,13 +242,13 @@ const palette: Swatch[] = [
   },
   {
     name: "violet",
-    hex: "#2F203C",
+    hex: "#3A2A66",
     use: "Midnight Violet — pricing card, premium accents",
     textOn: "var(--violet-foreground)",
   },
   {
     name: "burgundy",
-    hex: "#3A1D22",
+    hex: "#5E1A33",
     use: "Burgundy — footer surface",
     textOn: "var(--burgundy-foreground)",
   },
