@@ -454,14 +454,15 @@ function ComponentShowcase() {
             </Button>
           </div>
 
-          {/* Icon (utility) */}
+          {/* Nav link with icon */}
           <div className="flex flex-wrap items-center gap-3">
-            <Button size="icon" aria-label="Settings">
-              <Settings />
-            </Button>
-            <Button size="icon-sm" variant="outline" aria-label="Settings">
-              <Settings />
-            </Button>
+            <a
+              href="#"
+              className="inline-flex items-center gap-3 text-base font-bold text-foreground transition-colors hover:text-foreground/70"
+            >
+              <Wrench className="size-5" strokeWidth={2} />
+              Loodgieters
+            </a>
           </div>
         </div>
       </ComponentBlock>
@@ -665,7 +666,7 @@ function IconShowcase() {
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4"
           >
             <Icon className="size-5 text-foreground/80" />
-            <code className="text-sm">{label}</code>
+            <code className="text-sm font-semibold">{label}</code>
           </div>
         ))}
       </div>
