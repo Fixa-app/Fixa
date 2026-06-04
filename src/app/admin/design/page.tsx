@@ -634,9 +634,7 @@ function ComponentBlock({
         <h3 className="text-sm font-semibold">{title}</h3>
         <p className="text-sm text-muted-foreground">{note}</p>
       </div>
-      <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
-        {children}
-      </div>
+      <div>{children}</div>
     </div>
   );
 }
