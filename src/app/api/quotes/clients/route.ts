@@ -56,8 +56,9 @@ export async function GET(request: NextRequest) {
     const { data: clients } = await clientQuery;
     return NextResponse.json({ clients: clients ?? [] });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
+    console.error('API error:', error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+}
 }
 
 export async function POST(request: NextRequest) {
@@ -93,8 +94,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ client });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
+    console.error('API error:', error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+}
 }
 
 export async function PATCH(request: NextRequest) {
@@ -119,6 +121,7 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
+    console.error('API error:', error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+}
 }
