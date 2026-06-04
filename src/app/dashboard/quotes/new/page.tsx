@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/lib/database.types";
 
@@ -42,20 +41,11 @@ function ClientAvatar({ name }: { name: string }) {
   );
 }
 
-async function getCompanyId(supabase: ReturnType<typeof createClient>) {
-  const { data: membership } = await supabase
-    .from("company_members")
-    .select("company_id")
-    .single();
-  return membership?.company_id ?? null;
-}
-
 function NewQuoteStep1Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefill = searchParams.get("prefill") ?? "";
 
-  const supabase = createClient();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [query, setQuery] = useState(prefill);
@@ -63,7 +53,6 @@ function NewQuoteStep1Content() {
   const [recentClients, setRecentClients] = useState<Client[]>([]);
   const [visible, setVisible] = useState(false);
 
-  // Selected client state
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -71,7 +60,6 @@ function NewQuoteStep1Content() {
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Focus input on mount
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -80,48 +68,30 @@ function NewQuoteStep1Content() {
     }
   }, []);
 
-  // Load recent clients on mount
+  // Load recent clients
   useEffect(() => {
     async function loadRecent() {
-      const companyId = await getCompanyId(supabase);
-      if (!companyId) return;
-
-      const { data } = await supabase
-        .from("clients")
-        .select("*")
-        .eq("company_id", companyId)
-        .order("updated_at", { ascending: false })
-        .limit(3);
-
-      if (data) {
-        setRecentClients(data);
-        setTimeout(() => setVisible(true), 50);
-      }
+      const res = await fetch("/api/quotes/clients");
+      if (!res.ok) return;
+      const { clients } = await res.json();
+      setRecentClients(clients ?? []);
+      setTimeout(() => setVisible(true), 50);
     }
     loadRecent();
   }, []);
 
-  // Search clients as user types
+  // Search clients
   useEffect(() => {
     if (!query.trim()) {
       setClients([]);
       return;
     }
-
     const timer = setTimeout(async () => {
-      const companyId = await getCompanyId(supabase);
-      if (!companyId) return;
-
-      const { data } = await supabase
-        .from("clients")
-        .select("*")
-        .eq("company_id", companyId)
-        .ilike("name", `%${query}%`)
-        .limit(5);
-
-      setClients(data ?? []);
+      const res = await fetch(`/api/quotes/clients?q=${encodeURIComponent(query)}`);
+      if (!res.ok) return;
+      const { clients } = await res.json();
+      setClients(clients ?? []);
     }, 200);
-
     return () => clearTimeout(timer);
   }, [query]);
 
@@ -134,16 +104,14 @@ function NewQuoteStep1Content() {
   }
 
   async function handleCreateNew() {
-    const companyId = await getCompanyId(supabase);
-    if (!companyId) return;
-
-    const { data: newClient } = await supabase
-      .from("clients")
-      .insert({ name: query.trim(), company_id: companyId })
-      .select()
-      .single();
-
-    if (newClient) selectClient(newClient);
+    const res = await fetch("/api/quotes/clients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: query.trim() }),
+    });
+    if (!res.ok) return;
+    const { client } = await res.json();
+    if (client) selectClient(client);
   }
 
   async function handleContinue() {
@@ -159,32 +127,22 @@ function NewQuoteStep1Content() {
 
     setSaving(true);
 
-    // Update client record
-    await supabase
-      .from("clients")
-      .update({ address, phone, email })
-      .eq("id", selectedClient.id);
-
-    // Get user
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const companyId = await getCompanyId(supabase);
-    if (!companyId) return;
+    // Update client
+    await fetch("/api/quotes/clients", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: selectedClient.id, address, phone, email }),
+    });
 
     // Create draft quote
-    const { data: quote } = await supabase
-      .from("quotes")
-      .insert({
-        company_id: companyId,
-        client_id: selectedClient.id,
-        created_by_user_id: user.id,
-        status: "draft",
-      })
-      .select()
-      .single();
+    const res = await fetch("/api/quotes/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clientId: selectedClient.id }),
+    });
 
-    if (quote) {
+    if (res.ok) {
+      const { quote } = await res.json();
       router.push(`/dashboard/quotes/new/${quote.id}/items`);
     }
 
@@ -195,14 +153,12 @@ function NewQuoteStep1Content() {
   const showResults = query.trim().length > 0;
   const hasMatches = clients.length > 0;
 
-  // Step 1b: client selected — show details form
   if (selectedClient) {
     return (
       <div className="flex min-h-screen flex-col">
         <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
           <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
-          {/* Selected client */}
           <div>
             <div className="flex items-center gap-3">
               <input
@@ -225,7 +181,6 @@ function NewQuoteStep1Content() {
             </p>
           </div>
 
-          {/* Address */}
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="address">
               Adres
@@ -241,7 +196,6 @@ function NewQuoteStep1Content() {
             />
           </div>
 
-          {/* Phone */}
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="phone">
               Telefoonnummer
@@ -266,7 +220,6 @@ function NewQuoteStep1Content() {
             )}
           </div>
 
-          {/* Email */}
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="email">
               E-mailadres
@@ -292,7 +245,6 @@ function NewQuoteStep1Content() {
           </div>
         </div>
 
-        {/* Sticky footer */}
         <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl p-6">
             <Button className="w-full" onClick={handleContinue} disabled={saving}>
@@ -304,13 +256,11 @@ function NewQuoteStep1Content() {
     );
   }
 
-  // Step 1a: client search
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
         <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
-        {/* Search input */}
         <input
           ref={inputRef}
           type="text"
@@ -321,7 +271,6 @@ function NewQuoteStep1Content() {
           className="flex h-12 w-full rounded-full border border-input bg-background px-5 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
 
-        {/* Recent clients */}
         {showRecent && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground mb-2">Recente klanten</p>
@@ -349,13 +298,10 @@ function NewQuoteStep1Content() {
           </div>
         )}
 
-        {/* Search results */}
         {showResults && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground mb-2">
-              {hasMatches
-                ? "Gevonden – selecteer of voeg toe"
-                : "Geen resultaten"}
+              {hasMatches ? "Gevonden – selecteer of voeg toe" : "Geen resultaten"}
             </p>
 
             {clients.map((client, i) => (
@@ -378,7 +324,6 @@ function NewQuoteStep1Content() {
               </button>
             ))}
 
-            {/* Create new */}
             <button
               onClick={handleCreateNew}
               className="flex w-full items-center gap-4 rounded-xl px-2 py-3 text-left transition-colors hover:bg-muted/50"
