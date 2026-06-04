@@ -1,16 +1,12 @@
 import {
   BarChart3,
+  Calendar,
   CalendarCheck,
-  Coins,
+  Clock,
+  CreditCard,
   FileText,
   type LucideIcon,
-  Package,
-  PiggyBank,
-  Receipt,
   Sparkles,
-  UserCog,
-  Users,
-  Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
@@ -22,65 +18,29 @@ export const metadata = {
   title: "Prijzen — Fixa",
 };
 
-const reasons: { icon: LucideIcon; title: string; body: string }[] = [
+const reasons: { title: string; body: string }[] = [
   {
-    icon: Coins,
     title: "Betaal alleen voor wat je verdient",
     body: "Je betaalt een klein percentage van je omzet. Geen omzet betekent geen kosten — het prijsmodel groeit gewoon met je bedrijf mee.",
   },
   {
-    icon: Package,
     title: "Alles inbegrepen",
     body: "Alle tools zitten in één abonnement. Geen losse modules of verrassingen achteraf — alleen de standaard transactiekosten voor betalingen.",
   },
   {
-    icon: PiggyBank,
     title: "Grote besparing voor kleine bedrijven",
     body: "Juist als starter of klein bedrijf profiteer je: lage vaste lasten en je betaalt naar wat je bedrijf aankan.",
   },
 ];
 
-const included: { icon: LucideIcon; name: string; body: string }[] = [
-  {
-    icon: CalendarCheck,
-    name: "Online aanvragen",
-    body: "Klanten dienen aanvragen in via een formulier op je website.",
-  },
-  {
-    icon: FileText,
-    name: "Offertes",
-    body: "Stel offertes op met line items en zie wanneer ze gelezen worden.",
-  },
-  {
-    icon: Wrench,
-    name: "Klussen & planning",
-    body: "Plan jobs, stuur je team aan en houd overzicht op één agenda.",
-  },
-  {
-    icon: Users,
-    name: "Klanten",
-    body: "Eén plek voor contactgegevens en de volledige werkhistorie.",
-  },
-  {
-    icon: Receipt,
-    name: "Facturen & betalingen",
-    body: "Factureer automatisch vanaf afgeronde klussen en word direct betaald.",
-  },
-  {
-    icon: BarChart3,
-    name: "Rapporten",
-    body: "Inzicht in omzet, marge en openstaande facturen in één oogopslag.",
-  },
-  {
-    icon: Sparkles,
-    name: "Fixa Assist AI",
-    body: "AI stelt offertes op en vat klantgesprekken voor je samen.",
-  },
-  {
-    icon: UserCog,
-    name: "Team & rollen",
-    body: "Nodig collega's uit met de juiste rechten en houd grip.",
-  },
+const included: { icon: LucideIcon; name: string }[] = [
+  { icon: CalendarCheck, name: "Online aanvragen" },
+  { icon: FileText, name: "Offertes" },
+  { icon: Calendar, name: "Planning" },
+  { icon: Clock, name: "Schedule" },
+  { icon: CreditCard, name: "Betalingen" },
+  { icon: BarChart3, name: "Rapporten" },
+  { icon: Sparkles, name: "Fixa Assist AI" },
 ];
 
 export default function PricingPage() {
@@ -88,9 +48,9 @@ export default function PricingPage() {
     <>
       <main className="flex-1">
         {/* Title + intro */}
-        <section className="px-4 pt-16 pb-12 sm:pt-24 sm:pb-16">
+        <section className="px-4 pt-16 pb-8 sm:pt-24 sm:pb-8">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 lg:px-5">
-            <h1 className="max-w-3xl font-display text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl">
+            <h1 className="max-w-3xl font-display text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl">
               Eén abonnement voor al je papierwerk.
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-foreground/70">
@@ -102,7 +62,7 @@ export default function PricingPage() {
         </section>
 
         {/* Pricing calculator */}
-        <section className="px-4 py-12 sm:py-16">
+        <section className="px-4 pb-12 sm:pb-16">
           <div className="mx-auto w-full max-w-6xl lg:px-5">
             <div className="rounded-3xl bg-violet p-8 text-white md:p-12">
               <PricingCalculator />
@@ -114,17 +74,14 @@ export default function PricingPage() {
         <section className="px-4 py-12 sm:py-16">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:px-5">
             <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-              Een prijs die met je meegroeit.
+              Flexibel, transparant en scherp geprijsd.
             </h2>
             <div className="grid gap-4 md:grid-cols-3">
-              {reasons.map(({ icon: Icon, title, body }) => (
+              {reasons.map(({ title, body }) => (
                 <div
                   key={title}
-                  className="flex flex-col gap-4 rounded-3xl bg-card p-6 md:p-8"
+                  className="flex flex-col gap-3 rounded-3xl bg-card p-6 md:p-8"
                 >
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Icon className="size-6" strokeWidth={2} />
-                  </span>
                   <h3 className="text-2xl font-semibold tracking-tight">
                     {title}
                   </h3>
@@ -139,21 +96,17 @@ export default function PricingPage() {
         <section className="px-4 py-12 sm:py-16">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:px-5">
             <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-              Alles wat erin zit.
+              Alles is inbegrepen.
             </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {included.map(({ icon: Icon, name, body }) => (
-                <div
-                  key={name}
-                  className="flex items-start gap-4 rounded-2xl bg-surface p-5"
-                >
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background text-foreground">
-                    <Icon className="size-5" strokeWidth={2} />
+            <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+              {included.map(({ icon: Icon, name }) => (
+                <div key={name} className="flex items-center gap-4">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-foreground/15">
+                    <Icon className="size-6 text-foreground/80" strokeWidth={2} />
                   </span>
-                  <div className="flex flex-col gap-1">
-                    <h3 className="text-base font-bold">{name}</h3>
-                    <p className="text-sm text-muted-foreground">{body}</p>
-                  </div>
+                  <span className="text-2xl font-semibold tracking-tight">
+                    {name}
+                  </span>
                 </div>
               ))}
             </div>
