@@ -76,7 +76,7 @@
 }
 
 :root {
-  --background: #f0f0eb;
+  --background: #f6f6f3;
   --foreground: oklch(0.20 0.013 60);
   --card: #ecebe6;
   --card-foreground: oklch(0.20 0.013 60);
@@ -90,7 +90,7 @@
   --primary-dark: #9c2d05;
   --primary-dark-foreground: oklch(1 0 0);
   --secondary: #1f1a14;
-  --secondary-foreground: #f0f0eb;
+  --secondary-foreground: #f6f6f3;
   --muted: oklch(0.90 0.020 85);
   --muted-foreground: oklch(0.56 0.013 65);
   --accent: oklch(0.90 0.020 85);

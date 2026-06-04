@@ -203,8 +203,8 @@ type Swatch = {
 const palette: Swatch[] = [
   {
     name: "background",
-    hex: "#F0F0EB",
-    use: "Page background — warm cream",
+    hex: "#F6F6F3",
+    use: "Page background — fresh off-white",
     textOn: "var(--foreground)",
   },
   {
