@@ -70,12 +70,18 @@ export default function PricingPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* First-invoice offer */}
+        <section className="px-4 py-12 sm:py-16">
+          <div className="mx-auto w-full max-w-6xl lg:px-5">
             <div className="flex flex-col items-start gap-5 rounded-3xl bg-teal p-8 text-white md:flex-row md:items-center md:justify-between md:gap-10 md:p-12">
               <div className="flex flex-col gap-3">
-                <h3 className="max-w-2xl font-display text-3xl leading-[1.05] font-medium tracking-tight">
+                <h2 className="max-w-2xl font-display text-3xl leading-[1.05] font-medium tracking-tight">
                   Verstuur je eerste factuur in juni of juli en betaal geen
                   kosten in 2026.
-                </h3>
+                </h2>
                 <p className="max-w-xl text-base leading-relaxed text-white/80">
                   Je eerste factuur versturen kost je nog geen 5 minuten. Upload
                   je bestaande factuur, vul de gegevens aan en verstuur — daarna
