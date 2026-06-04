@@ -314,7 +314,25 @@ function ColorPalette() {
 
 /* ----------------------------- Typography ----------------------------- */
 
+type TypeGroup = "Display" | "Heading" | "Body";
+
+const typeGroups: { name: TypeGroup; note: string }[] = [
+  {
+    name: "Display",
+    note: "Stand-alone only — at most one display element per section, never several. Page headers, pop-up headers, hero moments.",
+  },
+  {
+    name: "Heading",
+    note: "Repeated content headings that sit alongside the single display — card titles, features, list items.",
+  },
+  {
+    name: "Body",
+    note: "Body copy and supporting text — paragraphs, nav links, labels, captions, eyebrows.",
+  },
+];
+
 type TypeRow = {
+  group: TypeGroup;
   name: string;
   sample: string;
   className: string;
@@ -326,6 +344,7 @@ type TypeRow = {
 
 const typeRows: TypeRow[] = [
   {
+    group: "Display",
     name: "Hero display",
     sample: "Minder papierwerk, meer vakwerk",
     className: "font-display text-6xl font-bold leading-[1.05] tracking-tight",
@@ -335,6 +354,7 @@ const typeRows: TypeRow[] = [
     tracking: "Tight",
   },
   {
+    group: "Display",
     name: "Display",
     sample: "Eén systeem, van aanvraag tot betaling",
     className: "font-display text-5xl font-medium leading-[1.05] tracking-tight",
@@ -344,6 +364,7 @@ const typeRows: TypeRow[] = [
     tracking: "Tight",
   },
   {
+    group: "Display",
     name: "Small display — page header",
     sample: "Overzicht",
     className: "font-display text-3xl font-medium leading-[1.05] tracking-tight",
@@ -353,6 +374,7 @@ const typeRows: TypeRow[] = [
     tracking: "Tight",
   },
   {
+    group: "Display",
     name: "Mini display — pop-up header",
     sample: "Welkom bij Fixa",
     className: "font-display text-2xl font-medium leading-tight tracking-tight",
@@ -362,6 +384,7 @@ const typeRows: TypeRow[] = [
     tracking: "Tight",
   },
   {
+    group: "Heading",
     name: "Heading",
     sample: "Offertes in een minuut",
     className: "text-2xl font-semibold tracking-tight",
@@ -371,6 +394,7 @@ const typeRows: TypeRow[] = [
     tracking: "Tight",
   },
   {
+    group: "Heading",
     name: "Subheading",
     sample: "Wat kost Fixa?",
     className: "text-xl font-semibold tracking-tight",
@@ -380,6 +404,7 @@ const typeRows: TypeRow[] = [
     tracking: "Tight",
   },
   {
+    group: "Body",
     name: "Label",
     sample: "Field label",
     className: "text-sm font-semibold text-foreground",
@@ -389,6 +414,7 @@ const typeRows: TypeRow[] = [
     tracking: "Normal",
   },
   {
+    group: "Body",
     name: "Body",
     sample: "Body text. The default paragraph size used across most copy.",
     className: "text-base",
@@ -398,6 +424,7 @@ const typeRows: TypeRow[] = [
     tracking: "Normal",
   },
   {
+    group: "Body",
     name: "Caption",
     sample: "Small text. Captions, descriptions, helper copy.",
     className: "text-sm text-muted-foreground",
@@ -407,6 +434,7 @@ const typeRows: TypeRow[] = [
     tracking: "Normal",
   },
   {
+    group: "Body",
     name: "Nav link",
     sample: "Voor wie · Product · Prijzen",
     className: "text-base font-bold",
@@ -416,6 +444,7 @@ const typeRows: TypeRow[] = [
     tracking: "Normal",
   },
   {
+    group: "Body",
     name: "Eyebrow / label",
     sample: "Eyebrow / label",
     className:
@@ -429,19 +458,35 @@ const typeRows: TypeRow[] = [
 
 function TypeScale() {
   return (
-    <div className="flex flex-col">
-      {typeRows.map((row) => (
-        <div
-          key={row.name}
-          className="flex flex-col gap-3 border-b border-border py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
-        >
-          <div className={`min-w-0 ${row.className}`}>{row.sample}</div>
-          <div className="shrink-0 sm:w-64 sm:text-right">
-            <p className="text-sm font-semibold text-foreground">{row.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {row.font} · {row.size} · {row.weight} · {row.tracking}
+    <div className="flex flex-col gap-12">
+      {typeGroups.map((group) => (
+        <div key={group.name} className="flex flex-col">
+          <div className="flex flex-col gap-1 pb-4">
+            <h3 className="text-xl font-semibold tracking-tight">
+              {group.name}
+            </h3>
+            <p className="max-w-2xl text-base text-muted-foreground">
+              {group.note}
             </p>
           </div>
+          {typeRows
+            .filter((row) => row.group === group.name)
+            .map((row) => (
+              <div
+                key={row.name}
+                className="flex flex-col gap-3 border-b border-border py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
+              >
+                <div className={`min-w-0 ${row.className}`}>{row.sample}</div>
+                <div className="shrink-0 sm:w-64 sm:text-right">
+                  <p className="text-sm font-semibold text-foreground">
+                    {row.name}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {row.font} · {row.size} · {row.weight} · {row.tracking}
+                  </p>
+                </div>
+              </div>
+            ))}
         </div>
       ))}
     </div>
