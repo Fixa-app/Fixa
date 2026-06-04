@@ -280,33 +280,42 @@ export type Database = {
           description: string
           id: string
           item_type: Database["public"]["Enums"]["line_item_type"]
+          margin_amount: number | null
+          margin_percentage: number | null
           quantity: number
           quote_id: string
           rate: number
           sort_order: number
           tax_percentage: number
+          title: string | null
         }
         Insert: {
           created_at?: string
           description: string
           id?: string
           item_type?: Database["public"]["Enums"]["line_item_type"]
+          margin_amount?: number | null
+          margin_percentage?: number | null
           quantity?: number
           quote_id: string
           rate: number
           sort_order?: number
           tax_percentage?: number
+          title?: string | null
         }
         Update: {
           created_at?: string
           description?: string
           id?: string
           item_type?: Database["public"]["Enums"]["line_item_type"]
+          margin_amount?: number | null
+          margin_percentage?: number | null
           quantity?: number
           quote_id?: string
           rate?: number
           sort_order?: number
           tax_percentage?: number
+          title?: string | null
         }
         Relationships: [
           {
@@ -464,6 +473,7 @@ export type Database = {
           disclaimer: string | null
           id: string
           intro_text: string | null
+          job_title: string | null
           sent_at: string | null
           status: Database["public"]["Enums"]["quote_status"]
           subtotal: number | null
@@ -481,6 +491,7 @@ export type Database = {
           disclaimer?: string | null
           id?: string
           intro_text?: string | null
+          job_title?: string | null
           sent_at?: string | null
           status: Database["public"]["Enums"]["quote_status"]
           subtotal?: number | null
@@ -498,6 +509,7 @@ export type Database = {
           disclaimer?: string | null
           id?: string
           intro_text?: string | null
+          job_title?: string | null
           sent_at?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           subtotal?: number | null
