@@ -64,13 +64,13 @@ export default function OffertesPage() {
         {/* Hero */}
         <section className="px-4 pt-16 sm:pt-24 lg:-mt-[72px] lg:pt-0">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-6 md:grid-cols-2 lg:px-5">
-            <div className="relative order-2 min-h-[600px] overflow-hidden rounded-3xl bg-card sm:min-h-[680px] md:order-1">
+            <div className="relative order-2 min-h-[600px] overflow-hidden rounded-3xl bg-card sm:min-h-[680px] md:order-1 md:ml-[min(-20px,calc(572px_-_50vw))]">
               <Image
                 src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?q=80&w=1600&auto=format&fit=crop"
                 alt=""
                 fill
                 priority
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes="(min-width: 768px) 60vw, 100vw"
                 className="object-cover"
               />
             </div>
