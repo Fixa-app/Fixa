@@ -552,7 +552,7 @@ function ComponentShowcase() {
 
       <ComponentBlock
         title="Dialog"
-        note="rounded-3xl bg-background p-6 sm:max-w-md. Title uses the Heading style (text-2xl font-semibold)."
+        note="rounded-3xl bg-background p-6 sm:max-w-md. Title uses Small display (font-display text-3xl)."
       >
         <Dialog>
           <DialogTrigger
@@ -575,7 +575,7 @@ function ComponentShowcase() {
 
       <ComponentBlock
         title="Pop-up"
-        note="The modal surface — rounded-3xl bg-background p-6, max-w-md, with a close affordance. Title uses the Heading style. Shown statically here; trigger it live via Dialog or the Auth dialog."
+        note="The modal surface — rounded-3xl bg-background p-6, max-w-md, with a close affordance. Title uses Small display. Shown statically here; trigger it live via Dialog or the Auth dialog."
       >
         <div className="relative w-full max-w-md rounded-3xl border border-border bg-background p-6 shadow-xl">
           <button
@@ -586,7 +586,7 @@ function ComponentShowcase() {
             <X className="size-4" />
           </button>
           <div className="flex flex-col gap-2 pr-8">
-            <h3 className="text-2xl font-semibold tracking-tight">
+            <h3 className="font-display text-3xl font-medium tracking-tight">
               Pop-up titel
             </h3>
             <p className="text-base text-muted-foreground">
