@@ -519,11 +519,15 @@ function ComponentShowcase() {
 
       <ComponentBlock
         title="Badges"
-        note="Statuses, tags, dashboard state markers."
+        note="Statuses, tags, dashboard state markers. Bold, and colored from the brand palette."
       >
         <div className="flex flex-wrap items-center gap-2">
-          <Badge>default</Badge>
-          <Badge variant="secondary">secondary</Badge>
+          <Badge>Primary</Badge>
+          <Badge variant="secondary">Secondary</Badge>
+          <Badge variant="teal">Teal</Badge>
+          <Badge variant="violet">Violet</Badge>
+          <Badge variant="burgundy">Burgundy</Badge>
+          <Badge variant="outline">Outline</Badge>
         </div>
       </ComponentBlock>
 
