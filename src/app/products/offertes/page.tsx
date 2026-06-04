@@ -62,19 +62,19 @@ export default function OffertesPage() {
     <>
       <main className="flex-1">
         {/* Hero */}
-        <section className="px-4 pt-16 sm:pt-24 lg:-mt-[72px] lg:pt-0">
-          <div className="mx-auto grid w-full max-w-6xl items-center gap-6 md:grid-cols-2 lg:px-5">
-            <div className="relative order-2 min-h-[600px] overflow-hidden rounded-3xl bg-card sm:min-h-[680px] md:order-1 md:ml-[min(-20px,calc(572px_-_50vw))]">
+        <section className="px-4 pt-4 lg:-mt-[72px] lg:pt-0">
+          <div className="relative mx-auto grid min-h-[600px] w-full max-w-[1920px] overflow-hidden rounded-3xl sm:min-h-[680px] lg:grid-cols-2">
+            <div className="relative order-1 min-h-[280px] lg:min-h-0">
               <Image
                 src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?q=80&w=1600&auto=format&fit=crop"
                 alt=""
                 fill
                 priority
-                sizes="(min-width: 768px) 60vw, 100vw"
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
               />
             </div>
-            <div className="order-1 flex flex-col items-start gap-6 md:order-2">
+            <div className="order-2 flex flex-col items-start justify-center gap-6 bg-violet px-6 py-14 text-white sm:px-10 sm:py-16 lg:px-16">
               <span className="inline-flex items-center gap-2 text-primary">
                 <FileText className="size-5" strokeWidth={2} />
                 <span className="text-base font-bold">Offertes</span>
@@ -82,7 +82,7 @@ export default function OffertesPage() {
               <h1 className="font-display text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl">
                 Offertes die in een minuut staan.
               </h1>
-              <p className="max-w-lg text-lg leading-relaxed text-foreground/70">
+              <p className="max-w-lg text-lg leading-relaxed text-white/80">
                 Stel professionele offertes op in je eigen huisstijl, deel ze
                 digitaal en zie wanneer ze gelezen worden. Van eerste regel tot
                 getekende opdracht — zonder gedoe.
@@ -95,7 +95,7 @@ export default function OffertesPage() {
                 </AuthDialog>
                 <Button
                   variant="outline"
-                  className="h-12 rounded-xl px-6 text-base font-bold"
+                  className="h-12 rounded-xl border-white/40 bg-white/10 px-6 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
                   nativeButton={false}
                   render={<a href="#contact" />}
                 >
