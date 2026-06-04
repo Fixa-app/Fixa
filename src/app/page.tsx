@@ -127,7 +127,7 @@ function AI() {
             {aiCards.map(({ title, body, Mockup }) => (
               <article
                 key={title}
-                className="flex flex-col gap-6 rounded-3xl bg-card p-6 md:p-8"
+                className="flex flex-col gap-6 rounded-3xl bg-surface p-6 md:p-8"
               >
                 <div className="flex flex-col gap-3">
                   <h3 className="text-2xl font-semibold tracking-tight">
