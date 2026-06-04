@@ -182,9 +182,7 @@ function IdentityRow({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-        {label}
-      </p>
+      <p className="text-sm font-semibold text-foreground">{label}</p>
       <div className="rounded-3xl border border-border bg-card p-8">
         {sample}
       </div>
@@ -274,7 +272,7 @@ function ColorPalette() {
                 </code>
               </div>
               <div className="flex flex-col gap-0.5">
-                <code className="text-xs font-semibold">{s.name}</code>
+                <code className="text-sm font-semibold">{s.name}</code>
                 <span className="text-xs leading-snug text-muted-foreground">
                   {s.use}
                 </span>
@@ -350,6 +348,15 @@ const typeRows: TypeRow[] = [
     size: "text-lg → xl (18–20px)",
     weight: "Semibold",
     tracking: "Tight",
+  },
+  {
+    name: "Label",
+    sample: "Field label",
+    className: "text-sm font-semibold text-foreground",
+    font: "Sans · Manrope",
+    size: "text-sm · 14px",
+    weight: "Semibold",
+    tracking: "Normal",
   },
   {
     name: "Body",
