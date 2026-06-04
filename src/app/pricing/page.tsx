@@ -12,7 +12,7 @@ export const metadata = {
 const reasons: { title: string; body: string }[] = [
   {
     title: "Betaal alleen voor wat je verdient",
-    body: "Je betaalt een klein percentage van je omzet. Geen omzet betekent geen kosten — het prijsmodel groeit gewoon met je bedrijf mee.",
+    body: "Je tarief is gebaseerd op je omzet. Heb je in een periode geen of minder omzet, dan betaal je ook minder — het prijsmodel groeit gewoon met je bedrijf mee.",
   },
   {
     title: "Alles inbegrepen",
