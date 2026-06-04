@@ -75,7 +75,7 @@ export default function OffertesPage() {
               />
             </div>
             {/* lg pl (44px) = column-split offset (2rem) + media-grid half-gap (12px), so the headline lands on the max-w-6xl right-column line */}
-            <div className="order-2 flex flex-col items-start justify-center gap-6 bg-secondary px-6 py-14 text-white sm:px-10 sm:py-16 lg:py-16 lg:pr-16 lg:pl-11">
+            <div className="order-2 flex flex-col items-start justify-center gap-6 bg-surface-dark px-6 py-14 text-white sm:px-10 sm:py-16 lg:py-16 lg:pr-16 lg:pl-11">
               <span className="inline-flex items-center gap-2 text-primary">
                 <FileText className="size-5" strokeWidth={2} />
                 <span className="text-base font-bold">Offertes</span>

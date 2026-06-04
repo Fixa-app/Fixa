@@ -33,6 +33,7 @@
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
+  --color-surface-dark: var(--surface-dark);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
   --color-primary-dark-surface: var(--primary-dark-surface);
@@ -97,6 +98,8 @@
   --primary-dark-foreground: oklch(1 0 0);
   --secondary: #1f1a14;
   --secondary-foreground: #f6f6f3;
+  /* Warmer near-black for large dark surfaces (footer, product hero panel) */
+  --surface-dark: #271c0a;
   --muted: oklch(0.90 0.020 85);
   --muted-foreground: oklch(0.56 0.013 65);
   --accent: oklch(0.90 0.020 85);
