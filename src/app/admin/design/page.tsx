@@ -260,7 +260,7 @@ const palette: Swatch[] = [
   },
   {
     name: "violet-bright",
-    hex: "#7C3AED",
+    hex: "#6B47CC",
     use: "Bright violet — accents & badges on light surfaces",
     textOn: "var(--violet-bright-foreground)",
   },
