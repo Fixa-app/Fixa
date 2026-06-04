@@ -1,17 +1,15 @@
-import {
-  Calculator,
-  Eye,
-  FileText,
-  LayoutTemplate,
-  type LucideIcon,
-  PenLine,
-  Receipt,
-  Sparkles,
-} from "lucide-react";
+import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
 import { OffertesMockup } from "@/components/product-mockups";
 import { AIQuoteMockup } from "@/components/ai-mockups";
+import {
+  HuisstijlMockup,
+  LineItemsMockup,
+  ReadReceiptMockup,
+  SignMockup,
+  ToInvoiceMockup,
+} from "@/components/offerte-mockups";
 import { PricingFeatures } from "@/components/pricing-features";
 import { FAQAccordion } from "@/components/faq-accordion";
 import { StartCta } from "@/components/start-cta";
@@ -21,36 +19,40 @@ export const metadata = {
   title: "Offertes — Fixa",
 };
 
-const benefits: { icon: LucideIcon; title: string; body: string }[] = [
+const benefits: {
+  title: string;
+  body: string;
+  Mockup: () => React.ReactElement;
+}[] = [
   {
-    icon: LayoutTemplate,
     title: "Je eigen huisstijl",
     body: "Offertes in jouw logo en kleuren. Eén keer instellen, daarna staat elke offerte er strak op.",
+    Mockup: HuisstijlMockup,
   },
   {
-    icon: Sparkles,
     title: "AI stelt het concept op",
     body: "Fixa leest je intake-notities en zet direct een complete offerte klaar — jij controleert en verstuurt.",
+    Mockup: AIQuoteMockup,
   },
   {
-    icon: Calculator,
     title: "Line items & BTW",
     body: "Materiaal, arbeid en voorrijden als losse regels. Btw en totalen worden automatisch berekend.",
+    Mockup: LineItemsMockup,
   },
   {
-    icon: PenLine,
     title: "Digitaal ondertekenen",
     body: "Klanten accepteren je offerte online met één klik. Geen geprint papier of heen-en-weer mailen.",
+    Mockup: SignMockup,
   },
   {
-    icon: Eye,
     title: "Leesbevestiging",
     body: "Zie precies wanneer je offerte geopend is, zodat je weet wanneer je kunt opvolgen.",
+    Mockup: ReadReceiptMockup,
   },
   {
-    icon: Receipt,
     title: "Eén klik naar factuur",
     body: "Geaccepteerd? Zet de offerte direct om in een factuur — zonder de gegevens opnieuw in te voeren.",
+    Mockup: ToInvoiceMockup,
   },
 ];
 
@@ -135,26 +137,34 @@ export default function OffertesPage() {
         </section>
 
         {/* Feature benefits — 6 cards */}
-        <section className="px-4 py-12 sm:py-16">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:px-5">
-            <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
-              Alles wat een offerte moet kunnen.
-            </h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {benefits.map(({ icon: Icon, title, body }) => (
-                <div
-                  key={title}
-                  className="flex flex-col gap-4 rounded-3xl bg-card p-6 md:p-8"
-                >
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Icon className="size-6" strokeWidth={2} />
-                  </span>
-                  <h3 className="text-2xl font-semibold tracking-tight">
-                    {title}
-                  </h3>
-                  <p className="text-base text-muted-foreground">{body}</p>
-                </div>
-              ))}
+        <section className="py-12 sm:py-16">
+          <div className="flex flex-col gap-10">
+            <div className="px-4">
+              <div className="mx-auto w-full max-w-[1536px] lg:px-5">
+                <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+                  Alles wat een offerte moet kunnen.
+                </h2>
+              </div>
+            </div>
+            <div className="px-4">
+              <div className="mx-auto grid w-full max-w-[1920px] gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {benefits.map(({ title, body, Mockup }) => (
+                  <article
+                    key={title}
+                    className="flex flex-col gap-6 rounded-3xl bg-card p-6 md:p-8"
+                  >
+                    <div className="flex flex-col gap-3">
+                      <h3 className="text-2xl font-semibold tracking-tight">
+                        {title}
+                      </h3>
+                      <p className="text-base text-muted-foreground">{body}</p>
+                    </div>
+                    <div className="flex aspect-[4/3] items-center justify-center">
+                      <Mockup />
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>
