@@ -43,6 +43,12 @@ function ClientAvatar({ name }: { name: string }) {
   );
 }
 
+async function getCurrentUserId(): Promise<string | null> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
+}
+
 function NewQuoteStep1Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -59,7 +65,6 @@ function NewQuoteStep1Content() {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -71,10 +76,12 @@ function NewQuoteStep1Content() {
     }
   }, []);
 
-  // Load recent clients
+  // Load recent clients on mount
   useEffect(() => {
     async function loadRecent() {
+      const userId = await getCurrentUserId();
       if (!userId) return;
+
       const res = await fetch(`/api/quotes/clients?userId=${userId}`);
       if (!res.ok) return;
       const { clients } = await res.json();
@@ -82,23 +89,25 @@ function NewQuoteStep1Content() {
       setTimeout(() => setVisible(true), 50);
     }
     loadRecent();
-  }, [userId]);
+  }, []);
 
-  // Search clients
+  // Search clients as user types
   useEffect(() => {
     if (!query.trim()) {
       setClients([]);
       return;
     }
     const timer = setTimeout(async () => {
+      const userId = await getCurrentUserId();
       if (!userId) return;
+
       const res = await fetch(`/api/quotes/clients?userId=${userId}&q=${encodeURIComponent(query)}`);
       if (!res.ok) return;
       const { clients } = await res.json();
       setClients(clients ?? []);
     }, 200);
     return () => clearTimeout(timer);
-  }, [query, userId]);
+  }, [query]);
 
   function selectClient(client: Client) {
     setSelectedClient(client);
@@ -109,6 +118,9 @@ function NewQuoteStep1Content() {
   }
 
   async function handleCreateNew() {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+
     const res = await fetch("/api/quotes/clients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -131,6 +143,9 @@ function NewQuoteStep1Content() {
     }
 
     setSaving(true);
+
+    const userId = await getCurrentUserId();
+    if (!userId) { setSaving(false); return; }
 
     // Update client
     await fetch("/api/quotes/clients", {
@@ -158,6 +173,7 @@ function NewQuoteStep1Content() {
   const showResults = query.trim().length > 0;
   const hasMatches = clients.length > 0;
 
+  // Step 1b: client selected — show details form
   if (selectedClient) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -180,8 +196,10 @@ function NewQuoteStep1Content() {
               <span className="ml-4 text-sm text-muted-foreground">1/3</span>
             </div>
           </div>
+
           <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
+          {/* Selected client */}
           <div>
             <div className="flex items-center gap-3">
               <input
@@ -204,6 +222,7 @@ function NewQuoteStep1Content() {
             </p>
           </div>
 
+          {/* Address */}
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="address">
               Adres
@@ -219,6 +238,7 @@ function NewQuoteStep1Content() {
             />
           </div>
 
+          {/* Phone */}
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="phone">
               Telefoonnummer
@@ -243,6 +263,7 @@ function NewQuoteStep1Content() {
             )}
           </div>
 
+          {/* Email */}
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="email">
               E-mailadres
@@ -268,6 +289,7 @@ function NewQuoteStep1Content() {
           </div>
         </div>
 
+        {/* Sticky footer */}
         <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl p-6">
             <Button className="w-full" onClick={handleContinue} disabled={saving}>
@@ -279,6 +301,7 @@ function NewQuoteStep1Content() {
     );
   }
 
+  // Step 1a: client search
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
@@ -300,8 +323,10 @@ function NewQuoteStep1Content() {
             <span className="ml-4 text-sm text-muted-foreground">1/3</span>
           </div>
         </div>
+
         <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
+        {/* Search input */}
         <input
           ref={inputRef}
           type="text"
@@ -312,6 +337,7 @@ function NewQuoteStep1Content() {
           className="flex h-12 w-full rounded-full border border-input bg-background px-5 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
 
+        {/* Recent clients */}
         {showRecent && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground mb-2">Recente klanten</p>
@@ -339,6 +365,7 @@ function NewQuoteStep1Content() {
           </div>
         )}
 
+        {/* Search results */}
         {showResults && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground mb-2">
@@ -365,6 +392,7 @@ function NewQuoteStep1Content() {
               </button>
             ))}
 
+            {/* Create new */}
             <button
               onClick={handleCreateNew}
               className="flex w-full items-center gap-4 rounded-xl px-2 py-3 text-left transition-colors hover:bg-muted/50"
