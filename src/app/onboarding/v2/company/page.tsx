@@ -39,13 +39,13 @@ function InfoCard({
   label,
   value,
   onClick,
-  labelIcon,
+  valueIcon,
   delay,
 }: {
   label: string;
   value?: string;
   onClick: () => void;
-  labelIcon?: React.ReactNode;
+  valueIcon?: React.ReactNode;
   delay: number;
 }) {
   const hasData = Boolean(value);
@@ -61,19 +61,23 @@ function InfoCard({
       aria-label={hasData ? `${label} bewerken` : `${label} toevoegen`}
     >
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
-          {labelIcon}
-          <span>{label}</span>
-        </div>
-        <p className="mt-1 truncate text-base font-bold text-foreground">
-          {hasData ? (
-            value
-          ) : (
-            <span className="font-medium text-muted-foreground">
-              Nog niet ingevuld
+        <div className="text-sm font-medium text-muted-foreground">{label}</div>
+        <div className="mt-1 flex items-center gap-1.5">
+          {hasData && valueIcon ? (
+            <span className="flex-shrink-0 text-muted-foreground">
+              {valueIcon}
             </span>
-          )}
-        </p>
+          ) : null}
+          <p className="truncate text-base font-bold text-foreground">
+            {hasData ? (
+              value
+            ) : (
+              <span className="font-medium text-muted-foreground">
+                Nog niet ingevuld
+              </span>
+            )}
+          </p>
+        </div>
       </div>
       {hasData ? (
         <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
@@ -253,7 +257,7 @@ function CompanyInfoContent() {
             />
             <InfoCard
               label="Vakgebied"
-              labelIcon={<Hammer className="size-4" strokeWidth={2} />}
+              valueIcon={<Hammer className="size-4" strokeWidth={2} />}
               value={formData.industry}
               onClick={() => openEdit("industry")}
               delay={50}
