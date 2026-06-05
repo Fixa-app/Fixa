@@ -16,12 +16,7 @@ export default function OverPage() {
             <div className="pointer-events-none absolute -top-32 -right-16 size-[520px] rounded-full bg-teal-bright/25 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-40 -left-24 size-[460px] rounded-full bg-primary/10 blur-3xl" />
             <div className="relative mx-auto flex w-full max-w-[1536px] flex-col gap-8">
-              <div className="flex flex-col gap-5">
-                <span className="text-base font-bold tracking-wide text-white/55 uppercase">
-                  Over Fixa
-                </span>
-                <AboutHeadline />
-              </div>
+              <AboutHeadline />
               <p className="max-w-2xl text-lg leading-relaxed text-white/80 sm:text-xl">
                 Vakmensen zijn op hun best met gereedschap in de hand — niet
                 achter de administratie. Daarom bouwen we Fixa: techniek die het
