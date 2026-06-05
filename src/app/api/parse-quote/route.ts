@@ -21,6 +21,7 @@ type ParsedLineItem = {
   title: string;
   unit: 'hour' | 'piece' | 'm2' | 'meter' | 'visit' | 'day' | 'project';
   rate: number;
+  item_type: 'labor' | 'transport' | 'material' | 'other';
 };
 
 type ParsedStandardText = {
@@ -46,12 +47,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert file to base64
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64Data = buffer.toString('base64');
 
-    // Determine media type
     let mediaType: 'image/jpeg' | 'image/png' | 'application/pdf' = 'image/jpeg';
     if (file.type === 'application/pdf') {
       mediaType = 'application/pdf';
@@ -59,7 +58,6 @@ export async function POST(request: NextRequest) {
       mediaType = 'image/png';
     }
 
-    // Get API key from environment
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       console.error('ANTHROPIC_API_KEY not found in environment');
@@ -69,7 +67,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call Claude Vision API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -84,8 +81,7 @@ export async function POST(request: NextRequest) {
           {
             role: 'user',
             content: [
-              // Use document type for PDFs, image type for images
-              mediaType === 'application/pdf' 
+              mediaType === 'application/pdf'
                 ? {
                     type: 'document',
                     source: {
@@ -130,17 +126,16 @@ Extract:
    - "dakdekkers" (roofing, dakwerk, dakbedekking, goot, dakpannen, isolatie dak)
    
    If unclear, choose the BEST match based on the services described.
-   Example: "stukwerk wand" → "schilders", "trapgat isoleren" → "klusbedrijf"
 
 2. Line items (products/services offered):
    ⚠️ CRITICAL: You MUST extract EVERY SINGLE line item from the quote.
    DO NOT limit to 3 items - extract 5, 10, 20 items if they exist!
-   Count the items in the document and include them ALL.
    
    For each item extract:
    - title (SHORT description - max 3-5 words, extract the main activity/product name only)
    - unit (one of: hour, piece, m2, meter, visit, day, project)
    - rate (price in euros, as number)
+   - item_type (one of: labor, transport, material, other)
    
    IMPORTANT for titles:
    - Keep titles SHORT and concise (3-5 words max)
@@ -160,6 +155,22 @@ Extract:
    - If item is day rate → "day"
    - If item is fixed project price → "project"
 
+   IMPORTANT for item_type — classify each item as ONE of:
+   - "labor": work/service by the company itself — uurloon, arbeid, dagtarief, overwerktarief, installatiewerk, montage, reparatie, onderhoud, schoonmaakwerk, schilderwerk, stukwerk, etc.
+   - "transport": all travel and transport related costs — voorrijkosten, reiskosten, parkeerkosten, transportkosten, bezorgkosten
+   - "material": generic materials without a specific brand or product name — materiaalkosten, bevestigingsmateriaal, verbruiksmateriaal, etc. Do NOT use for named products.
+   - "other": everything else — specific named products (plant species, brand names, model numbers), afvoerkosten, stortkosten, huurkosten materieel, onderaannemer costs, and any item that does not clearly fit labor/transport/material
+
+   Examples:
+   - "Uurloon" → labor
+   - "Voorrijkosten" → transport
+   - "Parkeerkosten" → transport
+   - "Materiaalkosten" → material
+   - "Gewone agrimonie" → other (specific plant)
+   - "Mosa tegel 30x30" → other (specific product)
+   - "Afvoer puin" → other
+   - "Steiger huur" → other
+
 3. Standard text:
    - intro (greeting/introduction text, optional)
    - disclaimer (terms/conditions at bottom, optional)
@@ -177,9 +188,10 @@ Return ONLY valid JSON, no markdown, no explanation:
     "category": "klusbedrijf"
   },
   "lineItems": [
-    { "title": "...", "unit": "hour", "rate": 65.00 },
-    { "title": "...", "unit": "project", "rate": 1250.00 },
-    { "title": "...", "unit": "m2", "rate": 45.00 }
+    { "title": "Uurloon", "unit": "hour", "rate": 65.00, "item_type": "labor" },
+    { "title": "Voorrijkosten", "unit": "visit", "rate": 25.00, "item_type": "transport" },
+    { "title": "Materiaalkosten", "unit": "piece", "rate": 45.00, "item_type": "material" },
+    { "title": "Gewone agrimonie", "unit": "piece", "rate": 8.50, "item_type": "other" }
   ],
   "standardText": {
     "intro": "...",
@@ -204,7 +216,6 @@ Return ONLY valid JSON, no markdown, no explanation:
 
     const data = await response.json();
     
-    // Extract JSON from response
     const textContent = data.content.find((c: any) => c.type === 'text')?.text;
     if (!textContent) {
       return NextResponse.json(
@@ -213,7 +224,6 @@ Return ONLY valid JSON, no markdown, no explanation:
       );
     }
 
-    // Parse JSON (remove markdown fences if present)
     const jsonText = textContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const parsed: ParsedQuoteData = JSON.parse(jsonText);
 

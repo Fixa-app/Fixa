@@ -566,7 +566,7 @@ export type Database = {
         | "past_due"
         | "paid"
         | "archived"
-      line_item_type: "labor" | "material" | "other"
+      line_item_type: "labor" | "material" | "other" | "transport"
       quote_activity_type:
         | "created"
         | "updated"
@@ -718,7 +718,7 @@ export const Constants = {
         "paid",
         "archived",
       ],
-      line_item_type: ["labor", "material", "other"],
+      line_item_type: ["labor", "material", "other", "transport"],
       quote_activity_type: [
         "created",
         "updated",

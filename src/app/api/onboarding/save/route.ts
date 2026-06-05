@@ -92,11 +92,12 @@ export async function POST(request: NextRequest) {
     // 4. Create products
     if (lineItems && lineItems.length > 0) {
       const products = lineItems.map((item: any) => ({
-        company_id: companyId,
-        title: item.title,
-        unit: item.unit,
-        rate: item.rate,
-      }));
+  company_id: companyId,
+  title: item.title,
+  unit: item.unit,
+  rate: item.rate,
+  item_type: item.item_type ?? 'other',
+}));
 
       const { error: productsError } = await supabase
         .from('products')
