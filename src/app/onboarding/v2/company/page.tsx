@@ -80,7 +80,7 @@ function InfoCard({
           <Pencil className="size-4" strokeWidth={2} />
         </div>
       ) : (
-        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm shadow-primary/30">
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30">
           <Plus className="size-6" strokeWidth={3} />
         </div>
       )}
