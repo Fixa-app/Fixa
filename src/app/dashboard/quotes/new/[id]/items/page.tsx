@@ -1,47 +1,35 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Trash2, Plus, ChevronDown } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 
 type TaxRate = 0 | 9 | 21;
+type ItemType = "labor" | "transport" | "material" | "other";
 
 type LineItem = {
   id: string;
-  title: string;
+  title: string | null;
   description: string;
-  quantity: number | "";
-  rate: number | "";
-  tax_percentage: TaxRate;
-  item_type: "labor" | "material" | "other";
-  needs_supplier: boolean;
-  margin_percentage: number | "";
-  margin_amount: number | "";
-  margin_type: "percentage" | "fixed";
+  quantity: number;
+  rate: number;
+  tax_percentage: number;
+  item_type: ItemType;
+  margin_percentage: number | null;
+  margin_amount: number | null;
+  sort_order: number;
+  // UI only
   show_margin: boolean;
+  margin_type: "percentage" | "fixed";
 };
 
-function generateId() {
-  return Math.random().toString(36).slice(2);
-}
-
-function emptyLineItem(): LineItem {
-  return {
-    id: generateId(),
-    title: "",
-    description: "",
-    quantity: "",
-    rate: "",
-    tax_percentage: 21,
-    item_type: "labor",
-    needs_supplier: false,
-    margin_percentage: "",
-    margin_amount: "",
-    margin_type: "percentage",
-    show_margin: false,
-  };
+async function getCurrentUserId(): Promise<string | null> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
 }
 
 function formatCurrency(amount: number) {
@@ -53,17 +41,15 @@ function formatCurrency(amount: number) {
 }
 
 function calcItemSubtotal(item: LineItem): number {
-  const qty = typeof item.quantity === "number" ? item.quantity : 0;
-  const rate = typeof item.rate === "number" ? item.rate : 0;
-  const base = qty * rate;
+  const base = item.quantity * item.rate;
   if (!item.show_margin) return base;
-  if (item.margin_type === "percentage") {
-    const pct = typeof item.margin_percentage === "number" ? item.margin_percentage : 0;
-    return base * (1 + pct / 100);
-  } else {
-    const amt = typeof item.margin_amount === "number" ? item.margin_amount : 0;
-    return base + amt;
+  if (item.margin_type === "percentage" && item.margin_percentage) {
+    return base * (1 + item.margin_percentage / 100);
   }
+  if (item.margin_type === "fixed" && item.margin_amount) {
+    return base + item.margin_amount;
+  }
+  return base;
 }
 
 function calcTotals(items: LineItem[]) {
@@ -72,220 +58,152 @@ function calcTotals(items: LineItem[]) {
   for (const item of items) {
     const s = calcItemSubtotal(item);
     subtotal += s;
-    byTax[item.tax_percentage] += s;
+    byTax[item.tax_percentage] = (byTax[item.tax_percentage] ?? 0) + s;
   }
   const taxTotal = Object.entries(byTax).reduce(
-    (sum, [rate, base]) => sum + base * (Number(rate) / 100),
-    0
+    (sum, [rate, base]) => sum + base * (Number(rate) / 100), 0
   );
   return { subtotal, byTax, taxTotal, total: subtotal + taxTotal };
 }
 
-type LineItemCardProps = {
-  item: LineItem;
-  index: number;
-  onChange: (id: string, field: keyof LineItem, value: unknown) => void;
-  onDelete: (id: string) => void;
-};
-
-function LineItemCard({ item, index, onChange, onDelete }: LineItemCardProps) {
-  const subtotal = calcItemSubtotal(item);
-  const hasValues = typeof item.quantity === "number" && typeof item.rate === "number";
-
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-      {/* Title + delete */}
-      <div className="flex items-center gap-2">
-        <input
-          type="text"
-          value={item.title}
-          onChange={(e) => onChange(item.id, "title", e.target.value)}
-          placeholder="Bijv. Uurloon, Materiaal, Reiskosten"
-          className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        />
-        <button
-          onClick={() => onDelete(item.id)}
-          aria-label="Verwijder dit item"
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-muted transition-colors"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      </div>
-
-      {/* Description */}
-      <input
-        type="text"
-        value={item.description}
-        onChange={(e) => onChange(item.id, "description", e.target.value)}
-        placeholder="Beschrijf kort de werkzaamheden"
-        className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      />
-
-      {/* Supplier checkbox — V2 placeholder */}
-      <label className="flex items-start gap-2 cursor-not-allowed opacity-50">
-        <input
-          type="checkbox"
-          disabled
-          className="mt-0.5"
-        />
-        <div>
-          <p className="text-sm font-medium">Ik heb info van een leverancier nodig</p>
-          <p className="text-xs text-muted-foreground">Binnenkort: we vragen je leverancier naar de prijs en laten je weten wanneer die binnen is.</p>
-        </div>
-      </label>
-
-      {/* Quantity + Unit price + Tax */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Aantal</label>
-          <input
-            type="number"
-            inputMode="numeric"
-            value={item.quantity}
-            onChange={(e) => onChange(item.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))}
-            placeholder="0"
-            className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </div>
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Stukprijs</label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">€</span>
-            <input
-              type="number"
-              inputMode="decimal"
-              value={item.rate}
-              onChange={(e) => onChange(item.id, "rate", e.target.value === "" ? "" : Number(e.target.value))}
-              placeholder="0"
-              className="w-full h-10 rounded-lg border border-input bg-background pl-7 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-          </div>
-        </div>
-        <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">BTW</label>
-          <select
-            value={item.tax_percentage}
-            onChange={(e) => onChange(item.id, "tax_percentage", Number(e.target.value) as TaxRate)}
-            className="w-full h-10 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value={21}>21%</option>
-            <option value={9}>9%</option>
-            <option value={0}>0%</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Subtotal */}
-      {hasValues && (
-        <p className="text-sm text-muted-foreground text-right transition-all duration-200">
-          Subtotaal (ex BTW): <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
-        </p>
-      )}
-
-      {/* Marge toggle */}
-      <button
-        onClick={() => onChange(item.id, "show_margin", !item.show_margin)}
-        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ChevronDown
-          className={`h-3 w-3 transition-transform ${item.show_margin ? "rotate-180" : ""}`}
-        />
-        {item.show_margin ? "Marge verbergen" : "Marge toevoegen"}
-      </button>
-
-      {/* Marge velden */}
-      {item.show_margin && (
-        <div
-          className="grid grid-cols-2 gap-2 pt-1"
-          style={{ animation: "fadeUp 0.2s ease both" }}
-        >
-          <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Marge type</label>
-            <select
-              value={item.margin_type}
-              onChange={(e) => onChange(item.id, "margin_type", e.target.value)}
-              className="w-full h-10 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="percentage">Percentage</option>
-              <option value="fixed">Vast bedrag</option>
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Waarde</label>
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                value={item.margin_type === "percentage" ? item.margin_percentage : item.margin_amount}
-                onChange={(e) => {
-                  const val = e.target.value === "" ? "" : Number(e.target.value);
-                  onChange(item.id, item.margin_type === "percentage" ? "margin_percentage" : "margin_amount", val);
-                }}
-                placeholder="0"
-                className="w-full h-10 rounded-lg border border-input bg-background px-3 pr-8 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                {item.margin_type === "percentage" ? "%" : "€"}
-              </span>
-            </div>
-          </div>
-          <p
-            className="col-span-2 text-xs text-muted-foreground"
-            aria-label="Deze marge is verborgen voor je klant"
-          >
-            Marge verborgen voor klant
-          </p>
-        </div>
-      )}
-    </div>
-  );
+function dbToUiItem(item: any): LineItem {
+  return {
+    ...item,
+    show_margin: !!(item.margin_percentage || item.margin_amount),
+    margin_type: item.margin_percentage ? "percentage" : "fixed",
+  };
 }
 
 export default function NewQuoteItemsPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
 
+  const [items, setItems] = useState<LineItem[]>([]);
   const [jobTitle, setJobTitle] = useState("");
-  const [items, setItems] = useState<LineItem[]>([emptyLineItem()]);
-  const [introText, setIntroText] = useState(
-    "Beste [Klantnaam],\n\nHierbij ontvangt u van ons de offerte [Offerte ID] voor de onderstaande werkzaamheden."
-  );
-  const [disclaimer, setDisclaimer] = useState(
-    "Deze offerte is 30 dagen geldig. Na deze periode kunnen prijzen wijzigen."
-  );
+  const [introText, setIntroText] = useState("");
+  const [disclaimer, setDisclaimer] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
 
-  function handleChange(id: string, field: keyof LineItem, value: unknown) {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+  // Load quote data on mount
+  useEffect(() => {
+    async function load() {
+      const userId = await getCurrentUserId();
+      if (!userId) return;
+
+      const res = await fetch(`/api/quotes/${id}/items?userId=${userId}`);
+      if (!res.ok) return;
+
+      const { quote, lineItems, defaults, clientName } = await res.json();
+
+      setItems(lineItems.map(dbToUiItem));
+      setJobTitle(quote.job_title ?? "");
+      setIntroText(quote.intro_text ?? defaults.intro ?? `Beste ${clientName},\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.`);
+      setDisclaimer(quote.disclaimer ?? defaults.disclaimer ?? "Deze offerte is 30 dagen geldig. Na deze periode kunnen prijzen wijzigen.");
+      setClientName(clientName);
+      setLoading(false);
+    }
+    load();
+  }, [id]);
+
+  // Save field to quote
+  async function saveQuoteField(field: string, value: string) {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+    await fetch(`/api/quotes/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, [field]: value }),
+    });
+  }
+
+  // Update line item in DB
+  async function updateItem(itemId: string, updates: Partial<LineItem>) {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+    await fetch(`/api/quotes/${id}/items`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, itemId, ...updates }),
+    });
+  }
+
+  // Add new line item
+  async function handleAdd() {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+
+    const res = await fetch(`/api/quotes/${id}/items`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, item_type: "other" }),
+    });
+    if (!res.ok) return;
+    const { lineItem } = await res.json();
+    setItems(prev => [...prev, dbToUiItem(lineItem)]);
+  }
+
+  // Delete line item
+  async function handleDelete(itemId: string) {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+
+    await fetch(`/api/quotes/${id}/items?userId=${userId}&itemId=${itemId}`, {
+      method: "DELETE",
+    });
+    setItems(prev => prev.filter(i => i.id !== itemId));
+  }
+
+  // Handle field change — update local state immediately, debounce DB save
+  function handleChange(itemId: string, field: keyof LineItem, value: unknown) {
+    setItems(prev =>
+      prev.map(item => item.id === itemId ? { ...item, [field]: value } : item)
     );
-  }
-
-  function handleDelete(id: string) {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  }
-
-  function handleAdd() {
-    setItems((prev) => [...prev, emptyLineItem()]);
+    // Save to DB (debounced by browser event loop)
+    const dbField = field as string;
+    if (!["show_margin", "margin_type"].includes(dbField)) {
+      updateItem(itemId, { [field]: value } as Partial<LineItem>);
+    }
   }
 
   async function handleSave() {
     setSaving(true);
-    // TODO: save to Supabase via API route
+    const userId = await getCurrentUserId();
+    if (!userId) { setSaving(false); return; }
+
+    await fetch(`/api/quotes/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, job_title: jobTitle, intro_text: introText, disclaimer }),
+    });
+
     router.push(`/dashboard/quotes/new/${id}/preview`);
     setSaving(false);
   }
 
   async function handleDiscard() {
-    // TODO: delete draft quote via API route
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+
+    await fetch(`/api/quotes/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
     router.push("/dashboard/quotes");
   }
 
   const { subtotal, byTax, taxTotal, total } = calcTotals(items);
-  const hasItems = items.some(
-    (i) => typeof i.quantity === "number" && typeof i.rate === "number"
-  );
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-sm text-muted-foreground">Laden...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -312,16 +230,12 @@ export default function NewQuoteItemsPage() {
 
           {/* Job title */}
           <div className="space-y-2">
-            <div className="flex items-baseline gap-2">
-              <label className="font-display text-2xl font-bold" htmlFor="job-title">
-                Wat offreer je?
-              </label>
-            </div>
+            <h1 className="font-display text-2xl font-bold">Wat offreer je?</h1>
             <input
-              id="job-title"
               type="text"
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
+              onBlur={() => saveQuoteField("job_title", jobTitle)}
               placeholder="Alleen voor jezelf – niet zichtbaar voor klant"
               aria-label="Taakomschrijving (niet zichtbaar voor klant)"
               className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -330,14 +244,141 @@ export default function NewQuoteItemsPage() {
 
           {/* Line items */}
           <div className="space-y-3">
-            {items.map((item, index) => (
-              <LineItemCard
-                key={item.id}
-                item={item}
-                index={index}
-                onChange={handleChange}
-                onDelete={handleDelete}
-              />
+            {items.map((item) => (
+              <div key={item.id} className="rounded-2xl border border-border bg-card p-4 space-y-3">
+                {/* Title + delete */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={item.title ?? ""}
+                    onChange={(e) => handleChange(item.id, "title", e.target.value)}
+                    placeholder="Bijv. Uurloon, Materiaal, Reiskosten"
+                    className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    aria-label="Verwijder dit item"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-muted transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Description */}
+                <input
+                  type="text"
+                  value={item.description}
+                  onChange={(e) => handleChange(item.id, "description", e.target.value)}
+                  placeholder="Beschrijf kort de werkzaamheden"
+                  className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+
+                {/* Supplier placeholder */}
+                <label className="flex items-start gap-2 cursor-not-allowed opacity-50">
+                  <input type="checkbox" disabled className="mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium">Ik heb info van een leverancier nodig</p>
+                    <p className="text-xs text-muted-foreground">Binnenkort beschikbaar</p>
+                  </div>
+                </label>
+
+                {/* Quantity + Rate + Tax */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">Aantal</label>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={item.quantity}
+                      onChange={(e) => handleChange(item.id, "quantity", Number(e.target.value) || 0)}
+                      className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">Stukprijs</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">€</span>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        value={item.rate}
+                        onChange={(e) => handleChange(item.id, "rate", Number(e.target.value) || 0)}
+                        className="w-full h-10 rounded-lg border border-input bg-background pl-7 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">BTW</label>
+                    <select
+                      value={item.tax_percentage}
+                      onChange={(e) => handleChange(item.id, "tax_percentage", Number(e.target.value) as TaxRate)}
+                      className="w-full h-10 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value={21}>21%</option>
+                      <option value={9}>9%</option>
+                      <option value={0}>0%</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Subtotal */}
+                {item.quantity > 0 && item.rate > 0 && (
+                  <p className="text-sm text-muted-foreground text-right">
+                    Subtotaal (ex BTW): <span className="font-medium text-foreground">{formatCurrency(calcItemSubtotal(item))}</span>
+                  </p>
+                )}
+
+                {/* Marge toggle */}
+                <button
+                  onClick={() => handleChange(item.id, "show_margin", !item.show_margin)}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ChevronDown className={`h-3 w-3 transition-transform ${item.show_margin ? "rotate-180" : ""}`} />
+                  {item.show_margin ? "Marge verbergen" : "Marge toevoegen"}
+                </button>
+
+                {/* Marge velden */}
+                {item.show_margin && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Marge type</label>
+                      <select
+                        value={item.margin_type}
+                        onChange={(e) => handleChange(item.id, "margin_type", e.target.value)}
+                        className="w-full h-10 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <option value="percentage">Percentage</option>
+                        <option value="fixed">Vast bedrag</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground">Waarde</label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          value={item.margin_type === "percentage" ? (item.margin_percentage ?? "") : (item.margin_amount ?? "")}
+                          onChange={(e) => {
+                            const val = Number(e.target.value) || null;
+                            if (item.margin_type === "percentage") {
+                              handleChange(item.id, "margin_percentage", val);
+                            } else {
+                              handleChange(item.id, "margin_amount", val);
+                            }
+                          }}
+                          className="w-full h-10 rounded-lg border border-input bg-background px-3 pr-8 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                          {item.margin_type === "percentage" ? "%" : "€"}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="col-span-2 text-xs text-muted-foreground" aria-label="Deze marge is verborgen voor je klant">
+                      Marge verborgen voor klant
+                    </p>
+                  </div>
+                )}
+              </div>
             ))}
 
             {/* Add button */}
@@ -357,10 +398,7 @@ export default function NewQuoteItemsPage() {
           </div>
 
           {/* Totals */}
-          <div
-            className="space-y-1 pt-2 border-t border-border"
-            aria-live="polite"
-          >
+          <div className="space-y-1 pt-2 border-t border-border" aria-live="polite">
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>Subtotaal</span>
               <span>{formatCurrency(subtotal)}</span>
@@ -379,32 +417,28 @@ export default function NewQuoteItemsPage() {
             </div>
           </div>
 
-          {/* Last but not least */}
+          {/* Tot slot */}
           <div className="space-y-4 pt-4">
             <h2 className="font-display text-2xl font-bold">Tot slot</h2>
-
             <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="intro-text">
-                Aanhef
-              </label>
+              <label className="text-sm font-medium" htmlFor="intro-text">Aanhef</label>
               <textarea
                 id="intro-text"
                 value={introText}
                 onChange={(e) => setIntroText(e.target.value)}
+                onBlur={() => saveQuoteField("intro_text", introText)}
                 aria-label="Aanhef"
                 rows={4}
                 className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
               />
             </div>
-
             <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="disclaimer">
-                Disclaimer
-              </label>
+              <label className="text-sm font-medium" htmlFor="disclaimer">Disclaimer</label>
               <textarea
                 id="disclaimer"
                 value={disclaimer}
                 onChange={(e) => setDisclaimer(e.target.value)}
+                onBlur={() => saveQuoteField("disclaimer", disclaimer)}
                 aria-label="Disclaimer"
                 rows={3}
                 className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
@@ -429,34 +463,20 @@ export default function NewQuoteItemsPage() {
         </div>
       </div>
 
-      {/* Discard confirmation drawer */}
+      {/* Discard drawer */}
       <Drawer.Root open={showDiscard} onOpenChange={setShowDiscard}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
           <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-[10px] bg-background">
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="p-6 space-y-4">
-              <Drawer.Title className="font-display text-xl font-bold">
-                Concept verwijderen?
-              </Drawer.Title>
+              <Drawer.Title className="font-display text-xl font-bold">Concept verwijderen?</Drawer.Title>
               <p className="text-sm text-muted-foreground">
                 Je concept wordt permanent verwijderd. Dit kan niet ongedaan worden gemaakt.
               </p>
               <div className="flex gap-3 pb-safe">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setShowDiscard(false)}
-                >
-                  Annuleren
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="flex-1"
-                  onClick={handleDiscard}
-                >
-                  Verwijderen
-                </Button>
+                <Button variant="outline" className="flex-1" onClick={() => setShowDiscard(false)}>Annuleren</Button>
+                <Button variant="secondary" className="flex-1" onClick={handleDiscard}>Verwijderen</Button>
               </div>
             </div>
           </Drawer.Content>
