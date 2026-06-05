@@ -150,8 +150,16 @@ function NewQuoteStep1Content() {
     if (!selectedClient) return;
 
     const newErrors: Record<string, string> = {};
-    if (!phone.trim()) newErrors.phone = "Telefoonnummer is verplicht";
-    if (!email.trim()) newErrors.email = "E-mailadres is verplicht";
+    if (!phone.trim()) {
+      newErrors.phone = "Telefoonnummer is verplicht";
+    } else if (!/^\+?[\d\s-]{8,}$/.test(phone)) {
+      newErrors.phone = "Ongeldig telefoonnummer";
+    }
+    if (!email.trim()) {
+      newErrors.email = "E-mailadres is verplicht";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Ongeldig e-mailadres";
+    }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
