@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft, Hammer, Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { Drawer } from "vaul";
 type CompanyData = {
   name?: string;
   logo?: string;
+  industry?: string;
   address?: {
     street?: string;
     city?: string;
@@ -22,7 +24,70 @@ type CompanyData = {
   iban?: string;
 };
 
-// Wrapper component for useSearchParams
+const INDUSTRIES = [
+  "Loodgieter",
+  "Elektricien",
+  "CV & klimaat",
+  "Hovenier",
+  "Schoonmaak",
+  "Klusbedrijf",
+  "Schilder",
+  "Dakdekker",
+];
+
+function InfoCard({
+  label,
+  value,
+  onClick,
+  labelIcon,
+  delay,
+}: {
+  label: string;
+  value?: string;
+  onClick: () => void;
+  labelIcon?: React.ReactNode;
+  delay: number;
+}) {
+  const hasData = Boolean(value);
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full animate-in items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-muted/40"
+      style={{
+        animationDelay: `${delay}ms`,
+        animationDuration: "300ms",
+        animationFillMode: "backwards",
+      }}
+      aria-label={hasData ? `${label} bewerken` : `${label} toevoegen`}
+    >
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+          {labelIcon}
+          <span>{label}</span>
+        </div>
+        <p className="mt-1 truncate text-base font-bold text-foreground">
+          {hasData ? (
+            value
+          ) : (
+            <span className="font-medium text-muted-foreground">
+              Nog niet ingevuld
+            </span>
+          )}
+        </p>
+      </div>
+      {hasData ? (
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <Pencil className="size-4" strokeWidth={2} />
+        </div>
+      ) : (
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Plus className="size-5" strokeWidth={2.5} />
+        </div>
+      )}
+    </button>
+  );
+}
+
 function CompanyInfoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,14 +95,14 @@ function CompanyInfoContent() {
 
   // Load data from sessionStorage
   const loadCompanyData = (): CompanyData => {
-    if (typeof window === 'undefined') return {};
-    
-    const stored = sessionStorage.getItem('onboarding_company');
+    if (typeof window === "undefined") return {};
+
+    const stored = sessionStorage.getItem("onboarding_company");
     if (stored) {
       try {
         return JSON.parse(stored);
       } catch (e) {
-        console.error('Failed to parse company data:', e);
+        console.error("Failed to parse company data:", e);
       }
     }
     return {};
@@ -54,20 +119,19 @@ function CompanyInfoContent() {
   }, []);
 
   const handleContinue = () => {
-    // Save to sessionStorage
-    sessionStorage.setItem('onboarding_company', JSON.stringify(formData));
-    
-    // Navigate to products screen
-    router.push('/onboarding/v2/products');
+    sessionStorage.setItem("onboarding_company", JSON.stringify(formData));
+    router.push("/onboarding/v2/products");
   };
 
   const handleBack = () => {
-    router.push('/onboarding/v2/upload');
+    router.push("/onboarding/v2/upload");
   };
 
   const openEdit = (field: string) => {
     if (field === "company") {
       setTempData({ name: formData.name, logo: formData.logo });
+    } else if (field === "industry") {
+      setTempData({ industry: formData.industry });
     } else if (field === "address") {
       setTempData({ address: formData.address });
     } else if (field === "contact") {
@@ -92,16 +156,16 @@ function CompanyInfoContent() {
 
     if (openDrawer === "contact") {
       if (tempData.phone && !/^\+?[\d\s-]{8,}$/.test(tempData.phone)) {
-        newErrors.phone = "Invalid phone number";
+        newErrors.phone = "Ongeldig telefoonnummer";
       }
       if (tempData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempData.email)) {
-        newErrors.email = "Invalid email address";
+        newErrors.email = "Ongeldig e-mailadres";
       }
     }
 
     if (openDrawer === "vat-iban") {
       if (tempData.iban && !/^NL\d{2}\s?[A-Z]{4}\s?\d{10}$/.test(tempData.iban)) {
-        newErrors.iban = "Invalid Dutch IBAN";
+        newErrors.iban = "Ongeldig Nederlands IBAN";
       }
     }
 
@@ -116,11 +180,14 @@ function CompanyInfoContent() {
 
   const updateTempField = (field: keyof CompanyData | string, value: any) => {
     setTempData((prev) => {
-      if (field.includes('.')) {
-        const [parent, child] = field.split('.');
+      if (field.includes(".")) {
+        const [parent, child] = field.split(".");
         return {
           ...prev,
-          [parent]: { ...(prev[parent as keyof CompanyData] as any), [child]: value },
+          [parent]: {
+            ...(prev[parent as keyof CompanyData] as any),
+            [child]: value,
+          },
         };
       }
       return { ...prev, [field]: value };
@@ -132,225 +199,18 @@ function CompanyInfoContent() {
     });
   };
 
-  const CompanyCard = ({ data }: { data: CompanyData }) => {
-    const hasData = data.name;
-    const fullAddress = data.address
-      ? [data.address.street, data.address.postal, data.address.city]
-          .filter(Boolean)
-          .join(', ')
-      : '';
-
-    return (
-      <button
-        onClick={() => openEdit("company")}
-        className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
-        style={{
-          animationDelay: "0ms",
-          animationDuration: "300ms",
-          animationFillMode: "backwards",
-        }}
-        aria-label={hasData ? `Edit company: ${data.name}` : "Add company name"}
-      >
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-foreground">Company</h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">
-            {hasData ? data.name : "Not detected"}
-          </p>
-        </div>
-        {!hasData && (
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-            <svg
-              className="h-5 w-5 text-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-        )}
-      </button>
-    );
-  };
-
-  const AddressCard = ({ data }: { data: CompanyData }) => {
-    const hasData = data.address?.street || data.address?.city || data.address?.postal;
-    const fullAddress = hasData
-      ? [data.address?.street, data.address?.postal, data.address?.city]
-          .filter(Boolean)
-          .join(', ')
-      : 'Not detected';
-
-    return (
-      <button
-        onClick={() => openEdit("address")}
-        className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
-        style={{
-          animationDelay: "100ms",
-          animationDuration: "300ms",
-          animationFillMode: "backwards",
-        }}
-        aria-label={hasData ? `Edit address: ${fullAddress}` : "Add address"}
-      >
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-foreground">Address</h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">{fullAddress}</p>
-        </div>
-        {!hasData && (
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-            <svg
-              className="h-5 w-5 text-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-        )}
-      </button>
-    );
-  };
-
-  const ContactCard = ({ data }: { data: CompanyData }) => {
-    const hasData = data.phone || data.email;
-    const contactInfo = [data.phone, data.email].filter(Boolean).join(' • ');
-
-    return (
-      <button
-        onClick={() => openEdit("contact")}
-        className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
-        style={{
-          animationDelay: "200ms",
-          animationDuration: "300ms",
-          animationFillMode: "backwards",
-        }}
-        aria-label={hasData ? `Edit contact: ${contactInfo}` : "Add contact details"}
-      >
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-foreground">Contact details</h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">
-            {hasData ? contactInfo : "Not detected"}
-          </p>
-        </div>
-        {!hasData && (
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-            <svg
-              className="h-5 w-5 text-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-        )}
-      </button>
-    );
-  };
-
-  const KvkCard = ({ data }: { data: CompanyData }) => {
-    const hasData = data.kvk;
-
-    return (
-      <button
-        onClick={() => openEdit("kvk")}
-        className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
-        style={{
-          animationDelay: "300ms",
-          animationDuration: "300ms",
-          animationFillMode: "backwards",
-        }}
-        aria-label={hasData ? `Edit KVK number: ${data.kvk}` : "Add KVK number"}
-      >
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-foreground">KVK number</h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">
-            {hasData ? data.kvk : "Not detected"}
-          </p>
-        </div>
-        {!hasData && (
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-            <svg
-              className="h-5 w-5 text-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-        )}
-      </button>
-    );
-  };
-
-  const VatIbanCard = ({ data }: { data: CompanyData }) => {
-    const hasData = data.vat || data.iban;
-    const info = [data.vat, data.iban].filter(Boolean).join(' • ');
-
-    return (
-      <button
-        onClick={() => openEdit("vat-iban")}
-        className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all hover:bg-muted/40 animate-in fade-in slide-in-from-bottom-2"
-        style={{
-          animationDelay: "400ms",
-          animationDuration: "300ms",
-          animationFillMode: "backwards",
-        }}
-        aria-label={hasData ? `Edit VAT and IBAN: ${info}` : "Add VAT number and IBAN"}
-      >
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-foreground">VAT & IBAN</h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">
-            {hasData ? info : "Not detected"}
-          </p>
-        </div>
-        {!hasData && (
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-            <svg
-              className="h-5 w-5 text-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-        )}
-      </button>
-    );
-  };
+  const fullAddress = formData.address
+    ? [formData.address.street, formData.address.postal, formData.address.city]
+        .filter(Boolean)
+        .join(", ")
+    : "";
+  const contactInfo = [formData.phone, formData.email].filter(Boolean).join(" • ");
+  const vatIbanInfo = [formData.vat, formData.iban].filter(Boolean).join(" • ");
 
   return (
     <>
       <div className="flex min-h-screen flex-col">
-        <div className="flex-1 space-y-6 pb-32 p-6 mx-auto w-full max-w-2xl">
+        <div className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-6 pb-32">
           {/* Progress indicator with back button */}
           <div className="flex items-center gap-4">
             <Button
@@ -358,21 +218,9 @@ function CompanyInfoContent() {
               size="icon"
               onClick={handleBack}
               className="flex-shrink-0 text-muted-foreground hover:text-foreground"
-              aria-label="Go back to upload"
+              aria-label="Terug naar upload"
             >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <ArrowLeft className="size-5" />
             </Button>
 
             <div className="flex flex-1 items-center justify-between">
@@ -385,18 +233,58 @@ function CompanyInfoContent() {
             </div>
           </div>
 
-          <h1 className="font-display text-3xl font-bold">Company info</h1>
+          {/* Header + subtitle (same style as "Upload een offerte") */}
+          <div className="space-y-2">
+            <h1 className="font-display text-3xl font-semibold">
+              Bedrijfsgegevens
+            </h1>
+            <p className="text-base text-muted-foreground">
+              Controleer je gegevens en vul aan wat nog ontbreekt.
+            </p>
+          </div>
 
           <div className="space-y-4">
-            <CompanyCard data={formData} />
-            <AddressCard data={formData} />
-            <ContactCard data={formData} />
-            <KvkCard data={formData} />
-            <VatIbanCard data={formData} />
+            <InfoCard
+              label="Bedrijf"
+              value={formData.name}
+              onClick={() => openEdit("company")}
+              delay={0}
+            />
+            <InfoCard
+              label="Vakgebied"
+              labelIcon={<Hammer className="size-4" strokeWidth={2} />}
+              value={formData.industry}
+              onClick={() => openEdit("industry")}
+              delay={50}
+            />
+            <InfoCard
+              label="Adres"
+              value={fullAddress}
+              onClick={() => openEdit("address")}
+              delay={100}
+            />
+            <InfoCard
+              label="Contactgegevens"
+              value={contactInfo}
+              onClick={() => openEdit("contact")}
+              delay={150}
+            />
+            <InfoCard
+              label="KVK-nummer"
+              value={formData.kvk}
+              onClick={() => openEdit("kvk")}
+              delay={200}
+            />
+            <InfoCard
+              label="Btw & IBAN"
+              value={vatIbanInfo}
+              onClick={() => openEdit("vat-iban")}
+              delay={250}
+            />
           </div>
 
           <p className="text-center text-sm text-muted-foreground">
-            You can also change this later in your settings
+            Je kunt dit later aanpassen in je instellingen.
           </p>
         </div>
 
@@ -405,9 +293,9 @@ function CompanyInfoContent() {
             <Button
               className="w-full"
               onClick={handleContinue}
-              aria-label="Continue to products & services"
+              aria-label="Doorgaan naar producten & diensten"
             >
-              Continue
+              Doorgaan
             </Button>
           </div>
         </div>
@@ -420,28 +308,78 @@ function CompanyInfoContent() {
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="flex-1 overflow-y-auto p-6">
               <Drawer.Title className="mb-6 font-display text-xl font-semibold">
-                Company
+                Bedrijf
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="company-name">Company name</Label>
+                  <Label htmlFor="company-name">Bedrijfsnaam</Label>
                   <Input
                     id="company-name"
                     value={tempData.name || ""}
                     onChange={(e) => updateTempField("name", e.target.value)}
-                    placeholder="Your company name"
+                    placeholder="Je bedrijfsnaam"
                   />
                 </div>
                 <div className="flex gap-3 pb-safe">
                   <Button variant="outline" onClick={closeDrawer} className="flex-1">
-                    Cancel
+                    Annuleren
                   </Button>
                   <Button onClick={validateAndSave} className="flex-1">
-                    Save
+                    Opslaan
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {/* Industry */}
+      <Drawer.Root
+        open={openDrawer === "industry"}
+        onOpenChange={(open) => !open && closeDrawer()}
+      >
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+            <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Drawer.Title className="mb-2 font-display text-xl font-semibold">
+                Vakgebied
+              </Drawer.Title>
+              <p className="mb-6 text-sm text-muted-foreground">
+                Kies het vakgebied waarin je vooral werkt.
+              </p>
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-2">
+                  {INDUSTRIES.map((ind) => {
+                    const selected = tempData.industry === ind;
+                    return (
+                      <button
+                        key={ind}
+                        type="button"
+                        onClick={() => updateTempField("industry", ind)}
+                        className={`rounded-xl border p-3 text-sm font-semibold transition-colors ${
+                          selected
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border bg-card text-foreground hover:bg-muted/40"
+                        }`}
+                      >
+                        {ind}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-3 pb-safe">
+                  <Button variant="outline" onClick={closeDrawer} className="flex-1">
+                    Annuleren
+                  </Button>
+                  <Button onClick={validateAndSave} className="flex-1">
+                    Opslaan
                   </Button>
                 </div>
               </div>
@@ -457,34 +395,34 @@ function CompanyInfoContent() {
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="flex-1 overflow-y-auto p-6">
               <Drawer.Title className="mb-6 font-display text-xl font-semibold">
-                Address
+                Adres
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="street">Street</Label>
+                  <Label htmlFor="street">Straat</Label>
                   <Input
                     id="street"
                     value={tempData.address?.street || ""}
                     onChange={(e) => updateTempField("address.street", e.target.value)}
-                    placeholder="Street and number"
+                    placeholder="Straat en huisnummer"
                   />
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1 space-y-2">
-                    <Label htmlFor="postal">Postal code</Label>
+                    <Label htmlFor="postal">Postcode</Label>
                     <Input
                       id="postal"
                       value={tempData.address?.postal || ""}
                       onChange={(e) => updateTempField("address.postal", e.target.value)}
-                      placeholder="1234AB"
+                      placeholder="1234 AB"
                     />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">Plaats</Label>
                     <Input
                       id="city"
                       value={tempData.address?.city || ""}
@@ -495,10 +433,10 @@ function CompanyInfoContent() {
                 </div>
                 <div className="flex gap-3 pb-safe">
                   <Button variant="outline" onClick={closeDrawer} className="flex-1">
-                    Cancel
+                    Annuleren
                   </Button>
                   <Button onClick={validateAndSave} className="flex-1">
-                    Save
+                    Opslaan
                   </Button>
                 </div>
               </div>
@@ -514,15 +452,15 @@ function CompanyInfoContent() {
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="flex-1 overflow-y-auto p-6">
               <Drawer.Title className="mb-6 font-display text-xl font-semibold">
-                Contact details
+                Contactgegevens
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone">Telefoon</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -535,13 +473,13 @@ function CompanyInfoContent() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">E-mail</Label>
                   <Input
                     id="email"
                     type="email"
                     value={tempData.email || ""}
                     onChange={(e) => updateTempField("email", e.target.value)}
-                    placeholder="hello@company.com"
+                    placeholder="hallo@bedrijf.nl"
                   />
                   {errors.email && (
                     <p className="text-sm text-destructive">{errors.email}</p>
@@ -549,10 +487,10 @@ function CompanyInfoContent() {
                 </div>
                 <div className="flex gap-3 pb-safe">
                   <Button variant="outline" onClick={closeDrawer} className="flex-1">
-                    Cancel
+                    Annuleren
                   </Button>
                   <Button onClick={validateAndSave} className="flex-1">
-                    Save
+                    Opslaan
                   </Button>
                 </div>
               </div>
@@ -568,15 +506,15 @@ function CompanyInfoContent() {
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="flex-1 overflow-y-auto p-6">
               <Drawer.Title className="mb-6 font-display text-xl font-semibold">
-                KVK number
+                KVK-nummer
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="kvk">KVK number</Label>
+                  <Label htmlFor="kvk">KVK-nummer</Label>
                   <Input
                     id="kvk"
                     value={tempData.kvk || ""}
@@ -586,10 +524,10 @@ function CompanyInfoContent() {
                 </div>
                 <div className="flex gap-3 pb-safe">
                   <Button variant="outline" onClick={closeDrawer} className="flex-1">
-                    Cancel
+                    Annuleren
                   </Button>
                   <Button onClick={validateAndSave} className="flex-1">
-                    Save
+                    Opslaan
                   </Button>
                 </div>
               </div>
@@ -598,22 +536,22 @@ function CompanyInfoContent() {
         </Drawer.Portal>
       </Drawer.Root>
 
-      {/* VAT & IBAN */}
+      {/* Btw & IBAN */}
       <Drawer.Root
         open={openDrawer === "vat-iban"}
         onOpenChange={(open) => !open && closeDrawer()}
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
+          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] bg-background">
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="flex-1 overflow-y-auto p-6">
               <Drawer.Title className="mb-6 font-display text-xl font-semibold">
-                VAT & IBAN
+                Btw & IBAN
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="vat">VAT number</Label>
+                  <Label htmlFor="vat">Btw-nummer</Label>
                   <Input
                     id="vat"
                     value={tempData.vat || ""}
@@ -635,10 +573,10 @@ function CompanyInfoContent() {
                 </div>
                 <div className="flex gap-3 pb-safe">
                   <Button variant="outline" onClick={closeDrawer} className="flex-1">
-                    Cancel
+                    Annuleren
                   </Button>
                   <Button onClick={validateAndSave} className="flex-1">
-                    Save
+                    Opslaan
                   </Button>
                 </div>
               </div>
@@ -652,7 +590,7 @@ function CompanyInfoContent() {
 
 export default function OnboardingCompanyPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Laden...</div>}>
       <CompanyInfoContent />
     </Suspense>
   );
