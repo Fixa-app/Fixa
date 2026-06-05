@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/server';
 
 function createServiceClient() {
   return createSupabaseClient(
@@ -22,9 +21,11 @@ function createServiceClient() {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+    const query = searchParams.get('q') ?? '';
+
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -32,15 +33,12 @@ export async function GET(request: NextRequest) {
     const { data: membership } = await service
       .from('company_members')
       .select('company_id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
       return NextResponse.json({ error: 'No company found' }, { status: 404 });
     }
-
-    const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q') ?? '';
 
     let clientQuery = service
       .from('clients')
@@ -56,19 +54,15 @@ export async function GET(request: NextRequest) {
     const { data: clients } = await clientQuery;
     return NextResponse.json({ clients: clients ?? [] });
   } catch (error) {
-    console.error('API error:', error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
-}
+  }
 }
 
 export async function POST(request: NextRequest) {
-  console.log('POST handler reached');
-  console.log('SERVICE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
   try {
-    console.log('Inside try block');
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const { name, address, phone, email, userId } = await request.json();
+
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -76,14 +70,12 @@ export async function POST(request: NextRequest) {
     const { data: membership } = await service
       .from('company_members')
       .select('company_id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
       return NextResponse.json({ error: 'No company found' }, { status: 404 });
     }
-
-    const { name, address, phone, email } = await request.json();
 
     const { data: client, error } = await service
       .from('clients')
@@ -97,22 +89,19 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ client });
   } catch (error) {
-    console.error('API error:', error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
-}
+  }
 }
 
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const { id, address, phone, email, userId } = await request.json();
+
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const service = createServiceClient();
-    const { id, address, phone, email } = await request.json();
-
     const { error } = await service
       .from('clients')
       .update({ address, phone, email })
@@ -124,7 +113,6 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('API error:', error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
-}
+  }
 }

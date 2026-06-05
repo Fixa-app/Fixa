@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/database.types";
 
 type Client = Database["public"]["Tables"]["clients"]["Row"];
@@ -58,6 +59,7 @@ function NewQuoteStep1Content() {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -72,14 +74,15 @@ function NewQuoteStep1Content() {
   // Load recent clients
   useEffect(() => {
     async function loadRecent() {
-      const res = await fetch("/api/quotes/clients");
+      if (!userId) return;
+      const res = await fetch(`/api/quotes/clients?userId=${userId}`);
       if (!res.ok) return;
       const { clients } = await res.json();
       setRecentClients(clients ?? []);
       setTimeout(() => setVisible(true), 50);
     }
     loadRecent();
-  }, []);
+  }, [userId]);
 
   // Search clients
   useEffect(() => {
@@ -88,13 +91,14 @@ function NewQuoteStep1Content() {
       return;
     }
     const timer = setTimeout(async () => {
-      const res = await fetch(`/api/quotes/clients?q=${encodeURIComponent(query)}`);
+      if (!userId) return;
+      const res = await fetch(`/api/quotes/clients?userId=${userId}&q=${encodeURIComponent(query)}`);
       if (!res.ok) return;
       const { clients } = await res.json();
       setClients(clients ?? []);
     }, 200);
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, userId]);
 
   function selectClient(client: Client) {
     setSelectedClient(client);
@@ -108,7 +112,7 @@ function NewQuoteStep1Content() {
     const res = await fetch("/api/quotes/clients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: query.trim() }),
+      body: JSON.stringify({ name: query.trim(), userId }),
     });
     if (!res.ok) return;
     const { client } = await res.json();
@@ -132,14 +136,14 @@ function NewQuoteStep1Content() {
     await fetch("/api/quotes/clients", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: selectedClient.id, address, phone, email }),
+      body: JSON.stringify({ id: selectedClient.id, address, phone, email, userId }),
     });
 
     // Create draft quote
     const res = await fetch("/api/quotes/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId: selectedClient.id }),
+      body: JSON.stringify({ clientId: selectedClient.id, userId }),
     });
 
     if (res.ok) {

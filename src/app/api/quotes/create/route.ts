@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/server';
 
 function createServiceClient() {
   return createSupabaseClient(
@@ -22,9 +21,9 @@ function createServiceClient() {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const { clientId, userId } = await request.json();
+
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -32,21 +31,19 @@ export async function POST(request: NextRequest) {
     const { data: membership } = await service
       .from('company_members')
       .select('company_id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
       return NextResponse.json({ error: 'No company found' }, { status: 404 });
     }
 
-    const { clientId } = await request.json();
-
     const { data: quote, error } = await service
       .from('quotes')
       .insert({
         company_id: membership.company_id,
         client_id: clientId,
-        created_by_user_id: user.id,
+        created_by_user_id: userId,
         status: 'draft',
       })
       .select()
@@ -58,6 +55,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ quote });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
