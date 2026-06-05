@@ -1,4 +1,3 @@
-import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AboutHeadline } from "@/components/about-headline";
 import { SiteFooter } from "@/components/site-footer";
@@ -74,28 +73,26 @@ export default function OverPage() {
         </section>
 
         {/* Careers */}
-        <section className="px-4 pb-4">
-          <div className="mx-auto w-full max-w-[1920px] overflow-hidden rounded-3xl bg-primary px-6 py-16 text-primary-foreground sm:px-10 sm:py-24 lg:px-16">
-            <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-6">
-              <h2 className="max-w-3xl font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
+        <section className="px-4 py-16 sm:py-24">
+          <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12 lg:px-5">
+            <div className="flex flex-col gap-4">
+              <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
                 Bouw mee aan de toekomst van vakwerk.
               </h2>
-              <p className="max-w-2xl text-lg leading-relaxed text-primary-foreground/85">
+              <p className="max-w-xl text-base leading-relaxed text-foreground/70">
                 Fixa brengt alle tools om een vakbedrijf te runnen samen in één
                 elegant systeem. We werken samen vanuit ons kantoor in hartje
                 Amsterdam — al onze functies zijn op locatie.
               </p>
-              <div className="pt-2">
-                <Button
-                  variant="secondary"
-                  className="h-12 rounded-xl px-6 text-base font-bold"
-                  nativeButton={false}
-                  render={<a href="#vacatures" />}
-                >
-                  Bekijk vacatures
-                  <ArrowRight className="size-4" />
-                </Button>
-              </div>
+            </div>
+            <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
+              <Button
+                className="h-12 rounded-xl px-6 text-base font-bold"
+                nativeButton={false}
+                render={<a href="#vacatures" />}
+              >
+                Bekijk vacatures
+              </Button>
             </div>
           </div>
         </section>
