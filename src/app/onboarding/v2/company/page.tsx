@@ -239,7 +239,8 @@ function CompanyInfoContent() {
               Bedrijfsgegevens
             </h1>
             <p className="text-base text-muted-foreground">
-              Controleer je gegevens en vul aan wat nog ontbreekt.
+              Controleer je gegevens en vul aan wat nog ontbreekt. Je kunt dit
+              later aanpassen in je instellingen.
             </p>
           </div>
 
@@ -282,10 +283,6 @@ function CompanyInfoContent() {
               delay={250}
             />
           </div>
-
-          <p className="text-center text-sm text-muted-foreground">
-            Je kunt dit later aanpassen in je instellingen.
-          </p>
         </div>
 
         <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
