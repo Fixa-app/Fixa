@@ -76,7 +76,7 @@ function InfoCard({
         </p>
       </div>
       {hasData ? (
-        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
           <Pencil className="size-4" strokeWidth={2} />
         </div>
       ) : (
