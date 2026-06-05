@@ -240,9 +240,7 @@ function NewQuoteStep1Content() {
                 klant wijzigen
               </button>
             </div>
-            <p className="mt-1.5 text-xs text-muted-foreground">
-              Klant wijzigen verwijdert je concept niet
-            </p>
+
           </div>
 
           {/* Address */}
