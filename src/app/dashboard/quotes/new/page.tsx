@@ -311,7 +311,7 @@ function NewQuoteStep1Content() {
         </div>
 
         {/* Sticky footer */}
-        <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl p-6">
             <Button className="w-full" onClick={handleContinue} disabled={saving}>
               {saving ? "Bezig..." : "Volgende"}
