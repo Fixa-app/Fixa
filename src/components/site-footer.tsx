@@ -33,7 +33,7 @@ const footerColumns: {
   {
     title: "Bedrijf",
     links: [
-      { name: "Over", href: "#" },
+      { name: "Over", href: "/over" },
       { name: "Prijzen", href: "/pricing" },
       { name: "Blog", href: "#" },
       { name: "Carrières", href: "#" },
