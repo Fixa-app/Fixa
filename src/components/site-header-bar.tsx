@@ -186,7 +186,17 @@ export function SiteHeaderBar({
           }`}
         >
           <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between gap-6 py-0 pr-3 pl-5">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 lg:gap-6">
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-expanded={mobileOpen}
+              aria-controls="header-dropdown-menu"
+              onClick={() => toggleMenu("mobile")}
+              className={`-ml-2 flex size-12 items-center justify-center rounded-xl lg:hidden ${txtBase} ${itemHover}`}
+            >
+              <Menu className="size-6" strokeWidth={2} />
+            </button>
             <Link
               href="/"
               aria-label="Fixa"
@@ -383,16 +393,6 @@ export function SiteHeaderBar({
                   </div>
                 </div>
                 </div>
-                <button
-                  type="button"
-                  aria-label="Open menu"
-                  aria-expanded={mobileOpen}
-                  aria-controls="header-dropdown-menu"
-                  onClick={() => toggleMenu("mobile")}
-                  className={`flex size-12 items-center justify-center rounded-xl lg:hidden ${txtBase} ${itemHover}`}
-                >
-                  <Menu className="size-6" strokeWidth={2} />
-                </button>
               </>
             ) : (
               <>
@@ -417,16 +417,6 @@ export function SiteHeaderBar({
                     Aan de slag
                   </Button>
                 </AuthDialog>
-                <button
-                  type="button"
-                  aria-label="Open menu"
-                  aria-expanded={mobileOpen}
-                  aria-controls="header-dropdown-menu"
-                  onClick={() => toggleMenu("mobile")}
-                  className={`flex size-12 items-center justify-center rounded-xl lg:hidden ${txtBase} ${itemHover}`}
-                >
-                  <Menu className="size-6" strokeWidth={2} />
-                </button>
               </>
             )}
           </div>
