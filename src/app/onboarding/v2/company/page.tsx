@@ -52,7 +52,7 @@ function InfoCard({
   return (
     <button
       onClick={onClick}
-      className="flex w-full animate-in items-center gap-4 rounded-xl border border-border bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-muted/40"
+      className="flex w-full animate-in items-center gap-4 rounded-xl bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-muted/40"
       style={{
         animationDelay: `${delay}ms`,
         animationDuration: "300ms",
