@@ -2,7 +2,6 @@ import Image from "next/image";
 import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
-import { OffertesMockup } from "@/components/product-mockups";
 import { AIQuoteMockup } from "@/components/ai-mockups";
 import {
   HuisstijlMockup,
@@ -11,6 +10,11 @@ import {
   SignMockup,
   ToInvoiceMockup,
 } from "@/components/offerte-mockups";
+import {
+  PhoneShot,
+  QuotePhoneScreen,
+  StatusPhoneScreen,
+} from "@/components/phone-shot";
 import { PricingFeatures } from "@/components/pricing-features";
 import { FAQAccordion } from "@/components/faq-accordion";
 import { StartCta } from "@/components/start-cta";
@@ -110,8 +114,10 @@ export default function OffertesPage() {
         {/* Media row 1 — image left */}
         <section className="px-4 py-16 sm:py-24">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-6 md:grid-cols-2 lg:px-5">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-card">
-              <AIQuoteMockup />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
+              <PhoneShot background="bg-gradient-to-br from-violet-bright to-violet">
+                <QuotePhoneScreen />
+              </PhoneShot>
             </div>
             <div className="flex flex-col gap-4 lg:pl-6">
               <h2 className="font-display text-3xl leading-[1.05] font-medium tracking-tight sm:text-4xl">
@@ -140,8 +146,10 @@ export default function OffertesPage() {
                 Geaccepteerd? Zet de offerte in één klik om naar een factuur.
               </p>
             </div>
-            <div className="relative order-first aspect-[4/3] overflow-hidden rounded-3xl bg-card md:order-2">
-              <OffertesMockup />
+            <div className="relative order-first aspect-[4/3] overflow-hidden rounded-3xl md:order-2">
+              <PhoneShot background="bg-gradient-to-br from-teal-bright to-teal">
+                <StatusPhoneScreen />
+              </PhoneShot>
             </div>
           </div>
         </section>
