@@ -12,10 +12,10 @@ type Client = Database["public"]["Tables"]["clients"]["Row"];
 function getInitials(name: string) {
   return name
     .split(" ")
+    .filter((n) => n.length > 0 && n[0] === n[0].toUpperCase() && n[0] !== n[0].toLowerCase())
     .slice(0, 2)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+    .map((n) => n[0].toUpperCase())
+    .join("");
 }
 
 function formatLastQuoted(dateStr: string | null) {
@@ -25,10 +25,10 @@ function formatLastQuoted(dateStr: string | null) {
   const diffDays = Math.floor(
     (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
   );
-  if (diffDays === 0) return "Vandaag geciteerd";
-  if (diffDays === 1) return "Gisteren geciteerd";
-  if (diffDays <= 7) return `${diffDays} dagen geleden geciteerd`;
-  return `Geciteerd op ${date.toLocaleDateString("nl-NL", {
+  if (diffDays === 0) return "Vandaag gebruikt";
+  if (diffDays === 1) return "Gisteren gebruikt";
+  if (diffDays <= 7) return `${diffDays} dagen geleden gebruikt`;
+  return `Gebruikt op ${date.toLocaleDateString("nl-NL", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -41,6 +41,21 @@ function ClientAvatar({ name }: { name: string }) {
       {getInitials(name)}
     </div>
   );
+}
+
+const NL_TUSSENVOEGSELS = new Set([
+  "van", "de", "den", "der", "het", "'t", "uit", "op", "voor", "in", "aan", "ten", "ter", "te"
+]);
+
+function capitalizeNL(input: string): string {
+  return input
+    .split(" ")
+    .map((word, i) => {
+      if (i === 0) return word.charAt(0).toUpperCase() + word.slice(1);
+      if (NL_TUSSENVOEGSELS.has(word.toLowerCase())) return word.toLowerCase();
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ");
 }
 
 async function getCurrentUserId(): Promise<string | null> {
@@ -357,7 +372,7 @@ function NewQuoteStep1Content() {
                 <div>
                   <p className="font-bold">{client.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {formatLastQuoted(client.updated_at) ?? "Nog niet geciteerd"}
+                    {formatLastQuoted(client.updated_at) ?? "Nog niet gebruikt"}
                   </p>
                 </div>
               </button>
@@ -386,7 +401,7 @@ function NewQuoteStep1Content() {
                 <div>
                   <p className="font-bold">{client.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {formatLastQuoted(client.updated_at) ?? "Nog niet geciteerd"}
+                    {formatLastQuoted(client.updated_at) ?? "Nog niet gebruikt"}
                   </p>
                 </div>
               </button>
@@ -401,7 +416,7 @@ function NewQuoteStep1Content() {
                 <span className="text-xl font-light text-muted-foreground">+</span>
               </div>
               <p className="font-medium">
-                Nieuwe klant aanmaken: <span className="font-bold">{query}</span>
+                Nieuwe klant aanmaken: <span className="font-bold">{capitalizeNL(query)}</span>
               </p>
             </button>
           </div>
