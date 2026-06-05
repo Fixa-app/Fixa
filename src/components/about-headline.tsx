@@ -39,9 +39,9 @@ export function AboutHeadline() {
 
   return (
     <h1 className="max-w-4xl font-display text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl lg:text-7xl">
-      De beste <RotatingWord word={word} step={step} /> is een
+      De beste <RotatingWord word={word} step={step} />
       <br />
-      goede <RotatingWord word={word} step={step} />.
+      is een goede <RotatingWord word={word} step={step} />.
     </h1>
   );
 }
