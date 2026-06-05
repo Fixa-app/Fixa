@@ -17,7 +17,7 @@ function RotatingWord({ word, step }: { word: string; step: number }) {
   return (
     <span
       key={step}
-      className="inline-block animate-in fade-in slide-in-from-bottom-2 duration-500"
+      className="inline-block text-primary animate-in fade-in slide-in-from-bottom-2 duration-500"
     >
       {word}
     </span>
@@ -39,8 +39,9 @@ export function AboutHeadline() {
 
   return (
     <h1 className="max-w-4xl font-display text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl lg:text-7xl">
-      De beste <RotatingWord word={word} step={step} /> is een goede{" "}
-      <RotatingWord word={word} step={step} />.
+      De beste <RotatingWord word={word} step={step} /> is een
+      <br />
+      goede <RotatingWord word={word} step={step} />.
     </h1>
   );
 }
