@@ -38,7 +38,7 @@ export function AboutHeadline() {
   const word = professions[step];
 
   return (
-    <h1 className="max-w-4xl font-display text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl lg:text-7xl">
+    <h1 className="font-display text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl lg:whitespace-nowrap lg:text-[clamp(2.5rem,5.2vw,5.5rem)]">
       De beste <RotatingWord word={word} step={step} />
       <br />
       is een goede <RotatingWord word={word} step={step} />.
