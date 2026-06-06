@@ -155,6 +155,7 @@ export type Database = {
           company_id: string
           created_at: string | null
           id: string
+          last_parsed_quote_number: string | null
           next_quote_number: number | null
           quote_disclaimer: string | null
           quote_intro: string | null
@@ -165,6 +166,7 @@ export type Database = {
           company_id: string
           created_at?: string | null
           id?: string
+          last_parsed_quote_number?: string | null
           next_quote_number?: number | null
           quote_disclaimer?: string | null
           quote_intro?: string | null
@@ -175,6 +177,7 @@ export type Database = {
           company_id?: string
           created_at?: string | null
           id?: string
+          last_parsed_quote_number?: string | null
           next_quote_number?: number | null
           quote_disclaimer?: string | null
           quote_intro?: string | null

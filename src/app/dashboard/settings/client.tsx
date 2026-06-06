@@ -28,6 +28,7 @@ type SettingsData = {
   quote_number_format: string | null;
   quote_intro: string | null;
   quote_disclaimer: string | null;
+  last_parsed_quote_number: string | null;
 };
 
 function formatQuoteNumber(format: string, num: number): string {
@@ -58,9 +59,7 @@ export function SettingsClient({
   const [isDirty, setIsDirty] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const [editingQuoteNumber, setEditingQuoteNumber] = useState(!initialSettings?.next_quote_number);
-  const [quoteNumberInput, setQuoteNumberInput] = useState(
-    String(initialSettings?.next_quote_number ?? "")
-  );
+  const [quoteNumberInput, setQuoteNumberInput] = useState("");
   const [nextQuoteNumber, setNextQuoteNumber] = useState(
     initialSettings?.next_quote_number ?? null
   );
@@ -378,7 +377,7 @@ export function SettingsClient({
                     inputMode="numeric"
                     value={quoteNumberInput}
                     onChange={(e) => setQuoteNumberInput(e.target.value)}
-                    placeholder="Bijv. 30"
+                    placeholder={initialSettings?.last_parsed_quote_number ?? "Bijv. 30"}
                     className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     autoFocus
                   />
