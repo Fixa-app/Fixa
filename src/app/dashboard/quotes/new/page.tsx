@@ -9,6 +9,21 @@ import type { Database } from "@/lib/database.types";
 
 type Client = Database["public"]["Tables"]["clients"]["Row"];
 
+const NL_TUSSENVOEGSELS = new Set([
+  "van", "de", "den", "der", "het", "'t", "uit", "op", "voor", "in", "aan", "ten", "ter", "te"
+]);
+
+function capitalizeNL(input: string): string {
+  return input
+    .split(" ")
+    .map((word, i) => {
+      if (i === 0) return word.charAt(0).toUpperCase() + word.slice(1);
+      if (NL_TUSSENVOEGSELS.has(word.toLowerCase())) return word.toLowerCase();
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ");
+}
+
 function getInitials(name: string) {
   return name
     .split(" ")
@@ -41,21 +56,6 @@ function ClientAvatar({ name }: { name: string }) {
       {getInitials(name)}
     </div>
   );
-}
-
-const NL_TUSSENVOEGSELS = new Set([
-  "van", "de", "den", "der", "het", "'t", "uit", "op", "voor", "in", "aan", "ten", "ter", "te"
-]);
-
-function capitalizeNL(input: string): string {
-  return input
-    .split(" ")
-    .map((word, i) => {
-      if (i === 0) return word.charAt(0).toUpperCase() + word.slice(1);
-      if (NL_TUSSENVOEGSELS.has(word.toLowerCase())) return word.toLowerCase();
-      return word.charAt(0).toUpperCase() + word.slice(1);
-    })
-    .join(" ");
 }
 
 async function getCurrentUserId(): Promise<string | null> {
@@ -91,12 +91,10 @@ function NewQuoteStep1Content() {
     }
   }, []);
 
-  // Load recent clients on mount
   useEffect(() => {
     async function loadRecent() {
       const userId = await getCurrentUserId();
       if (!userId) return;
-
       const res = await fetch(`/api/quotes/clients?userId=${userId}`);
       if (!res.ok) return;
       const { clients } = await res.json();
@@ -106,7 +104,6 @@ function NewQuoteStep1Content() {
     loadRecent();
   }, []);
 
-  // Search clients as user types
   useEffect(() => {
     if (!query.trim()) {
       setClients([]);
@@ -115,7 +112,6 @@ function NewQuoteStep1Content() {
     const timer = setTimeout(async () => {
       const userId = await getCurrentUserId();
       if (!userId) return;
-
       const res = await fetch(`/api/quotes/clients?userId=${userId}&q=${encodeURIComponent(query)}`);
       if (!res.ok) return;
       const { clients } = await res.json();
@@ -136,10 +132,23 @@ function NewQuoteStep1Content() {
     const userId = await getCurrentUserId();
     if (!userId) return;
 
+    const name = capitalizeNL(query.trim());
+
+    // Check if client with same name already exists
+    const checkRes = await fetch(`/api/quotes/clients?userId=${userId}&q=${encodeURIComponent(name)}`);
+    if (checkRes.ok) {
+      const { clients: existing } = await checkRes.json();
+      const exact = existing?.find((c: Client) => c.name.toLowerCase() === name.toLowerCase());
+      if (exact) {
+        selectClient(exact);
+        return;
+      }
+    }
+
     const res = await fetch("/api/quotes/clients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: query.trim(), userId }),
+      body: JSON.stringify({ name, userId }),
     });
     if (!res.ok) return;
     const { client } = await res.json();
@@ -196,12 +205,10 @@ function NewQuoteStep1Content() {
   const showResults = query.trim().length > 0;
   const hasMatches = clients.length > 0;
 
-  // Step 1b: client selected — show details form
   if (selectedClient) {
     return (
       <div className="flex min-h-screen flex-col">
         <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
-          {/* Header met progress bar */}
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSelectedClient(null)}
@@ -222,32 +229,25 @@ function NewQuoteStep1Content() {
 
           <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
-          {/* Selected client */}
-          <div>
-            <div className="flex items-center gap-3">
-              <input
-                type="text"
-                value={selectedClient.name}
-                disabled
-                aria-label={`Geselecteerde klant: ${selectedClient.name}`}
-                className="flex h-12 flex-1 rounded-xl border border-input bg-muted px-4 text-base text-muted-foreground"
-              />
-              <button
-                onClick={() => setSelectedClient(null)}
-                aria-label="Andere klant kiezen"
-                className="text-sm font-medium text-primary underline-offset-4 hover:underline whitespace-nowrap"
-              >
-                klant wijzigen
-              </button>
-            </div>
-
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              value={selectedClient.name}
+              disabled
+              aria-label={`Geselecteerde klant: ${selectedClient.name}`}
+              className="flex h-12 flex-1 rounded-xl border border-input bg-muted px-4 text-base text-muted-foreground"
+            />
+            <button
+              onClick={() => setSelectedClient(null)}
+              aria-label="Andere klant kiezen"
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline whitespace-nowrap"
+            >
+              klant wijzigen
+            </button>
           </div>
 
-          {/* Address */}
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="address">
-              Adres
-            </label>
+            <label className="text-sm font-medium" htmlFor="address">Adres</label>
             {/* TODO: Replace with Google Places Autocomplete */}
             <input
               id="address"
@@ -259,11 +259,8 @@ function NewQuoteStep1Content() {
             />
           </div>
 
-          {/* Phone */}
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="phone">
-              Telefoonnummer
-            </label>
+            <label className="text-sm font-medium" htmlFor="phone">Telefoonnummer</label>
             <input
               id="phone"
               type="tel"
@@ -279,16 +276,11 @@ function NewQuoteStep1Content() {
                 errors.phone ? "border-destructive" : "border-input"
               }`}
             />
-            {errors.phone && (
-              <p className="text-sm text-destructive">{errors.phone}</p>
-            )}
+            {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
           </div>
 
-          {/* Email */}
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="email">
-              E-mailadres
-            </label>
+            <label className="text-sm font-medium" htmlFor="email">E-mailadres</label>
             <input
               id="email"
               type="email"
@@ -304,13 +296,10 @@ function NewQuoteStep1Content() {
                 errors.email ? "border-destructive" : "border-input"
               }`}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
         </div>
 
-        {/* Sticky footer */}
         <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl p-6">
             <Button className="w-full" onClick={handleContinue} disabled={saving}>
@@ -322,11 +311,9 @@ function NewQuoteStep1Content() {
     );
   }
 
-  // Step 1a: client search
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
-        {/* Header met progress bar */}
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push("/dashboard/quotes")}
@@ -347,7 +334,6 @@ function NewQuoteStep1Content() {
 
         <h1 className="font-display text-3xl font-bold">Nieuwe offerte</h1>
 
-        {/* Search input */}
         <input
           ref={inputRef}
           type="text"
@@ -358,7 +344,6 @@ function NewQuoteStep1Content() {
           className="flex h-12 w-full rounded-full border border-input bg-background px-5 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
 
-        {/* Recent clients */}
         {showRecent && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground mb-2">Recente klanten</p>
@@ -386,7 +371,6 @@ function NewQuoteStep1Content() {
           </div>
         )}
 
-        {/* Search results */}
         {showResults && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground mb-2">
@@ -413,7 +397,6 @@ function NewQuoteStep1Content() {
               </button>
             ))}
 
-            {/* Create new */}
             <button
               onClick={handleCreateNew}
               className="flex w-full items-center gap-4 rounded-xl px-2 py-3 text-left transition-colors hover:bg-muted/50"

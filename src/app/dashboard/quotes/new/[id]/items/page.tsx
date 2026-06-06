@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Trash2, Plus } from "lucide-react";
 import { Drawer } from "vaul";
@@ -53,6 +53,53 @@ function calcTotals(items: LineItem[]) {
   return { subtotal, byTax, taxTotal, total: subtotal + taxTotal };
 }
 
+// Auto-resize textarea hook
+function useAutoResize(value: string) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.height = "auto";
+      ref.current.style.height = `${ref.current.scrollHeight}px`;
+    }
+  }, [value]);
+  return ref;
+}
+
+// Get expiry date 30 days from today
+function getExpiryDate(): string {
+  const date = new Date();
+  date.setDate(date.getDate() + 30);
+  return date.toLocaleDateString("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function buildDefaultDisclaimer(parsed: string): string {
+  if (parsed) {
+    // Replace hard-coded date patterns with dynamic token
+    return parsed.replace(
+      /geldig tot \d{1,2}\/\d{1,2}\/\d{4}/gi,
+      `geldig tot [offertedatum + 30 dagen]`
+    ).replace(
+      /geldig tot \d{1,2} \w+ \d{4}/gi,
+      `geldig tot [offertedatum + 30 dagen]`
+    ).replace(
+      /indien je akkoord gaat met deze offerte kun je deze getekend terugsturen\.?/gi,
+      ""
+    ).trim();
+  }
+  return `Deze offerte is geldig tot [offertedatum + 30 dagen]. Na deze periode kunnen prijzen wijzigen.`;
+}
+
+function resolveDisclaimer(template: string): string {
+  return template.replace(
+    /\[offertedatum \+ 30 dagen\]/gi,
+    getExpiryDate()
+  );
+}
+
 export default function NewQuoteItemsPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
@@ -61,9 +108,14 @@ export default function NewQuoteItemsPage() {
   const [jobTitle, setJobTitle] = useState("");
   const [introText, setIntroText] = useState("");
   const [disclaimer, setDisclaimer] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [clientAddress, setClientAddress] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
+
+  const introRef = useAutoResize(introText);
+  const disclaimerRef = useAutoResize(disclaimer);
 
   useEffect(() => {
     async function load() {
@@ -73,24 +125,31 @@ export default function NewQuoteItemsPage() {
       const res = await fetch(`/api/quotes/${id}/items?userId=${userId}`);
       if (!res.ok) return;
 
-      const { quote, lineItems, defaults, clientName } = await res.json();
+      const { quote, lineItems, defaults, clientName, clientAddress } = await res.json();
 
       setItems(lineItems);
       setJobTitle(quote.job_title ?? "");
-      setIntroText(
-        quote.intro_text ??
-        defaults.intro ??
-        `Beste ${clientName},\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.`
-      );
-      setDisclaimer(
-        quote.disclaimer ??
-        defaults.disclaimer ??
-        "Deze offerte is 30 dagen geldig. Na deze periode kunnen prijzen wijzigen."
-      );
+      setClientName(clientName ?? "");
+      setClientAddress(clientAddress ?? "");
+
+      // Build intro with address token
+      const defaultIntro = `Beste [klantnaam],\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.\n\n[adres]`;
+      setIntroText(quote.intro_text ?? defaults.intro ?? defaultIntro);
+
+      // Build disclaimer with dynamic date token
+      setDisclaimer(quote.disclaimer ?? buildDefaultDisclaimer(defaults.disclaimer ?? ""));
+
       setLoading(false);
     }
     load();
   }, [id]);
+
+  // Resolve tokens for display
+  function resolveIntro(template: string): string {
+    return template
+      .replace(/\[klantnaam\]/gi, clientName)
+      .replace(/\[adres\]/gi, clientAddress);
+  }
 
   async function saveQuoteField(field: string, value: string) {
     const userId = await getCurrentUserId();
@@ -115,7 +174,6 @@ export default function NewQuoteItemsPage() {
   async function handleAdd() {
     const userId = await getCurrentUserId();
     if (!userId) return;
-
     const res = await fetch(`/api/quotes/${id}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -205,23 +263,27 @@ export default function NewQuoteItemsPage() {
           {/* Job title */}
           <div className="space-y-2">
             <h1 className="font-display text-2xl font-bold">Wat offreer je?</h1>
-            <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              onBlur={() => saveQuoteField("job_title", jobTitle)}
-              placeholder="Alleen voor jezelf – niet zichtbaar voor klant"
-              aria-label="Taakomschrijving (niet zichtbaar voor klant)"
-              className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="job-title">
+                Taakomschrijving
+              </label>
+              <input
+                id="job-title"
+                type="text"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                onBlur={() => saveQuoteField("job_title", jobTitle)}
+                placeholder="Alleen voor jezelf – niet zichtbaar voor klant"
+                aria-label="Taakomschrijving (niet zichtbaar voor klant)"
+                className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
           </div>
 
           {/* Line items */}
           <div className="space-y-4">
             {items.map((item) => (
               <div key={item.id} className="rounded-2xl border border-border bg-card p-4 space-y-4">
-
-                {/* Title + delete */}
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -239,7 +301,6 @@ export default function NewQuoteItemsPage() {
                   </button>
                 </div>
 
-                {/* Description */}
                 <input
                   type="text"
                   value={item.description}
@@ -248,7 +309,6 @@ export default function NewQuoteItemsPage() {
                   className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
 
-                {/* Quantity + Rate + Tax */}
                 <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
                     <label className="text-xs text-muted-foreground">Aantal</label>
@@ -287,7 +347,6 @@ export default function NewQuoteItemsPage() {
                   </div>
                 </div>
 
-                {/* Subtotal */}
                 {item.quantity > 0 && item.rate > 0 && (
                   <p className="text-sm text-muted-foreground text-right">
                     Subtotaal (ex BTW):{" "}
@@ -299,7 +358,6 @@ export default function NewQuoteItemsPage() {
               </div>
             ))}
 
-            {/* Add button */}
             <button
               onClick={handleAdd}
               aria-label="Nog een post toevoegen"
@@ -338,29 +396,43 @@ export default function NewQuoteItemsPage() {
           {/* Tot slot */}
           <div className="space-y-4 pt-4">
             <h2 className="font-display text-2xl font-bold">Tot slot</h2>
+
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="intro-text">Aanhef</label>
+              <p className="text-xs text-muted-foreground">
+                Gebruik <code className="bg-muted px-1 rounded">[klantnaam]</code> en <code className="bg-muted px-1 rounded">[adres]</code> als dynamische velden
+              </p>
               <textarea
                 id="intro-text"
+                ref={introRef}
                 value={introText}
                 onChange={(e) => setIntroText(e.target.value)}
                 onBlur={() => saveQuoteField("intro_text", introText)}
                 aria-label="Aanhef"
-                rows={4}
-                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
+                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none overflow-hidden min-h-[100px]"
               />
+              <p className="text-xs text-muted-foreground">
+                Voorbeeld: {resolveIntro(introText).substring(0, 60)}...
+              </p>
             </div>
+
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="disclaimer">Disclaimer</label>
+              <p className="text-xs text-muted-foreground">
+                Gebruik <code className="bg-muted px-1 rounded">[offertedatum + 30 dagen]</code> voor de dynamische vervaldatum
+              </p>
               <textarea
                 id="disclaimer"
+                ref={disclaimerRef}
                 value={disclaimer}
                 onChange={(e) => setDisclaimer(e.target.value)}
                 onBlur={() => saveQuoteField("disclaimer", disclaimer)}
                 aria-label="Disclaimer"
-                rows={3}
-                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
+                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none overflow-hidden min-h-[80px]"
               />
+              <p className="text-xs text-muted-foreground">
+                Voorbeeld: {resolveDisclaimer(disclaimer).substring(0, 80)}...
+              </p>
             </div>
           </div>
         </div>
@@ -381,7 +453,6 @@ export default function NewQuoteItemsPage() {
         </div>
       </div>
 
-      {/* Discard drawer */}
       <Drawer.Root open={showDiscard} onOpenChange={setShowDiscard}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />

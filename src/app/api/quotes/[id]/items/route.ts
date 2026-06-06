@@ -56,10 +56,10 @@ export async function GET(request: NextRequest, { params }: Params) {
 
     // Get client name
     const { data: client } = await service
-      .from('clients')
-      .select('name')
-      .eq('id', quote.client_id)
-      .single();
+  .from('clients')
+  .select('name, address')
+  .eq('id', quote.client_id)
+  .single();
 
     return NextResponse.json({
       quote,
@@ -69,6 +69,7 @@ export async function GET(request: NextRequest, { params }: Params) {
         disclaimer: settings?.quote_disclaimer ?? '',
       },
       clientName: client?.name ?? '',
+      clientAddress: client?.address ?? '',
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
