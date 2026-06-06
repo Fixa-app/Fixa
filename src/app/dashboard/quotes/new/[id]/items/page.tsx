@@ -294,16 +294,16 @@ export default function NewQuoteItemsPage() {
           {/* Job title */}
           <div className="space-y-2">
             <h1 className="font-display text-2xl font-bold">Wat offreer je?</h1>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="job-title">Taakomschrijving</label>
+            <div className="space-y-3">
+              <label className="text-sm font-medium" htmlFor="job-title">Klusnaam</label>
               <input
                 id="job-title"
                 type="text"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
                 onBlur={() => saveQuoteField("job_title", jobTitle)}
-                placeholder="Alleen voor jezelf – niet zichtbaar voor klant"
-                aria-label="Taakomschrijving (niet zichtbaar voor klant)"
+                placeholder="Bijv. Badkamer renovatie Jansen, Dak reparatie nr. 12"
+                aria-label="Klusnaam (niet zichtbaar voor klant)"
                 className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
