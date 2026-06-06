@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createServiceClient();
     const body = await request.json();
-    const { company, lineItems, standardText, userId } = body;
+    const { company, lineItems, standardText, userId, quoteNumber } = body;
+    
 
     if (!company || !userId) {
       return NextResponse.json(
@@ -74,25 +75,25 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Create company settings
-    if (standardText?.intro || standardText?.disclaimer) {
-      const { error: settingsError } = await supabase
-        .from('company_settings')
-        .insert({
-          company_id: companyId,
-          quote_intro: 'Beste [klantnaam],\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.\n\n[adres]',
-          quote_disclaimer: standardText.disclaimer
-            ? standardText.disclaimer.replace(
-                /geldig tot[\s\S]*?(\.|$)/gi,
-                'geldig tot [offertedatum + 30 dagen].'
-              )
-            : null,
-        });
+const { error: settingsError } = await supabase
+  .from('company_settings')
+  .insert({
+    company_id: companyId,
+    quote_intro: 'Beste [klantnaam],\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.\n\n[adres]',
+    quote_disclaimer: standardText?.disclaimer
+      ? standardText.disclaimer.replace(
+          /geldig tot[\s\S]*?(\.|$)/gi,
+          'geldig tot [offertedatum + 30 dagen].'
+        )
+      : null,
+    quote_number_format: '{YEAR}-{NUMBER}',
+    next_quote_number: quoteNumber ? parseInt(quoteNumber.replace(/\D/g, '').slice(-4)) + 1 : 1,
+  });
 
-      if (settingsError) {
-        console.error('Settings error:', settingsError);
-        // Non-fatal
-      }
-    }
+if (settingsError) {
+  console.error('Settings error:', settingsError);
+  // Non-fatal
+}
 
     // 4. Create products
     if (lineItems && lineItems.length > 0) {

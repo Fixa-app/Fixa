@@ -33,6 +33,7 @@ export type ParsedQuoteData = {
   company: ParsedCompanyInfo;
   lineItems: ParsedLineItem[];
   standardText: ParsedStandardText;
+  quoteNumber?: string;
 };
 
 export async function POST(request: NextRequest) {
@@ -175,6 +176,9 @@ Extract:
    - intro (greeting/introduction text, optional)
    - disclaimer (terms/conditions at bottom, optional)
 
+4. Quote number:
+   - quoteNumber (the quote/invoice number shown on this document, e.g. "2025010029", "2022-0027", optional)
+
 Return ONLY valid JSON, no markdown, no explanation:
 {
   "company": {
@@ -196,7 +200,8 @@ Return ONLY valid JSON, no markdown, no explanation:
   "standardText": {
     "intro": "...",
     "disclaimer": "..."
-  }
+  },
+  "quoteNumber": "2025010029"
 }`,
               },
             ],

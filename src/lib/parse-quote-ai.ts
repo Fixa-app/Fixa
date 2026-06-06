@@ -36,6 +36,7 @@ export type ParsedQuoteData = {
   company: ParsedCompanyInfo;
   lineItems: ParsedLineItem[];
   standardText: ParsedStandardText;
+  quoteNumber?: string;
 };
 
 /**
