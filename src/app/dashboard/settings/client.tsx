@@ -368,19 +368,27 @@ export function SettingsClient({
 
               {editingQuoteNumber ? (
                 <div className="space-y-3">
-                  <label className="text-sm font-medium" htmlFor="quote-number">
-                    Wat wordt je eerstvolgende offertenummer?
-                  </label>
-                  <input
-                    id="quote-number"
-                    type="number"
-                    inputMode="numeric"
-                    value={quoteNumberInput}
-                    onChange={(e) => setQuoteNumberInput(e.target.value)}
-                    placeholder={initialSettings?.last_parsed_quote_number ?? "Bijv. 30"}
-                    className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    autoFocus
-                  />
+  <label className="text-sm font-medium" htmlFor="quote-number">
+    Wat wordt je eerstvolgende offertenummer?
+  </label>
+  {initialSettings?.last_parsed_quote_number && (
+    <p className="text-sm text-muted-foreground">
+      Het offertenummer op de offerte die je deelde was:{" "}
+      <span className="font-medium text-foreground">
+        {initialSettings.last_parsed_quote_number}
+      </span>
+    </p>
+  )}
+  <input
+    id="quote-number"
+    type="number"
+    inputMode="numeric"
+    value={quoteNumberInput}
+    onChange={(e) => setQuoteNumberInput(e.target.value)}
+    placeholder=""
+    className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    autoFocus
+  />
                   <div className="flex gap-2">
                     <Button className="flex-1" onClick={handleSaveQuoteNumber}>Opslaan</Button>
                     {nextQuoteNumber && (
