@@ -327,12 +327,16 @@ export default function NewQuoteItemsPage() {
                     </button>
                   </div>
 
-                  {/* Photo upload */}
-                  <div className="space-y-2">
-                    {itemPhotos.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {itemPhotos.map((photo) => (
-                          <div key={photo.id} className="relative h-20 w-20 flex-shrink-0">
+                  {/* Photo upload — max 3 vakjes */}
+                  <div className="flex gap-2">
+                    {Array.from({ length: 3 }).map((_, slotIndex) => {
+                      const photo = itemPhotos[slotIndex];
+                      const isThisSlotUploading = isUploading && !photo && slotIndex === itemPhotos.length;
+
+                      if (photo) {
+                        // Gevuld vakje
+                        return (
+                          <div key={photo.id} className="group relative h-20 w-20 flex-shrink-0">
                             {photo.url && (
                               <img
                                 src={photo.url}
@@ -342,37 +346,54 @@ export default function NewQuoteItemsPage() {
                             )}
                             <button
                               onClick={() => handlePhotoDelete(photo)}
-                              className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm"
+                              className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                               aria-label="Verwijder foto"
                             >
                               <X className="h-3 w-3" />
                             </button>
                           </div>
-                        ))}
-                      </div>
-                    )}
+                        );
+                      }
 
-                    <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-dashed border-border">
-                        {isUploading ? (
-                          <div className="h-3 w-3 animate-spin rounded-full border border-muted-foreground border-t-transparent" />
-                        ) : (
-                          <Camera className="h-4 w-4" />
-                        )}
-                      </div>
-                      <span>{isUploading ? "Uploaden..." : "Foto toevoegen"}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={isUploading}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handlePhotoUpload(item.id, file);
-                          e.target.value = '';
-                        }}
-                      />
-                    </label>
+                      if (slotIndex === itemPhotos.length) {
+                        // Eerste lege slot — upload knop
+                        return (
+                          <label
+                            key={`slot-${slotIndex}`}
+                            className="flex h-20 w-20 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 transition-colors hover:bg-muted/60"
+                          >
+                            {isThisSlotUploading ? (
+                              <div className="h-4 w-4 animate-spin rounded-full border border-muted-foreground border-t-transparent" />
+                            ) : (
+                              <Camera className="h-5 w-5 text-muted-foreground" />
+                            )}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="hidden"
+                              disabled={isUploading}
+                              onChange={(e) => {
+                                const files = Array.from(e.target.files ?? []);
+                                const remaining = 3 - itemPhotos.length;
+                                files.slice(0, remaining).forEach(file => handlePhotoUpload(item.id, file));
+                                e.target.value = '';
+                              }}
+                            />
+                          </label>
+                        );
+                      }
+
+                      // Leeg slot na de upload knop — disabled weergave
+                      return (
+                        <div
+                          key={`slot-${slotIndex}`}
+                          className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-lg border border-dashed border-border/40 bg-muted/10"
+                        >
+                          <Camera className="h-5 w-5 text-muted-foreground/30" />
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Description */}
