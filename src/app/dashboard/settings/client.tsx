@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Pencil, Trash2, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -45,15 +46,18 @@ export function SettingsClient({
   company: CompanyData | null;
   settings: SettingsData | null;
 }) {
-  const [activeTab, setActiveTab] = useState<Tab>("company");
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<Tab>(
+    (searchParams.get("tab") as Tab) ?? "company"
+  );
   const [logoUrl, setLogoUrl] = useState<string | null>(initialCompany?.logo_url ?? null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
-  const [editingQuoteNumber, setEditingQuoteNumber] = useState(false);
+  const [editingQuoteNumber, setEditingQuoteNumber] = useState(!initialSettings?.next_quote_number);
   const [quoteNumberInput, setQuoteNumberInput] = useState(
-    String(initialSettings?.next_quote_number ?? 1)
+    String(initialSettings?.next_quote_number ?? "")
   );
   const [nextQuoteNumber, setNextQuoteNumber] = useState(
     initialSettings?.next_quote_number ?? null
@@ -77,7 +81,8 @@ export function SettingsClient({
   function handleFormChange(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
     setIsDirty(true);
-setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
+    setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });
+  }
 
   function validateForm(): boolean {
     const newErrors: Record<string, string> = {};
@@ -196,8 +201,8 @@ setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 px-4 py-8 md:px-10 mx-auto w-full max-w-2xl">
+      {/* Scrollable content */}
+      <div className="flex-1 px-4 py-8 md:px-10 mx-auto w-full max-w-2xl pb-32">
 
         {/* Company info tab */}
         {activeTab === "company" && (
@@ -264,7 +269,6 @@ setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
             {/* Adres */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Adres</label>
-              {/* TODO: Google Places Autocomplete */}
               <input type="text" value={form.street}
                 onChange={(e) => handleFormChange("street", e.target.value)}
                 placeholder="Straat en huisnummer"
@@ -344,20 +348,6 @@ setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
                 className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
-
-            {/* Save / Discard */}
-            <div className="pt-4 space-y-3">
-              <Button className="w-full" onClick={handleSave}
-                disabled={!isDirty || saving} aria-disabled={!isDirty || saving}>
-                {saved ? "✓ Opgeslagen" : saving ? "Bezig..." : "Wijzigingen opslaan"}
-              </Button>
-              {isDirty && (
-                <button onClick={handleDiscard}
-                  className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1">
-                  Annuleren
-                </button>
-              )}
-            </div>
           </div>
         )}
 
@@ -386,12 +376,17 @@ setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
                     inputMode="numeric"
                     value={quoteNumberInput}
                     onChange={(e) => setQuoteNumberInput(e.target.value)}
+                    placeholder="Bijv. 30"
                     className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     autoFocus
                   />
                   <div className="flex gap-2">
                     <Button className="flex-1" onClick={handleSaveQuoteNumber}>Opslaan</Button>
-                    <Button variant="outline" className="flex-1" onClick={() => setEditingQuoteNumber(false)}>Annuleren</Button>
+                    {nextQuoteNumber && (
+                      <Button variant="outline" className="flex-1" onClick={() => setEditingQuoteNumber(false)}>
+                        Annuleren
+                      </Button>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -421,20 +416,7 @@ setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
             {/* Quote template preview */}
             <div className="space-y-4">
               <h2 className="font-display text-2xl font-bold">Offerte template</h2>
-              <p className="text-sm text-muted-foreground">
-                Zo zien je klanten je offerte.
-              </p>
-              <div className="rounded-xl border border-border bg-muted/30 aspect-[3/4] flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">Binnenkort beschikbaar</p>
-              </div>
-            </div>
-
-            {/* Invoice template preview */}
-            <div className="space-y-4">
-              <h2 className="font-display text-2xl font-bold">Factuur template</h2>
-              <p className="text-sm text-muted-foreground">
-                Zo zien je klanten je factuur.
-              </p>
+              <p className="text-sm text-muted-foreground">Zo zien je klanten je offerte.</p>
               <div className="rounded-xl border border-border bg-muted/30 aspect-[3/4] flex items-center justify-center">
                 <p className="text-sm text-muted-foreground">Binnenkort beschikbaar</p>
               </div>
@@ -450,6 +432,29 @@ setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });  }
           </div>
         )}
       </div>
+
+      {/* Sticky footer — alleen zichtbaar op company tab */}
+      {activeTab === "company" && (
+        <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <div className="mx-auto w-full max-w-2xl px-4 py-4 space-y-2 md:px-10">
+            <button
+              onClick={handleDiscard}
+              disabled={!isDirty}
+              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1 disabled:opacity-40"
+            >
+              Annuleren
+            </button>
+            <Button
+              className="w-full"
+              onClick={handleSave}
+              disabled={!isDirty || saving}
+              aria-disabled={!isDirty || saving}
+            >
+              {saved ? "✓ Opgeslagen" : saving ? "Bezig..." : "Wijzigingen opslaan"}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

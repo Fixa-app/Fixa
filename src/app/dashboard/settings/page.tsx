@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { SettingsClient } from "./client";
@@ -21,10 +22,12 @@ export default async function SettingsPage() {
   ]);
 
   return (
-    <SettingsClient
-      companyId={companyId}
-      company={company}
-      settings={settings}
-    />
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><p className="text-sm text-muted-foreground">Laden...</p></div>}>
+      <SettingsClient
+        companyId={companyId}
+        company={company}
+        settings={settings}
+      />
+    </Suspense>
   );
 }
