@@ -2,7 +2,19 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Hammer, Pencil, Plus } from "lucide-react";
+import {
+  ArrowLeft,
+  Flame,
+  Hammer,
+  Home,
+  Paintbrush,
+  Pencil,
+  Plus,
+  Sparkles,
+  Trees,
+  Wrench,
+  Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,14 +55,14 @@ type CompanyData = {
 };
 
 const INDUSTRIES = [
-  "Loodgieter",
-  "Elektricien",
-  "CV & klimaat",
-  "Hovenier",
-  "Schoonmaak",
-  "Klusbedrijf",
-  "Schilder",
-  "Dakdekker",
+  { name: "Loodgieter", icon: Wrench },
+  { name: "Elektricien", icon: Zap },
+  { name: "CV & klimaat", icon: Flame },
+  { name: "Hovenier", icon: Trees },
+  { name: "Schoonmaak", icon: Sparkles },
+  { name: "Klusbedrijf", icon: Hammer },
+  { name: "Schilder", icon: Paintbrush },
+  { name: "Dakdekker", icon: Home },
 ];
 
 function InfoCard({
@@ -228,6 +240,8 @@ function CompanyInfoContent() {
     : "";
   const contactInfo = [formData.phone, formData.email].filter(Boolean).join(" • ");
   const vatIbanInfo = [formData.vat, formData.iban].filter(Boolean).join(" • ");
+  const IndustryIcon =
+    INDUSTRIES.find((i) => i.name === formData.industry)?.icon ?? Hammer;
 
   return (
     <>
@@ -275,7 +289,7 @@ function CompanyInfoContent() {
             />
             <InfoCard
               label="Vakgebied"
-              valueIcon={<Hammer className="size-4" strokeWidth={2} />}
+              valueIcon={<IndustryIcon className="size-4" strokeWidth={2} />}
               value={formData.industry}
               onClick={() => openEdit("industry")}
               delay={50}
@@ -374,21 +388,22 @@ function CompanyInfoContent() {
                 Kies het vakgebied waarin je vooral werkt.
               </p>
               <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-2">
-                  {INDUSTRIES.map((ind) => {
-                    const selected = tempData.industry === ind;
+                <div className="flex flex-col gap-0.5">
+                  {INDUSTRIES.map(({ name, icon: Icon }) => {
+                    const selected = tempData.industry === name;
                     return (
                       <button
-                        key={ind}
+                        key={name}
                         type="button"
-                        onClick={() => updateTempField("industry", ind)}
-                        className={`rounded-xl border p-3 text-sm font-semibold transition-colors ${
+                        onClick={() => updateTempField("industry", name)}
+                        className={`flex items-center gap-2.5 rounded-lg px-2 py-2.5 text-left text-base font-semibold transition-colors ${
                           selected
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-card text-foreground hover:bg-muted/40"
+                            ? "text-primary"
+                            : "text-foreground hover:text-primary"
                         }`}
                       >
-                        {ind}
+                        <Icon className="size-5" strokeWidth={2} />
+                        <span>{name}</span>
                       </button>
                     );
                   })}
