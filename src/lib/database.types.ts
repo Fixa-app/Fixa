@@ -437,6 +437,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          line_item_id: string | null
           quote_id: string
           sort_order: number
           storage_path: string
@@ -444,6 +445,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          line_item_id?: string | null
           quote_id: string
           sort_order?: number
           storage_path: string
@@ -451,11 +453,19 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          line_item_id?: string | null
           quote_id?: string
           sort_order?: number
           storage_path?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "quote_photos_line_item_id_fkey"
+            columns: ["line_item_id"]
+            isOneToOne: false
+            referencedRelation: "line_items"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "quote_photos_quote_id_fkey"
             columns: ["quote_id"]
