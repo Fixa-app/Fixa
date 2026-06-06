@@ -8,13 +8,14 @@ export type OnboardingStep = {
   completed: boolean;
 };
 
-// Steps 1 & 2 are finished during onboarding (a user only reaches the dashboard
-// after creating a company), so they start completed and can be edited here.
-// Steps 3 & 4 are still to-do. Completion of those isn't tracked yet.
 export function onboardingSteps({
   hasCompany,
+  hasLogo,
+  hasQuoteNumber,
 }: {
   hasCompany: boolean;
+  hasLogo: boolean;
+  hasQuoteNumber: boolean;
 }): OnboardingStep[] {
   return [
     {
@@ -32,22 +33,32 @@ export function onboardingSteps({
       completed: hasCompany,
     },
     {
-      title: "Nodig je team uit",
-      description: "Voeg collega's toe en stel hun rollen in.",
-      href: "/dashboard/users",
-      cta: "Uitnodigen",
-      completed: false,
+      title: "Logo uploaden",
+      description: "Voeg je bedrijfslogo toe aan je offertes.",
+      href: "/dashboard/settings#logo",
+      cta: "Uploaden",
+      completed: hasLogo,
     },
     {
-      title: "Download de app",
-      description: "Werk onderweg verder met de Fixa-app.",
-      href: "#",
-      cta: "Downloaden",
-      completed: false,
+      title: "Offertenummering instellen",
+      description: "Stel je startnummer en format in.",
+      href: "/dashboard/settings#numbering",
+      cta: "Instellen",
+      completed: hasQuoteNumber,
     },
   ];
 }
 
-export function onboardingCompletedCount(hasCompany: boolean): number {
-  return onboardingSteps({ hasCompany }).filter((s) => s.completed).length;
+export function onboardingCompletedCount({
+  hasCompany,
+  hasLogo,
+  hasQuoteNumber,
+}: {
+  hasCompany: boolean;
+  hasLogo: boolean;
+  hasQuoteNumber: boolean;
+}): number {
+  return onboardingSteps({ hasCompany, hasLogo, hasQuoteNumber }).filter(
+    (s) => s.completed
+  ).length;
 }

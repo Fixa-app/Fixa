@@ -1,11 +1,31 @@
 import Link from "next/link";
 import { Check, ChevronRight } from "lucide-react";
+import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import { onboardingSteps, ONBOARDING_TOTAL } from "../onboarding-steps";
 
-export default function DashboardOnboardingPage() {
-  // A user only reaches the dashboard after creating a company, so steps 1 & 2
-  // are complete.
-  const steps = onboardingSteps({ hasCompany: true });
+export default async function DashboardOnboardingPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let hasLogo = false;
+  let hasQuoteNumber = false;
+
+  if (user) {
+    const cookieId = (await cookies()).get("active_company_id")?.value;
+
+    if (cookieId) {
+      const [{ data: company }, { data: settings }] = await Promise.all([
+        supabase.from("companies").select("logo_url").eq("id", cookieId).single(),
+        supabase.from("company_settings").select("next_quote_number, quote_number_format").eq("company_id", cookieId).single(),
+      ]);
+
+      hasLogo = !!company?.logo_url;
+      hasQuoteNumber = !!(settings?.next_quote_number && settings?.quote_number_format);
+    }
+  }
+
+  const steps = onboardingSteps({ hasCompany: true, hasLogo, hasQuoteNumber });
   const completed = steps.filter((s) => s.completed).length;
 
   return (

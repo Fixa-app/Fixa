@@ -18,6 +18,9 @@ export default async function DashboardLayout({
   let activeCompanyId = "";
   let companyName = "";
   let role = "";
+  let hasLogo = false;
+  let hasQuoteNumber = false;
+
   if (user) {
     const { data } = await supabase.rpc("get_user_companies", {
       p_user_id: user.id,
@@ -28,11 +31,31 @@ export default async function DashboardLayout({
       name: c.company_name,
     }));
     const cookieId = (await cookies()).get("active_company_id")?.value;
-    const active = rows.find((c: { company_id: string }) => c.company_id === cookieId) ?? rows[0];
+    const active =
+      rows.find((c: { company_id: string }) => c.company_id === cookieId) ??
+      rows[0];
     if (active) {
       activeCompanyId = active.company_id;
       companyName = active.company_name ?? "";
       role = active.user_role ?? "";
+
+      // Check logo and quote numbering
+      const { data: company } = await supabase
+        .from("companies")
+        .select("logo_url")
+        .eq("id", activeCompanyId)
+        .single();
+
+      const { data: settings } = await supabase
+        .from("company_settings")
+        .select("next_quote_number, quote_number_format")
+        .eq("company_id", activeCompanyId)
+        .single();
+
+      hasLogo = !!company?.logo_url;
+      hasQuoteNumber = !!(
+        settings?.next_quote_number && settings?.quote_number_format
+      );
     }
   }
 
@@ -46,27 +69,33 @@ export default async function DashboardLayout({
         .join(" ")
     : "";
 
+  const completedCount = onboardingCompletedCount({
+    hasCompany: !!activeCompanyId,
+    hasLogo,
+    hasQuoteNumber,
+  });
+
   return (
-  <div className="flex min-h-screen flex-col bg-background lg:flex-row">
-    <DashboardSidebar
-      companies={companies}
-      activeCompanyId={activeCompanyId}
-      companyName={companyName}
-      userName={userName}
-      role={role}
-      onboardingCompleted={onboardingCompletedCount(!!activeCompanyId)}
-      onboardingTotal={ONBOARDING_TOTAL}
-    />
-    <div className="flex flex-1 flex-col min-w-0">
-      <MobileNav
+    <div className="flex min-h-screen flex-col bg-background lg:flex-row">
+      <DashboardSidebar
+        companies={companies}
+        activeCompanyId={activeCompanyId}
         companyName={companyName}
         userName={userName}
         role={role}
-        onboardingCompleted={onboardingCompletedCount(!!activeCompanyId)}
+        onboardingCompleted={completedCount}
         onboardingTotal={ONBOARDING_TOTAL}
       />
-      <main className="min-w-0 flex-1">{children}</main>
+      <div className="flex flex-1 flex-col min-w-0">
+        <MobileNav
+          companyName={companyName}
+          userName={userName}
+          role={role}
+          onboardingCompleted={completedCount}
+          onboardingTotal={ONBOARDING_TOTAL}
+        />
+        <main className="min-w-0 flex-1">{children}</main>
+      </div>
     </div>
-  </div>
-);
+  );
 }
