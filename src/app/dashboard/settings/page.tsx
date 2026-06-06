@@ -10,7 +10,7 @@ export default async function SettingsPage() {
 
   const cookieId = (await cookies()).get("active_company_id")?.value;
   const { data: companies } = await supabase.rpc("get_user_companies", { p_user_id: user.id });
-  const active = companies?.find((c: { company_id: string }) => c.company_id === cookieId) ?? companies?.[0];
+  const active = (cookieId && companies?.find((c: { company_id: string }) => c.company_id === cookieId)) || companies?.[0];
   const companyId = active?.company_id;
 
   if (!companyId) return null;
