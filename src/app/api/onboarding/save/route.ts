@@ -79,8 +79,13 @@ export async function POST(request: NextRequest) {
         .from('company_settings')
         .insert({
           company_id: companyId,
-          quote_intro: standardText.intro || null,
-          quote_disclaimer: standardText.disclaimer || null,
+          quote_intro: 'Beste [klantnaam],\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.\n\n[adres]',
+          quote_disclaimer: standardText.disclaimer
+            ? standardText.disclaimer.replace(
+                /geldig tot[\s\S]*?(\.|$)/gi,
+                'geldig tot [offertedatum + 30 dagen].'
+              )
+            : null,
         });
 
       if (settingsError) {
