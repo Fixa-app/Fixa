@@ -176,7 +176,15 @@ export default function NewQuoteItemsPage() {
       method: 'DELETE',
     });
 
-    setPhotos(prev => prev.filter(p => p.id !== photo.id));
+    setPhotos(prev => {
+      const updated = prev.filter(p => p.id !== photo.id);
+      // Clear max warning if we now have room
+      if (photo.line_item_id) {
+        const remaining = updated.filter(p => p.line_item_id === photo.line_item_id).length;
+        if (remaining < 3) setMaxReachedFor(null);
+      }
+      return updated;
+    });
   }
 
   async function saveQuoteField(field: string, value: string) {
@@ -347,7 +355,7 @@ export default function NewQuoteItemsPage() {
                             )}
                             <button
                               onClick={() => handlePhotoDelete(photo)}
-                              className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm cursor-pointer hover:bg-destructive/10 transition-colors"
+                              className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm cursor-pointer hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
                               aria-label="Verwijder foto"
                             >
                               <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
@@ -379,7 +387,6 @@ export default function NewQuoteItemsPage() {
                                 const remaining = 3 - itemPhotos.length;
                                 if (files.length > remaining) {
                                   setMaxReachedFor(item.id);
-                                  setTimeout(() => setMaxReachedFor(null), 3000);
                                 }
                                 files.slice(0, remaining).forEach(file => handlePhotoUpload(item.id, file));
                                 e.target.value = '';
