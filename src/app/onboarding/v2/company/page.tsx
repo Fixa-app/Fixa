@@ -7,6 +7,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Drawer } from "vaul";
+import { cn } from "@/lib/utils";
+
+// Design-system form field treatment (see /admin/design → Form fields)
+function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
+  return <Label className={cn("text-sm font-semibold", className)} {...props} />;
+}
+
+function FieldInput({ className, ...props }: React.ComponentProps<typeof Input>) {
+  return (
+    <Input
+      className={cn(
+        "h-12 rounded-xl border-foreground/15 bg-background text-base",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 type CompanyData = {
   name?: string;
@@ -317,8 +335,8 @@ function CompanyInfoContent() {
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="company-name">Bedrijfsnaam</Label>
-                  <Input
+                  <FieldLabel htmlFor="company-name">Bedrijfsnaam</FieldLabel>
+                  <FieldInput
                     id="company-name"
                     value={tempData.name || ""}
                     onChange={(e) => updateTempField("name", e.target.value)}
@@ -404,8 +422,8 @@ function CompanyInfoContent() {
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="street">Straat</Label>
-                  <Input
+                  <FieldLabel htmlFor="street">Straat</FieldLabel>
+                  <FieldInput
                     id="street"
                     value={tempData.address?.street || ""}
                     onChange={(e) => updateTempField("address.street", e.target.value)}
@@ -414,8 +432,8 @@ function CompanyInfoContent() {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1 space-y-2">
-                    <Label htmlFor="postal">Postcode</Label>
-                    <Input
+                    <FieldLabel htmlFor="postal">Postcode</FieldLabel>
+                    <FieldInput
                       id="postal"
                       value={tempData.address?.postal || ""}
                       onChange={(e) => updateTempField("address.postal", e.target.value)}
@@ -423,8 +441,8 @@ function CompanyInfoContent() {
                     />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <Label htmlFor="city">Plaats</Label>
-                    <Input
+                    <FieldLabel htmlFor="city">Plaats</FieldLabel>
+                    <FieldInput
                       id="city"
                       value={tempData.address?.city || ""}
                       onChange={(e) => updateTempField("address.city", e.target.value)}
@@ -461,8 +479,8 @@ function CompanyInfoContent() {
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Telefoon</Label>
-                  <Input
+                  <FieldLabel htmlFor="phone">Telefoon</FieldLabel>
+                  <FieldInput
                     id="phone"
                     type="tel"
                     value={tempData.phone || ""}
@@ -474,8 +492,8 @@ function CompanyInfoContent() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">E-mail</Label>
-                  <Input
+                  <FieldLabel htmlFor="email">E-mail</FieldLabel>
+                  <FieldInput
                     id="email"
                     type="email"
                     value={tempData.email || ""}
@@ -515,8 +533,8 @@ function CompanyInfoContent() {
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="kvk">KVK-nummer</Label>
-                  <Input
+                  <FieldLabel htmlFor="kvk">KVK-nummer</FieldLabel>
+                  <FieldInput
                     id="kvk"
                     value={tempData.kvk || ""}
                     onChange={(e) => updateTempField("kvk", e.target.value)}
@@ -552,8 +570,8 @@ function CompanyInfoContent() {
               </Drawer.Title>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="vat">Btw-nummer</Label>
-                  <Input
+                  <FieldLabel htmlFor="vat">Btw-nummer</FieldLabel>
+                  <FieldInput
                     id="vat"
                     value={tempData.vat || ""}
                     onChange={(e) => updateTempField("vat", e.target.value)}
@@ -561,8 +579,8 @@ function CompanyInfoContent() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="iban">IBAN</Label>
-                  <Input
+                  <FieldLabel htmlFor="iban">IBAN</FieldLabel>
+                  <FieldInput
                     id="iban"
                     value={tempData.iban || ""}
                     onChange={(e) => updateTempField("iban", e.target.value)}
