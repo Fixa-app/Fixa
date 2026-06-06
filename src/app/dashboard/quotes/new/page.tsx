@@ -396,17 +396,19 @@ function NewQuoteStep1Content() {
               </button>
             ))}
 
-            <button
-              onClick={handleCreateNew}
-              className="flex w-full items-center gap-4 rounded-xl px-2 py-3 text-left transition-colors hover:bg-muted/50"
-            >
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-muted">
-                <span className="text-xl font-light text-muted-foreground">+</span>
-              </div>
-              <p className="font-medium">
-                Nieuwe klant aanmaken: <span className="font-bold">{capitalizeNL(query)}</span>
-              </p>
-            </button>
+            {!clients.some(c => c.name.toLowerCase() === query.trim().toLowerCase()) && (
+              <button
+                onClick={handleCreateNew}
+                className="flex w-full items-center gap-4 rounded-xl px-2 py-3 text-left transition-colors hover:bg-muted/50"
+              >
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-muted">
+                  <span className="text-xl font-light text-muted-foreground">+</span>
+                </div>
+                <p className="font-medium">
+                  Nieuwe klant aanmaken: <span className="font-bold">{capitalizeNL(query)}</span>
+                </p>
+              </button>
+            )}
           </div>
         )}
       </div>
