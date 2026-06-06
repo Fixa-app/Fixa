@@ -332,6 +332,7 @@ export type Database = {
           company_id: string
           created_at: string | null
           id: string
+          item_type: string | null
           rate: number
           title: string
           unit: string
@@ -341,6 +342,7 @@ export type Database = {
           company_id: string
           created_at?: string | null
           id?: string
+          item_type?: string | null
           rate: number
           title: string
           unit: string
@@ -350,6 +352,7 @@ export type Database = {
           company_id?: string
           created_at?: string | null
           id?: string
+          item_type?: string | null
           rate?: number
           title?: string
           unit?: string
