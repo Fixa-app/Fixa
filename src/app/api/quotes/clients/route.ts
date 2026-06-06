@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     const query = searchParams.get('q') ?? '';
+    const exact = searchParams.get('exact') ?? '';
 
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -33,6 +34,17 @@ export async function GET(request: NextRequest) {
 
     if (!membership) {
       return NextResponse.json({ error: 'No company found' }, { status: 404 });
+    }
+
+    // Exact match check (case-insensitive) for duplicate prevention
+    if (exact) {
+      const { data: clients } = await service
+        .from('clients')
+        .select('*')
+        .eq('company_id', membership.company_id)
+        .ilike('name', exact)
+        .limit(1);
+      return NextResponse.json({ client: clients?.[0] ?? null });
     }
 
     let clientQuery = service

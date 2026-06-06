@@ -134,13 +134,12 @@ function NewQuoteStep1Content() {
 
     const name = capitalizeNL(query.trim());
 
-    // Check if client with same name already exists
-    const checkRes = await fetch(`/api/quotes/clients?userId=${userId}&q=${encodeURIComponent(name)}`);
+    // Check if client with same name already exists (exact, case-insensitive)
+    const checkRes = await fetch(`/api/quotes/clients?userId=${userId}&exact=${encodeURIComponent(name)}`);
     if (checkRes.ok) {
-      const { clients: existing } = await checkRes.json();
-      const exact = existing?.find((c: Client) => c.name.toLowerCase() === name.toLowerCase());
-      if (exact) {
-        selectClient(exact);
+      const { client: existing } = await checkRes.json();
+      if (existing) {
+        selectClient(existing);
         return;
       }
     }

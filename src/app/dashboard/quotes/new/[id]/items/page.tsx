@@ -399,9 +399,6 @@ export default function NewQuoteItemsPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="intro-text">Aanhef</label>
-              <p className="text-xs text-muted-foreground">
-                Gebruik <code className="bg-muted px-1 rounded">[klantnaam]</code> en <code className="bg-muted px-1 rounded">[adres]</code> als dynamische velden
-              </p>
               <textarea
                 id="intro-text"
                 ref={introRef}
@@ -411,16 +408,11 @@ export default function NewQuoteItemsPage() {
                 aria-label="Aanhef"
                 className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none overflow-hidden min-h-[100px]"
               />
-              <p className="text-xs text-muted-foreground">
-                Voorbeeld: {resolveIntro(introText).substring(0, 60)}...
-              </p>
+
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="disclaimer">Disclaimer</label>
-              <p className="text-xs text-muted-foreground">
-                Gebruik <code className="bg-muted px-1 rounded">[offertedatum + 30 dagen]</code> voor de dynamische vervaldatum
-              </p>
               <textarea
                 id="disclaimer"
                 ref={disclaimerRef}
@@ -430,9 +422,7 @@ export default function NewQuoteItemsPage() {
                 aria-label="Disclaimer"
                 className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none overflow-hidden min-h-[80px]"
               />
-              <p className="text-xs text-muted-foreground">
-                Voorbeeld: {resolveDisclaimer(disclaimer).substring(0, 80)}...
-              </p>
+
             </div>
           </div>
         </div>
