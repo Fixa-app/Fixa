@@ -51,29 +51,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: quoteError?.message }, { status: 500 });
     }
 
-    // Fetch generic products (labor, transport, material)
-    const { data: products } = await service
-      .from('products')
-      .select('*')
-      .eq('company_id', membership.company_id)
-      .in('item_type', ['labor', 'transport', 'material'])
-      .order('created_at', { ascending: true });
-
-    // Pre-fill line items from generic products
-    if (products && products.length > 0) {
-      const lineItems = products.map((product, index) => ({
-        quote_id: quote.id,
-        title: product.title,
-        description: '',
-        quantity: 1,
-        rate: product.rate,
-        tax_percentage: 21,
-        item_type: product.item_type,
-        sort_order: index,
-      }));
-
-      await service.from('line_items').insert(lineItems);
-    }
+    // Start met één leeg line item
+    await service.from('line_items').insert({
+      quote_id: quote.id,
+      title: null,
+      description: '',
+      quantity: 1,
+      rate: 0,
+      tax_percentage: 21,
+      item_type: 'other',
+      sort_order: 0,
+    });
 
     return NextResponse.json({ quote });
   } catch (error) {
