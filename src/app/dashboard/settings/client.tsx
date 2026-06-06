@@ -46,6 +46,9 @@ export function SettingsClient({
   company: CompanyData | null;
   settings: SettingsData | null;
 }) {
+  console.log("initialCompany:", initialCompany);
+  console.log("companyId:", companyId);
+  
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>(
     (searchParams.get("tab") as Tab) ?? "company"
