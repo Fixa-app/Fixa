@@ -388,7 +388,7 @@ function CompanyInfoContent() {
                 Kies het vakgebied waarin je vooral werkt.
               </p>
               <div className="space-y-6">
-                <div className="flex flex-col gap-0.5">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
                   {INDUSTRIES.map(({ name, icon: Icon }) => {
                     const selected = tempData.industry === name;
                     return (
