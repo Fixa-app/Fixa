@@ -85,7 +85,7 @@
 :root {
   --background: #f6f6f3;
   --foreground: oklch(0.20 0.013 60);
-  --card: #ecebe6;
+  --card: #ffffff;
   --card-foreground: oklch(0.20 0.013 60);
   --surface: #e4e3de;
   --surface-foreground: oklch(0.20 0.013 60);
