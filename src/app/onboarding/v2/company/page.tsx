@@ -110,10 +110,9 @@ function InfoCard({
         </div>
       </div>
       {hasData ? (
-        <Pencil
-          className="size-5 flex-shrink-0 text-muted-foreground"
-          strokeWidth={2}
-        />
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+          <Pencil className="size-5" strokeWidth={2} />
+        </div>
       ) : (
         <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30">
           <Plus className="size-6" strokeWidth={3} />
