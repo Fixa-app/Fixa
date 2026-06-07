@@ -142,7 +142,9 @@ function CompanyInfoContent() {
     return {};
   };
 
-  const [formData, setFormData] = useState<CompanyData>(loadCompanyData());
+  // Start empty so server and first client render match; the effect below
+  // hydrates from sessionStorage after mount (avoids a hydration mismatch).
+  const [formData, setFormData] = useState<CompanyData>({});
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [tempData, setTempData] = useState<Partial<CompanyData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
