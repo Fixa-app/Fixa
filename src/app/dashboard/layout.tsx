@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSidebar } from "./sidebar";
+import { DashboardHeader } from "./header";
 import { ONBOARDING_TOTAL, onboardingCompletedCount } from "./onboarding-steps";
 import { MobileNav } from "./mobile-nav";
 
@@ -93,6 +94,12 @@ export default async function DashboardLayout({
           role={role}
           onboardingCompleted={completedCount}
           onboardingTotal={ONBOARDING_TOTAL}
+        />
+        <DashboardHeader
+          companies={companies}
+          activeCompanyId={activeCompanyId}
+          companyName={companyName}
+          userName={userName}
         />
         <main className="min-w-0 flex-1">{children}</main>
       </div>

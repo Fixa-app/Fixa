@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
-import { CompanySwitcher } from "./company-switcher";
 
 const ROLE_LABELS: Record<string, string> = {
   owner: "Eigenaar",
@@ -57,24 +56,17 @@ export function DashboardSidebar({
 
   return (
     <aside className="sticky top-0 z-30 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
-      {/* Brand / company */}
-      <div className="border-b border-border px-4 py-4">
+      {/* Brand */}
+      <div className="flex h-16 items-center border-b border-border px-4">
         <Link href="/dashboard">
-  <Image
-    src="/fixa-logo.svg"
-    alt="Fixa"
-    width={120}
-    height={48}
-    className="h-11 w-auto"
-  />
-</Link>
-        <div className="mt-3">
-          <CompanySwitcher
-            companies={companies}
-            activeId={activeCompanyId}
-            companyName={companyName}
+          <Image
+            src="/fixa-logo.svg"
+            alt="Fixa"
+            width={120}
+            height={48}
+            className="h-10 w-auto"
           />
-        </div>
+        </Link>
       </div>
 
       {/* Onboarding */}
