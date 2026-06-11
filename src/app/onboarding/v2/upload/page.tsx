@@ -130,7 +130,7 @@ export default function OnboardingUploadPage() {
           }`}
         >
           <div
-            className={`flex size-16 items-center justify-center rounded-2xl ${
+            className={`flex size-10 items-center justify-center rounded-xl ${
               uploading
                 ? "bg-muted"
                 : success
@@ -140,7 +140,7 @@ export default function OnboardingUploadPage() {
           >
             {uploading ? (
               <svg
-                className="h-8 w-8 animate-spin text-foreground"
+                className="size-5 animate-spin text-foreground"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -159,9 +159,9 @@ export default function OnboardingUploadPage() {
                 />
               </svg>
             ) : success ? (
-              <Check className="size-8 text-green-600" strokeWidth={3} />
+              <Check className="size-6 text-green-600" strokeWidth={3} />
             ) : (
-              <Plus className="size-8" strokeWidth={3} />
+              <Plus className="size-6" strokeWidth={3} />
             )}
           </div>
           <p className="mt-4 text-xl font-semibold text-foreground">
