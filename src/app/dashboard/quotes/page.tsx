@@ -193,8 +193,8 @@ function QuotesContent() {
           </Button>
         </div>
 
-        {/* List card */}
-        <div className="rounded-2xl bg-muted/50 p-5">
+        {/* List */}
+        <div>
           <div className="mb-4 flex items-baseline gap-2">
             <h2 className="text-xl font-semibold tracking-tight">
               {filter === "all" ? "Alle offertes" : "Gefilterde offertes"}
