@@ -70,8 +70,8 @@ export function DashboardSidebar({
           aria-expanded={createOpen}
           className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
             createOpen
-              ? "bg-foreground/[0.06] text-foreground"
-              : "text-foreground hover:text-foreground/70"
+              ? "bg-hover text-foreground"
+              : "text-foreground hover:bg-hover"
           }`}
         >
           <Plus
@@ -79,7 +79,7 @@ export function DashboardSidebar({
               createOpen ? "rotate-45" : ""
             }`}
           />
-          <span className="flex-1 text-left">Nieuw</span>
+          {!inSettings && <span className="flex-1 text-left">Nieuw</span>}
         </button>
 
         {createOpen && (
@@ -133,13 +133,13 @@ export function DashboardSidebar({
                     item.comingSoon
                       ? "pointer-events-none text-muted-foreground"
                       : active
-                        ? "bg-card text-foreground"
-                        : "text-foreground hover:text-foreground/70"
+                        ? "bg-hover text-foreground"
+                        : "text-foreground hover:bg-hover"
                   }`}
                 >
                   <Icon className="size-4 shrink-0" />
-                  <span className="flex-1">{item.label}</span>
-                  {item.comingSoon && (
+                  {!inSettings && <span className="flex-1">{item.label}</span>}
+                  {!inSettings && item.comingSoon && (
                     <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                       binnenkort
                     </span>
@@ -162,45 +162,45 @@ export function DashboardSidebar({
         <Link
           href="/dashboard/account"
           className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
-            isActive("/dashboard/account")
-              ? "bg-card"
-              : "hover:bg-foreground/[0.06]"
+            isActive("/dashboard/account") ? "bg-hover" : "hover:bg-hover"
           }`}
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
             {(firstName[0] ?? "?").toUpperCase()}
           </span>
-          <div className="min-w-0">
-            <p className="truncate text-base font-bold text-foreground">
-              {firstName}
-            </p>
-            {role && (
-              <p className="truncate text-sm text-muted-foreground">
-                {ROLE_LABELS[role] ?? role}
+          {!inSettings && (
+            <div className="min-w-0">
+              <p className="truncate text-base font-bold text-foreground">
+                {firstName}
               </p>
-            )}
-          </div>
+              {role && (
+                <p className="truncate text-sm text-muted-foreground">
+                  {ROLE_LABELS[role] ?? role}
+                </p>
+              )}
+            </div>
+          )}
         </Link>
       </div>
 
       {/* Secondary panel — only present when there is a sub-menu (settings),
           slides in over the primary names with the icons still visible */}
       {inSettings && (
-        <div className="absolute top-16 right-0 bottom-0 left-14 z-20 flex animate-in flex-col bg-background duration-300 fade-in slide-in-from-right-4">
-          <div className="flex h-12 items-center px-3">
-            <h2 className="font-display text-xl font-medium tracking-tight">
-              Instellingen
-            </h2>
+        <div className="absolute inset-y-0 right-0 left-14 z-20 flex animate-in flex-col bg-background duration-300 fade-in slide-in-from-right-4">
+          {/* Title — same font + row as the company name in the header */}
+          <div className="flex h-16 items-center px-3">
+            <h2 className="truncate text-base font-bold">Instellingen</h2>
           </div>
-          <div className="flex flex-col gap-0.5 px-3">
+          {/* Items — aligned with the primary nav rows */}
+          <div className="flex flex-col gap-1 px-3 pt-4">
             {SETTINGS_NAV.map(({ key, label }) => (
               <Link
                 key={key}
                 href={`/dashboard/settings?tab=${key}`}
-                className={`rounded-lg px-3 py-2 text-base font-bold transition-colors ${
+                className={`rounded-lg p-2 text-base font-bold transition-colors ${
                   currentTab === key
                     ? "bg-hover text-foreground"
-                    : "text-foreground hover:text-foreground/70"
+                    : "text-foreground hover:bg-hover"
                 }`}
               >
                 {label}
