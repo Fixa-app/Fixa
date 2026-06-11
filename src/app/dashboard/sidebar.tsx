@@ -1,8 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Rocket } from "lucide-react";
+import {
+  FileText,
+  Inbox,
+  Plus,
+  Receipt,
+  Rocket,
+  Users,
+  Wrench,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
 import { CompanySwitcher } from "./company-switcher";
@@ -12,6 +21,14 @@ const ROLE_LABELS: Record<string, string> = {
   admin: "Beheerder",
   member: "Lid",
 };
+
+const CREATE_ITEMS = [
+  { label: "Klant", icon: Users, href: "/dashboard/customers" },
+  { label: "Aanvraag", icon: Inbox, href: "#" },
+  { label: "Offerte", icon: FileText, href: "/dashboard/quotes/new" },
+  { label: "Opdracht", icon: Wrench, href: "#" },
+  { label: "Factuur", icon: Receipt, href: "/dashboard/invoices" },
+];
 
 export function DashboardSidebar({
   companies,
@@ -36,9 +53,10 @@ export function DashboardSidebar({
       ? pathname === "/dashboard"
       : pathname === href || pathname.startsWith(href + "/");
   const firstName = userName.split(" ")[0] || userName;
+  const [createOpen, setCreateOpen] = useState(false);
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
+    <aside className="sticky top-0 z-30 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
       {/* Brand / company */}
       <div className="border-b border-border px-4 py-4">
         <Link href="/dashboard">
@@ -79,8 +97,56 @@ export function DashboardSidebar({
         </div>
       )}
 
+      {/* Create */}
+      <div className="relative px-3 pt-4">
+        <button
+          type="button"
+          onClick={() => setCreateOpen((v) => !v)}
+          aria-expanded={createOpen}
+          className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+            createOpen
+              ? "bg-foreground/[0.06] text-foreground"
+              : "text-foreground hover:text-foreground/70"
+          }`}
+        >
+          <Plus
+            className={`size-4 shrink-0 transition-transform ${
+              createOpen ? "rotate-45" : ""
+            }`}
+          />
+          <span className="flex-1 text-left">Nieuw</span>
+        </button>
+
+        {createOpen && (
+          <>
+            <button
+              type="button"
+              aria-hidden
+              tabIndex={-1}
+              onClick={() => setCreateOpen(false)}
+              className="fixed inset-0 z-40 cursor-default"
+            />
+            <div className="absolute top-2 left-full z-50 ml-2 flex gap-1 rounded-2xl border border-border bg-card p-2 shadow-xl">
+              {CREATE_ITEMS.map(({ label, icon: Icon, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={() => setCreateOpen(false)}
+                  className="flex w-[4.5rem] flex-col items-center gap-1.5 rounded-xl px-2 py-3 text-center transition-colors hover:bg-muted/40"
+                >
+                  <Icon className="size-5 text-foreground" strokeWidth={2} />
+                  <span className="text-xs font-semibold text-foreground">
+                    {label}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4 pt-2">
         {NAV_SECTIONS.map((section, i) => (
           <div key={section.title ?? `top-${i}`} className="space-y-1">
             {section.title && (
