@@ -96,7 +96,7 @@ export default function OnboardingUploadPage() {
         <X className="size-5" />
       </a>
 
-      <div className="mx-auto w-full max-w-2xl space-y-6 p-6 pt-16">
+      <div className="mx-auto w-full max-w-2xl space-y-6 p-6 pt-16 pb-32">
         {/* Progress indicator */}
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -216,15 +216,18 @@ export default function OnboardingUploadPage() {
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex items-center justify-between gap-4">
+      </div>
+
+      {/* Sticky footer: manual entry + continue */}
+      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 p-6">
           <Button
             variant="link"
             className="px-0 text-base font-bold text-foreground"
             onClick={handleSkip}
             disabled={uploading}
           >
-            Overslaan en handmatig invoeren
+            Handmatig invoeren
           </Button>
           <Button
             className="h-12 rounded-xl px-6 text-base font-bold"
