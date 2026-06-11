@@ -29,10 +29,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
 function FieldInput({ className, ...props }: React.ComponentProps<typeof Input>) {
   return (
     <Input
-      className={cn(
-        "h-12 rounded-xl border-foreground/15 bg-background text-base",
-        className,
-      )}
+      className={cn("h-12 rounded-xl text-base", className)}
       {...props}
     />
   );

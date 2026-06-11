@@ -39,10 +39,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
 function FieldInput({ className, ...props }: React.ComponentProps<typeof Input>) {
   return (
     <Input
-      className={cn(
-        "h-12 rounded-xl border-foreground/15 bg-background text-base",
-        className,
-      )}
+      className={cn("h-12 rounded-xl text-base", className)}
       {...props}
     />
   );
@@ -286,7 +283,7 @@ function ProductsServicesContent() {
                     id="item-unit"
                     value={tempItem.unit || "hour"}
                     onChange={(e) => updateTempField("unit", e.target.value)}
-                    className="h-12 w-full rounded-xl border border-foreground/15 bg-background px-3 text-base outline-none transition-colors focus-visible:border-primary"
+                    className="h-12 w-full rounded-xl border border-transparent bg-card px-3 text-base outline-none transition-colors focus-visible:border-primary"
                   >
                     {UNIT_OPTIONS.map((u) => (
                       <option key={u.value} value={u.value}>

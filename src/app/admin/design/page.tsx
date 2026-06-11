@@ -20,6 +20,8 @@ import {
   Inbox,
   Mail,
   Paintbrush,
+  Pencil,
+  Plus,
   Receipt,
   Settings,
   Users,
@@ -249,8 +251,14 @@ const palette: Swatch[] = [
   {
     name: "burgundy",
     hex: "#5E1A33",
-    use: "Burgundy — footer surface",
+    use: "Burgundy — deep accent",
     textOn: "var(--burgundy-foreground)",
+  },
+  {
+    name: "footer",
+    hex: "#271C0A",
+    use: "Footer & large dark surfaces — warm near-black (surface-dark)",
+    textOn: "#ffffff",
   },
   {
     name: "teal-bright",
@@ -572,27 +580,60 @@ function ComponentShowcase() {
 
       <ComponentBlock
         title="Form fields"
-        note="Focus uses border-primary (Flame Orange), no surrounding glow."
+        note="White fill, no outline at rest — only a primary (Flame Orange) border on focus. Shown on a surface inset since the field is white."
       >
-        <div className="flex max-w-sm flex-col gap-2">
-          <Label
-            htmlFor="design-input"
-            className="text-sm font-semibold"
-          >
-            E-mailadres
-          </Label>
-          <Input
-            id="design-input"
-            type="email"
-            placeholder="jij@voorbeeld.nl"
-            className="h-12 rounded-xl border-foreground/15 bg-background text-base"
-          />
+        <div className="max-w-sm rounded-2xl bg-background p-5">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="design-input" className="text-sm font-semibold">
+              E-mailadres
+            </Label>
+            <Input
+              id="design-input"
+              type="email"
+              placeholder="jij@voorbeeld.nl"
+              className="h-12 rounded-xl text-base"
+            />
+          </div>
+        </div>
+      </ComponentBlock>
+
+      <ComponentBlock
+        title="Onboarding form"
+        note="Detail card used across the onboarding flow — reduced-weight label over the heavy value, with a per-row action: grey edit (pencil) when filled, solid primary add (plus) when empty. White cards on a surface; the whole card lightens on hover."
+      >
+        <div className="flex max-w-md flex-col gap-3 rounded-2xl bg-background p-5">
+          <div className="group flex w-full items-center gap-4 rounded-xl bg-card p-5 text-left transition-all hover:bg-muted/20">
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-muted-foreground">
+                Bedrijf
+              </div>
+              <p className="mt-1 truncate text-base font-bold text-foreground">
+                Maikel Miltenburg Hoveniers
+              </p>
+            </div>
+            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground transition-colors group-hover:bg-muted/80">
+              <Pencil className="size-4" strokeWidth={2} />
+            </div>
+          </div>
+          <div className="group flex w-full items-center gap-4 rounded-xl bg-card p-5 text-left transition-all hover:bg-muted/20">
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-medium text-muted-foreground">
+                KVK-nummer
+              </div>
+              <p className="mt-1 truncate text-base font-medium text-muted-foreground">
+                Nog niet ingevuld
+              </p>
+            </div>
+            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30 transition-colors group-hover:bg-primary/90">
+              <Plus className="size-6" strokeWidth={3} />
+            </div>
+          </div>
         </div>
       </ComponentBlock>
 
       <ComponentBlock
         title="Badges"
-        note="Statuses, tags, dashboard state markers. Bold, and colored from the brand palette."
+        note="Statuses, tags, dashboard state markers. Bold, fill only (no outline), colored from the brand palette."
       >
         <div className="flex flex-wrap items-center gap-2">
           <Badge>Primary</Badge>
@@ -770,9 +811,7 @@ function ComponentBlock({
         <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
         <p className="text-base text-muted-foreground">{note}</p>
       </div>
-      <div className="rounded-3xl border border-border p-6 sm:p-8">
-        {children}
-      </div>
+      <div className="rounded-3xl bg-card p-6 sm:p-8">{children}</div>
     </div>
   );
 }

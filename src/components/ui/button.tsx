@@ -16,13 +16,14 @@ const buttonVariants = cva(
         "icon-sm": "size-9 rounded-lg",
       },
       variant: {
-        // Primary — orange.
-        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-        // Secondary — black.
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-        // Tertiary — outline.
+        // Primary — orange. Darker on hover.
+        primary: "bg-primary text-primary-foreground hover:bg-primary-dark",
+        // Secondary — black. Lighter/warmer on hover (towards surface-dark).
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-surface-dark",
+        // Tertiary — outline. Thicker border, fills with surface-dark on hover.
         outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
+          "border-2 border-border bg-background hover:border-surface-dark hover:bg-surface-dark hover:text-white aria-expanded:border-surface-dark aria-expanded:bg-surface-dark aria-expanded:text-white",
         // Text link — black, at the button's text size.
         link: "h-auto rounded-none px-0 text-foreground underline-offset-4 hover:underline",
         // Utility only: bare/transparent (icon, back, close, header).
