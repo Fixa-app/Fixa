@@ -183,34 +183,32 @@ export function DashboardSidebar({
         </Link>
       </div>
 
-      {/* Secondary panel — slides in over the primary names, icons stay visible */}
-      <div
-        aria-hidden={!inSettings}
-        className={`absolute top-16 right-0 bottom-0 left-14 z-20 flex flex-col bg-background transition-transform duration-300 ease-out ${
-          inSettings ? "translate-x-0" : "pointer-events-none translate-x-full"
-        }`}
-      >
-        <div className="flex h-12 items-center px-3">
-          <h2 className="font-display text-xl font-medium tracking-tight">
-            Instellingen
-          </h2>
+      {/* Secondary panel — only present when there is a sub-menu (settings),
+          slides in over the primary names with the icons still visible */}
+      {inSettings && (
+        <div className="absolute top-16 right-0 bottom-0 left-14 z-20 flex animate-in flex-col bg-background duration-300 fade-in slide-in-from-right-4">
+          <div className="flex h-12 items-center px-3">
+            <h2 className="font-display text-xl font-medium tracking-tight">
+              Instellingen
+            </h2>
+          </div>
+          <div className="flex flex-col gap-0.5 px-3">
+            {SETTINGS_NAV.map(({ key, label }) => (
+              <Link
+                key={key}
+                href={`/dashboard/settings?tab=${key}`}
+                className={`rounded-lg px-3 py-2 text-base font-bold transition-colors ${
+                  currentTab === key
+                    ? "bg-hover text-foreground"
+                    : "text-foreground hover:text-foreground/70"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-0.5 px-3">
-          {SETTINGS_NAV.map(({ key, label }) => (
-            <Link
-              key={key}
-              href={`/dashboard/settings?tab=${key}`}
-              className={`rounded-lg px-3 py-2 text-base font-bold transition-colors ${
-                currentTab === key
-                  ? "bg-hover text-foreground"
-                  : "text-foreground hover:text-foreground/70"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
+      )}
     </aside>
   );
 }
