@@ -255,6 +255,12 @@ const palette: Swatch[] = [
     textOn: "var(--burgundy-foreground)",
   },
   {
+    name: "primary-dark",
+    hex: "#9C2D05",
+    use: "Deep orange — primary hover & dark accents",
+    textOn: "#ffffff",
+  },
+  {
     name: "footer",
     hex: "#271C0A",
     use: "Footer & large dark surfaces — warm near-black (surface-dark)",
