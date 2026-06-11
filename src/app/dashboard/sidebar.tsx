@@ -79,7 +79,9 @@ export function DashboardSidebar({
               createOpen ? "rotate-45" : ""
             }`}
           />
-          {!inSettings && <span className="flex-1 text-left">Nieuw</span>}
+          <span className={`flex-1 text-left ${inSettings ? "invisible" : ""}`}>
+            Nieuw
+          </span>
         </button>
 
         {createOpen && (
@@ -138,7 +140,9 @@ export function DashboardSidebar({
                   }`}
                 >
                   <Icon className="size-4 shrink-0" />
-                  {!inSettings && <span className="flex-1">{item.label}</span>}
+                  <span className={`flex-1 ${inSettings ? "invisible" : ""}`}>
+                    {item.label}
+                  </span>
                   {!inSettings && item.comingSoon && (
                     <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                       binnenkort
@@ -168,18 +172,16 @@ export function DashboardSidebar({
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
             {(firstName[0] ?? "?").toUpperCase()}
           </span>
-          {!inSettings && (
-            <div className="min-w-0">
-              <p className="truncate text-base font-bold text-foreground">
-                {firstName}
+          <div className={`min-w-0 ${inSettings ? "invisible" : ""}`}>
+            <p className="truncate text-base font-bold text-foreground">
+              {firstName}
+            </p>
+            {role && (
+              <p className="truncate text-sm text-muted-foreground">
+                {ROLE_LABELS[role] ?? role}
               </p>
-              {role && (
-                <p className="truncate text-sm text-muted-foreground">
-                  {ROLE_LABELS[role] ?? role}
-                </p>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </Link>
       </div>
 
