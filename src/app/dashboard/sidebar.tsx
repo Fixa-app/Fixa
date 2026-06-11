@@ -156,8 +156,8 @@ export function DashboardSidebar({}: {
                 <Link
                   key={item.href}
                   href={item.href}
-                  title={collapsed ? item.label : undefined}
-                  className={`group/nav relative flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+                  title={labelHidden ? item.label : undefined}
+                  className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
                     item.comingSoon
                       ? "pointer-events-none text-muted-foreground"
                       : active
@@ -170,12 +170,6 @@ export function DashboardSidebar({}: {
                   {!labelHidden && item.comingSoon && (
                     <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                       binnenkort
-                    </span>
-                  )}
-                  {/* Name tooltip — when labels are hidden (collapsed or settings) */}
-                  {labelHidden && (
-                    <span className="pointer-events-none absolute top-1/2 left-12 z-30 hidden -translate-y-1/2 rounded-lg bg-foreground px-2.5 py-1 text-sm font-medium whitespace-nowrap text-background shadow-lg group-hover/nav:block">
-                      {item.label}
                     </span>
                   )}
                 </Link>
