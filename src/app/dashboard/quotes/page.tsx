@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Plus, ChevronDown, Check, MoreHorizontal } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   MOCK_QUOTES,
   QUOTE_STATUS_LABELS,
@@ -31,24 +32,21 @@ const SORT_LABELS: Record<SortOption, string> = {
   name: "Name (A-Z)",
 };
 
-type StatusPillVariant =
-  | "ready_to_schedule"
-  | "changes_requested"
-  | "draft"
-  | "awaiting_response"
-  | "declined"
-  | "archived";
+type BadgeVariant =
+  | "default"
+  | "secondary"
+  | "teal"
+  | "violet"
+  | "burgundy"
+  | "destructive";
 
-const PILL_STYLES: Record<StatusPillVariant, string> = {
-  ready_to_schedule:
-    "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
-  changes_requested:
-    "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
-  draft: "bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300",
-  awaiting_response:
-    "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
-  declined: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
-  archived: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
+const STATUS_BADGE: Record<string, BadgeVariant> = {
+  ready_to_schedule: "teal",
+  changes_requested: "burgundy",
+  draft: "secondary",
+  awaiting_response: "default",
+  declined: "destructive",
+  archived: "violet",
 };
 
 function formatCurrency(amount: number) {
@@ -79,14 +77,10 @@ function formatDate(dateStr: string) {
 }
 
 function StatusPill({ status }: { status: QuoteStatus }) {
-  const style =
-    PILL_STYLES[status as StatusPillVariant] ?? PILL_STYLES["draft"];
   return (
-    <span
-      className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-medium ${style}`}
-    >
+    <Badge variant={STATUS_BADGE[status] ?? "secondary"}>
       {QUOTE_STATUS_LABELS[status]}
-    </span>
+    </Badge>
   );
 }
 

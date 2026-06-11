@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, ChevronRight, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   MOCK_QUOTES,
   MOCK_INVOICES,
@@ -24,34 +25,28 @@ function formatCurrency(amount: number) {
     .replace(/\s/g, "");
 }
 
-type StatusPillVariant =
-  | "ready_to_schedule"
-  | "changes_requested"
-  | "draft"
-  | "past_due"
-  | "awaiting_payment";
+type BadgeVariant =
+  | "default"
+  | "secondary"
+  | "teal"
+  | "violet"
+  | "burgundy"
+  | "destructive";
 
-const PILL_STYLES: Record<StatusPillVariant, string> = {
-  ready_to_schedule:
-    "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
-  changes_requested:
-    "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
-  draft: "bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300",
-  past_due: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
-  awaiting_payment:
-    "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+const STATUS_BADGE: Record<string, BadgeVariant> = {
+  ready_to_schedule: "teal",
+  changes_requested: "burgundy",
+  draft: "secondary",
+  past_due: "destructive",
+  awaiting_payment: "default",
 };
 
 function StatusPill({ status, label }: { status: string; label: string }) {
-  const style =
-    PILL_STYLES[status as StatusPillVariant] ?? PILL_STYLES["draft"];
   return (
-    <span
-      className={`inline-flex w-fit items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${style}`}
-    >
+    <Badge variant={STATUS_BADGE[status] ?? "secondary"}>
       {label}
-      <ChevronRight className="h-3 w-3" />
-    </span>
+      <ChevronRight className="size-3" />
+    </Badge>
   );
 }
 
