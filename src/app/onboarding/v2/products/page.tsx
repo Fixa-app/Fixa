@@ -58,7 +58,7 @@ function LineItemCard({
   return (
     <button
       onClick={onClick}
-      className="flex w-full animate-in items-center gap-4 rounded-xl bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-background"
+      className="flex w-full animate-in items-center gap-4 rounded-xl bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-muted/20 hover:ring-1 hover:ring-border"
       style={{
         animationDelay: `${index * 50}ms`,
         animationDuration: "300ms",
