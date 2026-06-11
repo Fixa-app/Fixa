@@ -82,7 +82,7 @@ function InfoCard({
   return (
     <button
       onClick={onClick}
-      className="flex w-full animate-in items-center gap-4 rounded-xl bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-background"
+      className="group flex w-full animate-in items-center gap-4 rounded-xl bg-card p-5 text-left transition-all fade-in slide-in-from-bottom-2 hover:bg-background"
       style={{
         animationDelay: `${delay}ms`,
         animationDuration: "300ms",
@@ -110,11 +110,11 @@ function InfoCard({
         </div>
       </div>
       {hasData ? (
-        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground transition-colors group-hover:bg-muted/80">
           <Pencil className="size-4" strokeWidth={2} />
         </div>
       ) : (
-        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30">
+        <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30 transition-colors group-hover:bg-primary/90">
           <Plus className="size-6" strokeWidth={3} />
         </div>
       )}
