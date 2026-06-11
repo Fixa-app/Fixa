@@ -59,17 +59,22 @@ export function DashboardSidebar({}: {
   const inSettings = pathname.startsWith("/dashboard/settings");
   const currentTab = searchParams.get("tab") ?? "company";
   const showPanel = inSettings && !collapsed;
+  // Labels are hidden (faded) when collapsed or behind the settings panel.
+  const labelHidden = collapsed || inSettings;
+  const labelClass = `flex-1 min-w-0 truncate transition-opacity duration-200 ${
+    labelHidden ? "pointer-events-none opacity-0" : ""
+  }`;
 
   return (
     <aside
-      className={`sticky top-0 z-30 hidden h-screen shrink-0 flex-col border-r border-border/50 bg-background lg:flex ${
-        collapsed ? "w-[72px]" : "w-64"
+      className={`sticky top-0 z-30 hidden h-screen shrink-0 flex-col border-r border-border/50 bg-background transition-[width] duration-300 ease-out lg:flex ${
+        collapsed ? "w-16" : "w-64"
       }`}
     >
       {/* Brand */}
       <div
         className={`flex h-16 items-center overflow-hidden ${
-          collapsed ? "justify-center px-2" : "px-4"
+          collapsed ? "px-3" : "px-4"
         }`}
       >
         <Link href="/dashboard" aria-label="Fixa">
@@ -78,7 +83,7 @@ export function DashboardSidebar({}: {
             alt="Fixa"
             width={120}
             height={48}
-            className={collapsed ? "h-7 w-auto" : "h-10 w-auto"}
+            className={collapsed ? "h-8 w-auto max-w-none" : "h-10 w-auto"}
           />
         </Link>
       </div>
@@ -91,23 +96,17 @@ export function DashboardSidebar({}: {
           aria-expanded={createOpen}
           title={collapsed ? "Nieuw" : undefined}
           className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-            collapsed ? "justify-center" : ""
-          } ${
             createOpen
               ? "bg-hover text-foreground"
               : "text-foreground hover:bg-hover"
           }`}
         >
           <Plus
-            className={`size-4 shrink-0 transition-transform ${
+            className={`size-5 shrink-0 transition-transform ${
               createOpen ? "rotate-45" : ""
             }`}
           />
-          {!collapsed && (
-            <span className={`flex-1 text-left ${inSettings ? "invisible" : ""}`}>
-              Nieuw
-            </span>
-          )}
+          <span className={`${labelClass} text-left`}>Nieuw</span>
         </button>
 
         {createOpen && (
@@ -159,8 +158,6 @@ export function DashboardSidebar({}: {
                   href={item.href}
                   title={collapsed ? item.label : undefined}
                   className={`group/nav relative flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-                    collapsed ? "justify-center" : ""
-                  } ${
                     item.comingSoon
                       ? "pointer-events-none text-muted-foreground"
                       : active
@@ -168,20 +165,16 @@ export function DashboardSidebar({}: {
                         : "text-foreground hover:bg-hover"
                   }`}
                 >
-                  <Icon className="size-4 shrink-0" />
-                  {!collapsed && (
-                    <span className={`flex-1 ${inSettings ? "invisible" : ""}`}>
-                      {item.label}
-                    </span>
-                  )}
-                  {!collapsed && !inSettings && item.comingSoon && (
+                  <Icon className="size-5 shrink-0" />
+                  <span className={labelClass}>{item.label}</span>
+                  {!labelHidden && item.comingSoon && (
                     <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                       binnenkort
                     </span>
                   )}
                   {/* Name tooltip — when labels are hidden (collapsed or settings) */}
-                  {(collapsed || inSettings) && (
-                    <span className="pointer-events-none absolute top-1/2 left-10 z-30 hidden -translate-y-1/2 rounded-lg bg-foreground px-2.5 py-1 text-sm font-medium whitespace-nowrap text-background shadow-lg group-hover/nav:block">
+                  {labelHidden && (
+                    <span className="pointer-events-none absolute top-1/2 left-12 z-30 hidden -translate-y-1/2 rounded-lg bg-foreground px-2.5 py-1 text-sm font-medium whitespace-nowrap text-background shadow-lg group-hover/nav:block">
                       {item.label}
                     </span>
                   )}
@@ -198,9 +191,7 @@ export function DashboardSidebar({}: {
           type="button"
           onClick={toggleCollapsed}
           aria-label={collapsed ? "Menu uitklappen" : "Menu inklappen"}
-          className={`flex w-full items-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-hover hover:text-foreground ${
-            collapsed ? "justify-center" : ""
-          }`}
+          className="flex w-full items-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-hover hover:text-foreground"
         >
           {collapsed ? (
             <ArrowRight className="size-5 shrink-0" />
