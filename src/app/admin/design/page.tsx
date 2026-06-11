@@ -213,9 +213,9 @@ const palette: Swatch[] = [
     textOn: "var(--foreground)",
   },
   {
-    name: "card surface",
+    name: "hover",
     hex: "#ECEBE6",
-    use: "Raised cards, drawers, dialogs",
+    use: "Hover surface — slightly darker than the background",
     textOn: "var(--foreground)",
   },
   {
@@ -608,7 +608,7 @@ function ComponentShowcase() {
         note="Detail card used across the onboarding flow — reduced-weight label over the heavy value, with a per-row action: grey edit (pencil) when filled, solid primary add (plus) when empty. White cards on a surface; the whole card lightens on hover."
       >
         <div className="flex max-w-md flex-col gap-3 rounded-2xl bg-background p-5">
-          <div className="group flex w-full items-center gap-4 rounded-xl bg-card p-5 text-left transition-all hover:bg-muted/20 hover:ring-1 hover:ring-border">
+          <div className="group flex w-full items-center gap-4 rounded-xl bg-card p-5 text-left transition-all hover:bg-hover">
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium text-muted-foreground">
                 Bedrijf
@@ -621,7 +621,7 @@ function ComponentShowcase() {
               <Pencil className="size-4" strokeWidth={2} />
             </div>
           </div>
-          <div className="group flex w-full items-center gap-4 rounded-xl bg-card p-5 text-left transition-all hover:bg-muted/20 hover:ring-1 hover:ring-border">
+          <div className="group flex w-full items-center gap-4 rounded-xl bg-card p-5 text-left transition-all hover:bg-hover">
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium text-muted-foreground">
                 KVK-nummer

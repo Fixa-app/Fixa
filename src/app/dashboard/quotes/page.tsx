@@ -227,7 +227,7 @@ function QuotesContent() {
                     router.push(`/dashboard/quotes/${quote.id}`)
                   }
                   aria-label={`Quote from ${quote.client_name}, status ${QUOTE_STATUS_LABELS[quote.status]}, total ${formatCurrency(quote.total_amount)}`}
-                  className="flex w-full items-center justify-between gap-4 rounded-xl bg-card p-4 text-left transition-all hover:bg-muted/20 hover:ring-1 hover:ring-border active:scale-[0.99]"
+                  className="flex w-full items-center justify-between gap-4 rounded-xl bg-card p-4 text-left transition-all hover:bg-hover active:scale-[0.99]"
                   style={{
                     opacity: visible ? 1 : 0,
                     transform: visible ? "translateY(0)" : "translateY(4px)",
