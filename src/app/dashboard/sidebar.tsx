@@ -3,15 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  FileText,
-  Inbox,
-  Plus,
-  Receipt,
-  Rocket,
-  Users,
-  Wrench,
-} from "lucide-react";
+import { FileText, Inbox, Plus, Receipt, Users, Wrench } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
 
@@ -69,26 +61,6 @@ export function DashboardSidebar({
         </Link>
       </div>
 
-      {/* Onboarding */}
-      {onboardingCompleted < onboardingTotal && (
-        <div className="px-3 py-3">
-          <Link
-            href="/dashboard/onboarding"
-            className={`flex items-center justify-between gap-2 rounded-xl border border-primary/30 px-3 py-2.5 text-primary transition-colors hover:bg-primary/10 ${
-              isActive("/dashboard/onboarding") ? "bg-primary/10" : "bg-primary/5"
-            }`}
-          >
-            <span className="flex items-center gap-2 text-sm font-bold">
-              <Rocket className="size-4 shrink-0" />
-              Aan de slag
-            </span>
-            <span className="text-sm font-bold">
-              {onboardingCompleted}/{onboardingTotal}
-            </span>
-          </Link>
-        </div>
-      )}
-
       {/* Create */}
       <div className="relative px-3 pt-4">
         <button
@@ -138,7 +110,7 @@ export function DashboardSidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4 pt-2">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4 pt-1">
         {NAV_SECTIONS.map((section, i) => (
           <div key={section.title ?? `top-${i}`} className="space-y-1">
             {section.title && (
