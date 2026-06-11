@@ -45,18 +45,28 @@ export function DashboardSidebar({
       : pathname === href || pathname.startsWith(href + "/");
   const firstName = userName.split(" ")[0] || userName;
   const [createOpen, setCreateOpen] = useState(false);
+  // Collapse to an icon-only rail inside the settings section (sub-nav lives there).
+  const collapsed = pathname.startsWith("/dashboard/settings");
 
   return (
-    <aside className="sticky top-0 z-30 hidden h-screen w-64 shrink-0 flex-col border-r border-border/50 bg-background lg:flex">
+    <aside
+      className={`sticky top-0 z-30 hidden h-screen shrink-0 flex-col border-r border-border/50 bg-background lg:flex ${
+        collapsed ? "w-[72px]" : "w-64"
+      }`}
+    >
       {/* Brand */}
-      <div className="flex h-16 items-center px-4">
-        <Link href="/dashboard">
+      <div
+        className={`flex h-16 items-center overflow-hidden ${
+          collapsed ? "justify-center px-2" : "px-4"
+        }`}
+      >
+        <Link href="/dashboard" aria-label="Fixa">
           <Image
             src="/fixa-logo.svg"
             alt="Fixa"
             width={120}
             height={48}
-            className="h-10 w-auto"
+            className={collapsed ? "h-7 w-auto" : "h-10 w-auto"}
           />
         </Link>
       </div>
@@ -67,7 +77,10 @@ export function DashboardSidebar({
           type="button"
           onClick={() => setCreateOpen((v) => !v)}
           aria-expanded={createOpen}
+          title={collapsed ? "Nieuw" : undefined}
           className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+            collapsed ? "justify-center" : ""
+          } ${
             createOpen
               ? "bg-foreground/[0.06] text-foreground"
               : "text-foreground hover:text-foreground/70"
@@ -78,7 +91,7 @@ export function DashboardSidebar({
               createOpen ? "rotate-45" : ""
             }`}
           />
-          <span className="flex-1 text-left">Nieuw</span>
+          {!collapsed && <span className="flex-1 text-left">Nieuw</span>}
         </button>
 
         {createOpen && (
@@ -128,7 +141,10 @@ export function DashboardSidebar({
                 <Link
                   key={item.href}
                   href={item.href}
+                  title={collapsed ? item.label : undefined}
                   className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+                    collapsed ? "justify-center" : ""
+                  } ${
                     item.comingSoon
                       ? "pointer-events-none text-muted-foreground"
                       : active
@@ -137,8 +153,8 @@ export function DashboardSidebar({
                   }`}
                 >
                   <Icon className="size-4 shrink-0" />
-                  <span className="flex-1">{item.label}</span>
-                  {item.comingSoon && (
+                  {!collapsed && <span className="flex-1">{item.label}</span>}
+                  {!collapsed && item.comingSoon && (
                     <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                       binnenkort
                     </span>
@@ -154,7 +170,10 @@ export function DashboardSidebar({
       <div className="border-t border-border p-3">
         <Link
           href="/dashboard/account"
+          title={collapsed ? firstName : undefined}
           className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
+            collapsed ? "justify-center" : ""
+          } ${
             isActive("/dashboard/account")
               ? "bg-card"
               : "hover:bg-foreground/[0.06]"
@@ -163,16 +182,18 @@ export function DashboardSidebar({
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
             {(firstName[0] ?? "?").toUpperCase()}
           </span>
-          <div className="min-w-0">
-            <p className="truncate text-base font-bold text-foreground">
-              {firstName}
-            </p>
-            {role && (
-              <p className="truncate text-sm text-muted-foreground">
-                {ROLE_LABELS[role] ?? role}
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="truncate text-base font-bold text-foreground">
+                {firstName}
               </p>
-            )}
-          </div>
+              {role && (
+                <p className="truncate text-sm text-muted-foreground">
+                  {ROLE_LABELS[role] ?? role}
+                </p>
+              )}
+            </div>
+          )}
         </Link>
       </div>
     </aside>

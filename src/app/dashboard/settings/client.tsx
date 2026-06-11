@@ -177,21 +177,49 @@ export function SettingsClient({
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Sticky header + tabs */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border shadow-sm">
-        <div className="px-4 pt-6 pb-0 md:px-10">
-          <h1 className="font-display text-3xl font-bold mb-4">Instellingen</h1>
-          <div role="tablist" aria-label="Instellingen navigatie" className="flex gap-0 overflow-x-auto">
-            {tabs.map(tab => (
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      {/* Sub-menu navigation panel (desktop) */}
+      <nav
+        aria-label="Instellingen navigatie"
+        className="hidden w-56 shrink-0 flex-col gap-0.5 border-r border-border/50 px-4 py-6 lg:flex"
+      >
+        <h1 className="px-3 pb-3 font-display text-xl font-medium tracking-tight">
+          Instellingen
+        </h1>
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            aria-current={activeTab === tab.key ? "page" : undefined}
+            onClick={() => setActiveTab(tab.key)}
+            className={`rounded-lg px-3 py-2 text-left text-base font-bold transition-colors ${
+              activeTab === tab.key
+                ? "bg-hover text-foreground"
+                : "text-foreground hover:text-foreground/70"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Header + tabs (mobile) */}
+        <div className="border-b border-border px-4 pt-6 lg:hidden">
+          <h1 className="mb-4 font-display text-3xl font-bold">Instellingen</h1>
+          <div
+            role="tablist"
+            aria-label="Instellingen navigatie"
+            className="flex gap-0 overflow-x-auto"
+          >
+            {tabs.map((tab) => (
               <button
                 key={tab.key}
                 role="tab"
                 aria-selected={activeTab === tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                className={`border-b-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors ${
                   activeTab === tab.key
-                    ? "border-primary text-foreground font-bold"
+                    ? "border-primary font-bold text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -200,10 +228,9 @@ export function SettingsClient({
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Scrollable content */}
-      <div className="flex-1 px-4 py-8 md:px-10 mx-auto w-full max-w-2xl pb-32">
+        {/* Scrollable content */}
+        <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 pb-32 lg:px-10">
 
         {/* Company info tab */}
         {activeTab === "company" && (
@@ -464,6 +491,7 @@ export function SettingsClient({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
