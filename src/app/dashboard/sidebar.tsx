@@ -4,8 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FileText, Inbox, Plus, Receipt, Users, Wrench } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
+import { SETTINGS_NAV } from "./settings/nav";
 
 const ROLE_LABELS: Record<string, string> = {
   owner: "Eigenaar",
@@ -22,13 +23,8 @@ const CREATE_ITEMS = [
 ];
 
 export function DashboardSidebar({
-  companies,
-  activeCompanyId,
-  companyName,
   userName,
   role,
-  onboardingCompleted,
-  onboardingTotal,
 }: {
   companies: { id: string; name: string }[];
   activeCompanyId: string;
@@ -39,34 +35,29 @@ export function DashboardSidebar({
   onboardingTotal: number;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isActive = (href: string) =>
     href === "/dashboard"
       ? pathname === "/dashboard"
       : pathname === href || pathname.startsWith(href + "/");
   const firstName = userName.split(" ")[0] || userName;
   const [createOpen, setCreateOpen] = useState(false);
-  // Collapse to an icon-only rail inside the settings section (sub-nav lives there).
-  const collapsed = pathname.startsWith("/dashboard/settings");
+
+  // When in settings, a secondary panel slides over the primary names.
+  const inSettings = pathname.startsWith("/dashboard/settings");
+  const currentTab = searchParams.get("tab") ?? "company";
 
   return (
-    <aside
-      className={`sticky top-0 z-30 hidden h-screen shrink-0 flex-col border-r border-border/50 bg-background lg:flex ${
-        collapsed ? "w-[72px]" : "w-64"
-      }`}
-    >
+    <aside className="sticky top-0 z-30 hidden h-screen w-64 shrink-0 flex-col border-r border-border/50 bg-background lg:flex">
       {/* Brand */}
-      <div
-        className={`flex h-16 items-center overflow-hidden ${
-          collapsed ? "justify-center px-2" : "px-4"
-        }`}
-      >
+      <div className="flex h-16 items-center px-4">
         <Link href="/dashboard" aria-label="Fixa">
           <Image
             src="/fixa-logo.svg"
             alt="Fixa"
             width={120}
             height={48}
-            className={collapsed ? "h-7 w-auto" : "h-10 w-auto"}
+            className="h-10 w-auto"
           />
         </Link>
       </div>
@@ -77,10 +68,7 @@ export function DashboardSidebar({
           type="button"
           onClick={() => setCreateOpen((v) => !v)}
           aria-expanded={createOpen}
-          title={collapsed ? "Nieuw" : undefined}
           className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-            collapsed ? "justify-center" : ""
-          } ${
             createOpen
               ? "bg-foreground/[0.06] text-foreground"
               : "text-foreground hover:text-foreground/70"
@@ -91,7 +79,7 @@ export function DashboardSidebar({
               createOpen ? "rotate-45" : ""
             }`}
           />
-          {!collapsed && <span className="flex-1 text-left">Nieuw</span>}
+          <span className="flex-1 text-left">Nieuw</span>
         </button>
 
         {createOpen && (
@@ -141,22 +129,25 @@ export function DashboardSidebar({
                 <Link
                   key={item.href}
                   href={item.href}
-                  title={collapsed ? item.label : undefined}
-                  className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-                    collapsed ? "justify-center" : ""
-                  } ${
+                  className={`group/nav relative flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
                     item.comingSoon
                       ? "pointer-events-none text-muted-foreground"
                       : active
-                      ? "bg-card text-foreground"
-                      : "text-foreground hover:text-foreground/70"
+                        ? "bg-card text-foreground"
+                        : "text-foreground hover:text-foreground/70"
                   }`}
                 >
                   <Icon className="size-4 shrink-0" />
-                  {!collapsed && <span className="flex-1">{item.label}</span>}
-                  {!collapsed && item.comingSoon && (
+                  <span className="flex-1">{item.label}</span>
+                  {item.comingSoon && (
                     <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                       binnenkort
+                    </span>
+                  )}
+                  {/* Name tooltip — shown when the secondary panel covers the labels */}
+                  {inSettings && (
+                    <span className="pointer-events-none absolute top-1/2 left-10 z-30 hidden -translate-y-1/2 rounded-lg bg-foreground px-2.5 py-1 text-sm font-medium whitespace-nowrap text-background shadow-lg group-hover/nav:block">
+                      {item.label}
                     </span>
                   )}
                 </Link>
@@ -170,10 +161,7 @@ export function DashboardSidebar({
       <div className="border-t border-border p-3">
         <Link
           href="/dashboard/account"
-          title={collapsed ? firstName : undefined}
           className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
-            collapsed ? "justify-center" : ""
-          } ${
             isActive("/dashboard/account")
               ? "bg-card"
               : "hover:bg-foreground/[0.06]"
@@ -182,19 +170,46 @@ export function DashboardSidebar({
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
             {(firstName[0] ?? "?").toUpperCase()}
           </span>
-          {!collapsed && (
-            <div className="min-w-0">
-              <p className="truncate text-base font-bold text-foreground">
-                {firstName}
+          <div className="min-w-0">
+            <p className="truncate text-base font-bold text-foreground">
+              {firstName}
+            </p>
+            {role && (
+              <p className="truncate text-sm text-muted-foreground">
+                {ROLE_LABELS[role] ?? role}
               </p>
-              {role && (
-                <p className="truncate text-sm text-muted-foreground">
-                  {ROLE_LABELS[role] ?? role}
-                </p>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </Link>
+      </div>
+
+      {/* Secondary panel — slides in over the primary names, icons stay visible */}
+      <div
+        aria-hidden={!inSettings}
+        className={`absolute top-16 right-0 bottom-0 left-14 z-20 flex flex-col bg-background transition-transform duration-300 ease-out ${
+          inSettings ? "translate-x-0" : "pointer-events-none translate-x-full"
+        }`}
+      >
+        <div className="flex h-12 items-center px-3">
+          <h2 className="font-display text-xl font-medium tracking-tight">
+            Instellingen
+          </h2>
+        </div>
+        <div className="flex flex-col gap-0.5 px-3">
+          {SETTINGS_NAV.map(({ key, label }) => (
+            <Link
+              key={key}
+              href={`/dashboard/settings?tab=${key}`}
+              className={`rounded-lg px-3 py-2 text-base font-bold transition-colors ${
+                currentTab === key
+                  ? "bg-hover text-foreground"
+                  : "text-foreground hover:text-foreground/70"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
       </div>
     </aside>
   );

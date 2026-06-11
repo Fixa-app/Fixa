@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Pencil, Trash2, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { SETTINGS_NAV, type SettingsTab } from "./nav";
 
-type Tab = "company" | "products" | "templates" | "billing";
+type Tab = SettingsTab;
 
 type CompanyData = {
   id: string;
@@ -50,9 +51,8 @@ export function SettingsClient({
   
   
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<Tab>(
-    (searchParams.get("tab") as Tab) ?? "company"
-  );
+  const router = useRouter();
+  const activeTab = (searchParams.get("tab") as Tab) ?? "company";
   const [logoUrl, setLogoUrl] = useState<string | null>(initialCompany?.logo_url ?? null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -169,41 +169,13 @@ export function SettingsClient({
     setEditingQuoteNumber(false);
   }
 
-  const tabs: { key: Tab; label: string }[] = [
-    { key: "company", label: "Bedrijfsgegevens" },
-    { key: "products", label: "Producten & diensten" },
-    { key: "templates", label: "Templates" },
-    { key: "billing", label: "Billing" },
-  ];
+  const selectTab = (key: Tab) =>
+    router.push(`/dashboard/settings?tab=${key}`, { scroll: false });
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
-      {/* Sub-menu navigation panel (desktop) */}
-      <nav
-        aria-label="Instellingen navigatie"
-        className="hidden w-56 shrink-0 flex-col gap-0.5 border-r border-border/50 px-4 py-6 lg:flex"
-      >
-        <h1 className="px-3 pb-3 font-display text-xl font-medium tracking-tight">
-          Instellingen
-        </h1>
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            aria-current={activeTab === tab.key ? "page" : undefined}
-            onClick={() => setActiveTab(tab.key)}
-            className={`rounded-lg px-3 py-2 text-left text-base font-bold transition-colors ${
-              activeTab === tab.key
-                ? "bg-hover text-foreground"
-                : "text-foreground hover:text-foreground/70"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
-
+    <div className="flex min-h-screen flex-col">
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Header + tabs (mobile) */}
+        {/* Header + tabs (mobile — desktop uses the sidebar sub-nav) */}
         <div className="border-b border-border px-4 pt-6 lg:hidden">
           <h1 className="mb-4 font-display text-3xl font-bold">Instellingen</h1>
           <div
@@ -211,12 +183,12 @@ export function SettingsClient({
             aria-label="Instellingen navigatie"
             className="flex gap-0 overflow-x-auto"
           >
-            {tabs.map((tab) => (
+            {SETTINGS_NAV.map((tab) => (
               <button
                 key={tab.key}
                 role="tab"
                 aria-selected={activeTab === tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => selectTab(tab.key)}
                 className={`border-b-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors ${
                   activeTab === tab.key
                     ? "border-primary font-bold text-foreground"
