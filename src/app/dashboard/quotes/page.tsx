@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, ChevronDown, Check } from "lucide-react";
+import { Plus, ChevronDown, Check, MoreHorizontal } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import {
@@ -151,70 +151,75 @@ function QuotesContent() {
 
   return (
     <>
-      <div className="px-4 py-8 md:px-10">
-        <h1 className="font-display text-3xl font-bold mb-6">Offertes</h1>
+      <div className="px-4 py-8 lg:px-6">
+        {/* Title row */}
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <h1 className="font-display text-3xl font-medium leading-[1.05] tracking-tight">
+            Offertes
+          </h1>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => router.push("/dashboard/quotes/new")}>
+              <Plus className="size-4" />
+              Nieuwe offerte
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Meer opties">
+              <MoreHorizontal className="size-5" />
+            </Button>
+          </div>
+        </div>
 
         {/* Filter + Sort bar */}
-        <div className="mb-4 flex items-center gap-1">
-          <button
-  onClick={() => setFilterOpen(true)}
-  className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
->
-  <span className="relative text-muted-foreground">
-    Filter:
-    {filter !== "all" && (
-      <span className="absolute -top-0.5 -right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-    )}
-  </span>
-  <span className="font-bold">{filterLabel}</span>
-  <ChevronDown className="h-3 w-3 text-muted-foreground" />
-</button>
-          <button
-            onClick={() => setSortOpen(true)}
-            className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted"
+        <div className="mb-4 flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setFilterOpen(true)}
           >
-            <span className="text-muted-foreground">Sort:</span>
-            <span className="font-bold">{SORT_LABELS[sort]}</span>
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
-          </button>
+            <span className="relative font-normal text-muted-foreground group-hover/button:text-white">
+              Filter:
+              {filter !== "all" && (
+                <span className="absolute -top-0.5 -right-1.5 size-1.5 rounded-full bg-primary" />
+              )}
+            </span>
+            <span>{filterLabel}</span>
+            <ChevronDown className="size-3 text-muted-foreground group-hover/button:text-white" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setSortOpen(true)}>
+            <span className="font-normal text-muted-foreground group-hover/button:text-white">
+              Sort:
+            </span>
+            <span>{SORT_LABELS[sort]}</span>
+            <ChevronDown className="size-3 text-muted-foreground group-hover/button:text-white" />
+          </Button>
         </div>
 
         {/* List card */}
         <div className="rounded-2xl bg-muted/50 p-5">
-          <div className="mb-4 flex items-start justify-between">
-            <div>
-              <h2 className="font-display text-2xl font-bold">
-                {filter === "all" ? "All quotes" : "Filtered quotes"}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {filtered.length}{" "}
-                {filtered.length === 1 ? "result" : "results"}
-              </p>
-            </div>
-            <button
-              onClick={() => router.push("/dashboard/quotes/new")}
-              aria-label="Create new quote"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+          <div className="mb-4 flex items-baseline gap-2">
+            <h2 className="text-xl font-semibold tracking-tight">
+              {filter === "all" ? "Alle offertes" : "Gefilterde offertes"}
+            </h2>
+            <p className="text-base text-muted-foreground">
+              {filtered.length}{" "}
+              {filtered.length === 1 ? "resultaat" : "resultaten"}
+            </p>
           </div>
 
           {filtered.length === 0 ? (
             <div className="py-6 text-center">
-              <p className="text-sm text-muted-foreground mb-3">
-                No quotes found for this filter.
+              <p className="mb-3 text-sm text-muted-foreground">
+                Geen offertes gevonden voor dit filter.
               </p>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setFilter("all")}
               >
-                Clear filter
+                Filter wissen
               </Button>
             </div>
           ) : (
-            <div>
+            <div className="space-y-2">
               {filtered.map((quote, i) => (
                 <button
                   key={quote.id}
@@ -222,9 +227,7 @@ function QuotesContent() {
                     router.push(`/dashboard/quotes/${quote.id}`)
                   }
                   aria-label={`Quote from ${quote.client_name}, status ${QUOTE_STATUS_LABELS[quote.status]}, total ${formatCurrency(quote.total_amount)}`}
-                  className={`flex w-full items-center justify-between gap-4 rounded-xl px-3 py-4 text-left transition-colors hover:bg-background active:scale-[0.99] ${
-                    i % 2 !== 0 ? "bg-background/50" : ""
-                  }`}
+                  className="flex w-full items-center justify-between gap-4 rounded-xl bg-card p-4 text-left transition-colors hover:bg-muted/20 active:scale-[0.99]"
                   style={{
                     opacity: visible ? 1 : 0,
                     transform: visible ? "translateY(0)" : "translateY(4px)",

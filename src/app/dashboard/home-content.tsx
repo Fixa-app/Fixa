@@ -190,8 +190,10 @@ export function HomeContent({
   const invoiceRows = getInvoiceDashboardRows(MOCK_INVOICES);
 
   return (
-    <div className="space-y-4 px-4 py-8 md:px-10">
-      <h1 className="font-display text-3xl font-bold">Overzicht</h1>
+    <div className="space-y-4 px-4 py-8 lg:px-6">
+      <h1 className="font-display text-3xl font-medium leading-[1.05] tracking-tight">
+        Overzicht
+      </h1>
 
       {onboardingCompleted < onboardingTotal && (
         <Link
