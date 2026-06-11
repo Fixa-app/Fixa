@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { parseQuoteWithAI, type ParsedQuoteData } from "@/lib/parse-quote-ai";
 
@@ -130,8 +130,12 @@ export default function OnboardingUploadPage() {
           }`}
         >
           <div
-            className={`flex h-16 w-16 items-center justify-center rounded-full ${
-              uploading ? "bg-muted" : success ? "bg-green-500/20" : "bg-muted"
+            className={`flex size-16 items-center justify-center rounded-2xl ${
+              uploading
+                ? "bg-muted"
+                : success
+                  ? "bg-green-500/20"
+                  : "bg-primary text-primary-foreground shadow-sm shadow-primary/30"
             }`}
           >
             {uploading ? (
@@ -155,33 +159,9 @@ export default function OnboardingUploadPage() {
                 />
               </svg>
             ) : success ? (
-              <svg
-                className="h-8 w-8 text-green-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              <Check className="size-8 text-green-600" strokeWidth={3} />
             ) : (
-              <svg
-                className="h-8 w-8 text-foreground"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <Plus className="size-8" strokeWidth={3} />
             )}
           </div>
           <p className="mt-4 text-xl font-semibold text-foreground">
