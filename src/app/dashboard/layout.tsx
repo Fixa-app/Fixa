@@ -87,7 +87,7 @@ export default async function DashboardLayout({
         onboardingCompleted={completedCount}
         onboardingTotal={ONBOARDING_TOTAL}
       />
-      <div className="flex flex-1 flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col bg-card">
         <MobileNav
           companyName={companyName}
           userName={userName}
