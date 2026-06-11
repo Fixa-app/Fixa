@@ -246,26 +246,14 @@ function CompanyInfoContent() {
     <>
       <div className="flex min-h-screen flex-col">
         <div className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-6 pb-32">
-          {/* Progress indicator with back button */}
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleBack}
-              className="flex-shrink-0 text-muted-foreground hover:text-foreground"
-              aria-label="Terug naar upload"
-            >
-              <ArrowLeft className="size-5" />
-            </Button>
-
-            <div className="flex flex-1 items-center justify-between">
-              <div className="flex-1">
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                  <div className="h-full w-2/4 bg-primary transition-all" />
-                </div>
+          {/* Progress indicator */}
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full w-2/4 bg-primary transition-all" />
               </div>
-              <span className="ml-4 text-sm text-muted-foreground">2/4</span>
             </div>
+            <span className="ml-4 text-sm text-muted-foreground">2/4</span>
           </div>
 
           {/* Header + subtitle (same style as "Upload een offerte") */}
@@ -321,7 +309,15 @@ function CompanyInfoContent() {
         </div>
 
         <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-          <div className="mx-auto flex w-full max-w-2xl justify-end p-6">
+          <div className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 p-6">
+            <Button
+              variant="link"
+              className="gap-1.5 px-0 text-base font-bold text-foreground"
+              onClick={handleBack}
+            >
+              <ArrowLeft className="size-4" />
+              Terug
+            </Button>
             <Button
               className="h-12 rounded-xl px-6 text-base font-bold"
               onClick={handleContinue}
