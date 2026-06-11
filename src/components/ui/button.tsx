@@ -21,9 +21,9 @@ const buttonVariants = cva(
         // Secondary — black. Lighter/warmer on hover (towards surface-dark).
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-surface-dark",
-        // Tertiary — outline. Thicker border, fills with surface-dark on hover.
+        // Tertiary — outline. Fills with surface-dark on hover.
         outline:
-          "border-2 border-border bg-background hover:border-surface-dark hover:bg-surface-dark hover:text-white aria-expanded:border-surface-dark aria-expanded:bg-surface-dark aria-expanded:text-white",
+          "border-border bg-background hover:border-surface-dark hover:bg-surface-dark hover:text-white aria-expanded:border-surface-dark aria-expanded:bg-surface-dark aria-expanded:text-white",
         // Text link — black, at the button's text size.
         link: "h-auto rounded-none px-0 text-foreground underline-offset-4 hover:underline",
         // Utility only: bare/transparent (icon, back, close, header).
