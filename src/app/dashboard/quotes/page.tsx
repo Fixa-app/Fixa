@@ -175,7 +175,13 @@ function QuotesContent() {
                 <span className="absolute -top-0.5 -right-1.5 size-1.5 rounded-full bg-primary" />
               )}
             </span>
-            <span>{filterLabel}</span>
+            {filter === "all" ? (
+              <span>{filterLabel}</span>
+            ) : (
+              <Badge variant={STATUS_BADGE[filter] ?? "secondary"}>
+                {filterLabel}
+              </Badge>
+            )}
             <ChevronDown className="size-3 text-muted-foreground group-hover/button:text-white" />
           </Button>
           <Button variant="outline" size="sm" onClick={() => setSortOpen(true)}>
@@ -265,9 +271,15 @@ function QuotesContent() {
                     }}
                     className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-colors hover:bg-muted"
                   >
-                    <span className={filter === opt.value ? "font-bold" : ""}>
-                      {opt.label}
-                    </span>
+                    {opt.value === "all" ? (
+                      <span className={filter === opt.value ? "font-bold" : ""}>
+                        {opt.label}
+                      </span>
+                    ) : (
+                      <Badge variant={STATUS_BADGE[opt.value] ?? "secondary"}>
+                        {opt.label}
+                      </Badge>
+                    )}
                     {filter === opt.value && (
                       <Check className="h-4 w-4 text-primary" />
                     )}
