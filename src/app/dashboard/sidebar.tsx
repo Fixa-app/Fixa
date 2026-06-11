@@ -165,7 +165,7 @@ export function DashboardSidebar({
                     item.comingSoon
                       ? "pointer-events-none text-muted-foreground"
                       : active
-                      ? "bg-card text-foreground shadow-sm"
+                      ? "bg-card text-foreground"
                       : "text-foreground hover:text-foreground/70"
                   }`}
                 >
@@ -189,7 +189,7 @@ export function DashboardSidebar({
           href="/dashboard/account"
           className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
             isActive("/dashboard/account")
-              ? "bg-card shadow-sm"
+              ? "bg-card"
               : "hover:bg-foreground/[0.06]"
           }`}
         >
