@@ -3,7 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, ChevronRight, Rocket } from "lucide-react";
+import {
+  Plus,
+  ChevronRight,
+  Rocket,
+  Inbox,
+  FileText,
+  Hammer,
+  Receipt,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -47,6 +55,114 @@ function StatusPill({ status, label }: { status: string; label: string }) {
       {label}
       <ChevronRight className="size-3" />
     </Badge>
+  );
+}
+
+// Funnel overview across the four pipeline stages. Each stage uses one of the
+// brand accent colors for its top bar + icon.
+const WORKFLOW_STAGES = [
+  {
+    key: "requests",
+    label: "Aanvragen",
+    icon: Inbox,
+    barClass: "bg-teal",
+    iconClass: "text-teal",
+    count: 0,
+    amount: null,
+    stage: "Nieuw",
+    subs: [
+      ["Beoordeling klaar", 0],
+      ["Te laat", 0],
+    ],
+  },
+  {
+    key: "quotes",
+    label: "Offertes",
+    icon: FileText,
+    barClass: "bg-violet",
+    iconClass: "text-violet",
+    count: 0,
+    amount: null,
+    stage: "Goedgekeurd",
+    subs: [
+      ["Concept", 0],
+      ["Wijziging gevraagd", 0],
+    ],
+  },
+  {
+    key: "jobs",
+    label: "Opdrachten",
+    icon: Hammer,
+    barClass: "bg-burgundy",
+    iconClass: "text-burgundy",
+    count: 0,
+    amount: null,
+    stage: "Te factureren",
+    subs: [
+      ["Actief", 0],
+      ["Actie vereist", 0],
+    ],
+  },
+  {
+    key: "invoices",
+    label: "Facturen",
+    icon: Receipt,
+    barClass: "bg-primary-dark",
+    iconClass: "text-primary-dark",
+    count: 1,
+    amount: "€7.500",
+    stage: "Wacht op betaling",
+    subs: [
+      ["Concept", 0],
+      ["Achterstallig", 0],
+    ],
+  },
+] as const;
+
+function WorkflowSection() {
+  return (
+    <div className="space-y-4">
+      <h2 className="font-display text-2xl font-bold">Workflow</h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {WORKFLOW_STAGES.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div
+              key={s.key}
+              className="overflow-hidden rounded-2xl border border-border/60 bg-card"
+            >
+              <div className={`h-1.5 ${s.barClass}`} />
+              <div className="p-5">
+                <div className="flex items-center gap-2">
+                  <Icon className={`size-5 ${s.iconClass}`} />
+                  <span className="text-sm text-muted-foreground">
+                    {s.label}
+                  </span>
+                </div>
+                <div className="mt-4 flex items-baseline gap-2">
+                  <span className="font-display text-4xl font-bold leading-none">
+                    {s.count}
+                  </span>
+                  {s.amount && (
+                    <span className="text-sm text-muted-foreground">
+                      {s.amount}
+                    </span>
+                  )}
+                </div>
+                <h3 className="mt-4 text-base font-bold">{s.stage}</h3>
+                <div className="mt-2 space-y-1">
+                  {s.subs.map(([label, n]) => (
+                    <p key={label} className="text-sm text-muted-foreground">
+                      {label} ({n})
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -225,6 +341,8 @@ export function HomeContent({
           🎉 Je bedrijf is ingesteld. Welkom bij Fixa!
         </div>
       )}
+
+      <WorkflowSection />
 
       <DashboardSection
         title="Offertes"
