@@ -19,11 +19,36 @@ import { NAV_SECTIONS } from "./nav";
 import { SETTINGS_NAV } from "./settings/nav";
 
 const CREATE_ITEMS = [
-  { label: "Klant", icon: Users, href: "/dashboard/customers" },
-  { label: "Aanvraag", icon: Inbox, href: "#" },
-  { label: "Offerte", icon: FileText, href: "/dashboard/quotes/new" },
-  { label: "Opdracht", icon: Wrench, href: "#" },
-  { label: "Factuur", icon: Receipt, href: "/dashboard/invoices" },
+  {
+    label: "Klant",
+    icon: Users,
+    href: "/dashboard/customers",
+    color: "text-foreground",
+  },
+  {
+    label: "Aanvraag",
+    icon: Inbox,
+    href: "#",
+    color: "text-burgundy-bright",
+  },
+  {
+    label: "Offerte",
+    icon: FileText,
+    href: "/dashboard/quotes/new",
+    color: "text-primary",
+  },
+  {
+    label: "Opdracht",
+    icon: Wrench,
+    href: "#",
+    color: "text-violet-bright",
+  },
+  {
+    label: "Factuur",
+    icon: Receipt,
+    href: "/dashboard/invoices",
+    color: "text-teal-bright",
+  },
 ];
 
 // Styled flyout label shown on hover while the rail is collapsed. Portals to
@@ -149,7 +174,7 @@ export function DashboardSidebar({}: {
                 className="fixed inset-0 z-40 cursor-default"
               />
               <div className="absolute top-2 left-full z-50 ml-2 flex w-52 flex-col gap-0.5 rounded-2xl border border-border bg-card p-2 shadow-xl">
-                {CREATE_ITEMS.map(({ label, icon: Icon, href }) => (
+                {CREATE_ITEMS.map(({ label, icon: Icon, href, color }) => (
                   <Link
                     key={label}
                     href={href}
@@ -157,7 +182,7 @@ export function DashboardSidebar({}: {
                     className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/40"
                   >
                     <Icon
-                      className="size-5 shrink-0 text-foreground"
+                      className={`size-5 shrink-0 ${color}`}
                       strokeWidth={2}
                     />
                     <span className="text-base font-semibold text-foreground">
