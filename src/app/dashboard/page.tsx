@@ -1,7 +1,27 @@
+import { createClient } from "@/lib/supabase/server";
 import { getOnboardingProgress } from "./onboarding-progress";
 import { HomeContent } from "./home-content";
 
 export default async function DashboardPage() {
   const { completed, total } = await getOnboardingProgress();
-  return <HomeContent onboardingCompleted={completed} onboardingTotal={total} />;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const email = user?.email ?? "";
+  const firstName = email
+    ? email
+        .split("@")[0]
+        .split(/[._-]/)[0]
+        .replace(/^./, (c) => c.toUpperCase())
+    : "";
+
+  return (
+    <HomeContent
+      firstName={firstName}
+      onboardingCompleted={completed}
+      onboardingTotal={total}
+    />
+  );
 }

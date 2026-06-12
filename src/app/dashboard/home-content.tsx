@@ -164,14 +164,18 @@ function DashboardSection({
 }
 
 export function HomeContent({
+  firstName,
   onboardingCompleted,
   onboardingTotal,
 }: {
+  firstName: string;
   onboardingCompleted: number;
   onboardingTotal: number;
 }) {
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
+  // Default matches the request; corrected to the local time of day on mount.
+  const [greeting, setGreeting] = useState("Goedenavond");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -181,13 +185,21 @@ export function HomeContent({
     }
   }, []);
 
+  useEffect(() => {
+    const h = new Date().getHours();
+    setGreeting(
+      h < 12 ? "Goedemorgen" : h < 18 ? "Goedemiddag" : "Goedenavond",
+    );
+  }, []);
+
   const quoteRows = getQuoteDashboardRows(MOCK_QUOTES);
   const invoiceRows = getInvoiceDashboardRows(MOCK_INVOICES);
 
   return (
     <div className="space-y-4 px-4 py-8 lg:px-6">
       <h1 className="font-display text-3xl font-medium leading-[1.05] tracking-tight">
-        Overzicht
+        {greeting}
+        {firstName ? `, ${firstName}` : ""}
       </h1>
 
       {onboardingCompleted < onboardingTotal && (
