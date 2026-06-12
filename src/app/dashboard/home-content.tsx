@@ -119,7 +119,7 @@ function WorkflowSection() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="font-display text-2xl font-bold">Workflow</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Workflow</h2>
         <p className="text-sm text-muted-foreground">
           Overzicht van je pijplijn
         </p>
@@ -195,7 +195,7 @@ function DashboardSection({
     <div className="rounded-2xl bg-muted/50 p-5">
       <div className="mb-1 flex items-start justify-between">
         <div>
-          <h2 className="font-display text-2xl font-bold">{title}</h2>
+          <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
           <p className="text-sm text-muted-foreground">
             {rows.length > 0 ? "Jouw volgende acties" : ""}
           </p>
