@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Tooltip } from "@base-ui/react/tooltip";
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,6 +25,32 @@ const CREATE_ITEMS = [
   { label: "Opdracht", icon: Wrench, href: "#" },
   { label: "Factuur", icon: Receipt, href: "/dashboard/invoices" },
 ];
+
+// Styled flyout label shown on hover while the rail is collapsed. Portals to
+// the body so it escapes the nav's overflow clipping.
+function RailTooltip({
+  label,
+  show,
+  children,
+}: {
+  label: string;
+  show: boolean;
+  children: ReactElement;
+}) {
+  if (!show) return children;
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger render={children} />
+      <Tooltip.Portal>
+        <Tooltip.Positioner side="right" sideOffset={10} className="z-50">
+          <Tooltip.Popup className="rounded-lg bg-surface-dark px-2.5 py-1.5 text-sm font-semibold text-white shadow-md">
+            {label}
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  );
+}
 
 export function DashboardSidebar({}: {
   companies: { id: string; name: string }[];
@@ -65,6 +92,7 @@ export function DashboardSidebar({}: {
   }`;
 
   return (
+    <Tooltip.Provider delay={150}>
     <aside className="sticky top-0 z-30 hidden h-screen shrink-0 flex-row border-r border-border/50 bg-background lg:flex">
       {/* Primary column */}
       <div
@@ -91,24 +119,25 @@ export function DashboardSidebar({}: {
 
         {/* Create */}
         <div className="relative px-3 pt-4">
-          <button
-            type="button"
-            onClick={() => setCreateOpen((v) => !v)}
-            aria-expanded={createOpen}
-            title={primaryCollapsed ? "Nieuw" : undefined}
-            className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-              createOpen
-                ? "bg-hover text-foreground"
-                : "text-foreground hover:bg-hover"
-            }`}
-          >
-            <Plus
-              className={`size-5 shrink-0 transition-transform ${
-                createOpen ? "rotate-45" : ""
+          <RailTooltip label="Nieuw" show={primaryCollapsed && !createOpen}>
+            <button
+              type="button"
+              onClick={() => setCreateOpen((v) => !v)}
+              aria-expanded={createOpen}
+              className={`flex w-full items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+                createOpen
+                  ? "bg-hover text-foreground"
+                  : "text-foreground hover:bg-hover"
               }`}
-            />
-            <span className={`${labelClass} text-left`}>Nieuw</span>
-          </button>
+            >
+              <Plus
+                className={`size-5 shrink-0 transition-transform ${
+                  createOpen ? "rotate-45" : ""
+                }`}
+              />
+              <span className={`${labelClass} text-left`}>Nieuw</span>
+            </button>
+          </RailTooltip>
 
           {createOpen && (
             <>
@@ -154,26 +183,30 @@ export function DashboardSidebar({}: {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 return (
-                  <Link
+                  <RailTooltip
                     key={item.href}
-                    href={item.href}
-                    title={primaryCollapsed ? item.label : undefined}
-                    className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
-                      item.comingSoon
-                        ? "pointer-events-none text-muted-foreground"
-                        : active
-                          ? "bg-hover text-foreground"
-                          : "text-foreground hover:bg-hover"
-                    }`}
+                    label={item.label}
+                    show={primaryCollapsed}
                   >
-                    <Icon className="size-5 shrink-0" />
-                    <span className={labelClass}>{item.label}</span>
-                    {!primaryCollapsed && item.comingSoon && (
-                      <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                        binnenkort
-                      </span>
-                    )}
-                  </Link>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-3 rounded-lg p-2 text-base font-bold transition-colors ${
+                        item.comingSoon
+                          ? "pointer-events-none text-muted-foreground"
+                          : active
+                            ? "bg-hover text-foreground"
+                            : "text-foreground hover:bg-hover"
+                      }`}
+                    >
+                      <Icon className="size-5 shrink-0" />
+                      <span className={labelClass}>{item.label}</span>
+                      {!primaryCollapsed && item.comingSoon && (
+                        <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          binnenkort
+                        </span>
+                      )}
+                    </Link>
+                  </RailTooltip>
                 );
               })}
             </div>
@@ -227,5 +260,6 @@ export function DashboardSidebar({}: {
         </div>
       </div>
     </aside>
+    </Tooltip.Provider>
   );
 }
