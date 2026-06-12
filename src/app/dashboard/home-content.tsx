@@ -58,15 +58,14 @@ function StatusPill({ status, label }: { status: string; label: string }) {
   );
 }
 
-// Funnel overview across the four pipeline stages. Each stage uses one of the
-// brand accent colors for its top bar + icon.
+// Funnel overview across the four pipeline stages. The icon + label header on
+// each card uses a bright/primary brand accent.
 const WORKFLOW_STAGES = [
   {
     key: "requests",
     label: "Aanvragen",
     icon: Inbox,
-    barClass: "bg-teal",
-    iconClass: "text-teal",
+    accentClass: "text-teal-bright",
     count: 0,
     amount: null,
     stage: "Nieuw",
@@ -79,8 +78,7 @@ const WORKFLOW_STAGES = [
     key: "quotes",
     label: "Offertes",
     icon: FileText,
-    barClass: "bg-violet",
-    iconClass: "text-violet",
+    accentClass: "text-violet-bright",
     count: 0,
     amount: null,
     stage: "Goedgekeurd",
@@ -93,8 +91,7 @@ const WORKFLOW_STAGES = [
     key: "jobs",
     label: "Opdrachten",
     icon: Hammer,
-    barClass: "bg-burgundy",
-    iconClass: "text-burgundy",
+    accentClass: "text-burgundy-bright",
     count: 0,
     amount: null,
     stage: "Te factureren",
@@ -107,8 +104,7 @@ const WORKFLOW_STAGES = [
     key: "invoices",
     label: "Facturen",
     icon: Receipt,
-    barClass: "bg-primary-dark",
-    iconClass: "text-primary-dark",
+    accentClass: "text-primary",
     count: 1,
     amount: "€7.500",
     stage: "Wacht op betaling",
@@ -127,36 +123,30 @@ function WorkflowSection() {
         {WORKFLOW_STAGES.map((s) => {
           const Icon = s.icon;
           return (
-            <div
-              key={s.key}
-              className="overflow-hidden rounded-2xl border border-border/60 bg-card"
-            >
-              <div className={`h-1.5 ${s.barClass}`} />
-              <div className="p-5">
-                <div className="flex items-center gap-2">
-                  <Icon className={`size-5 ${s.iconClass}`} />
+            <div key={s.key} className="rounded-2xl bg-card p-5">
+              <div
+                className={`flex items-center gap-3 text-base font-bold ${s.accentClass}`}
+              >
+                <Icon className="size-5 shrink-0" />
+                <span>{s.label}</span>
+              </div>
+              <div className="mt-4 flex items-baseline gap-2">
+                <span className="font-display text-4xl font-bold leading-none">
+                  {s.count}
+                </span>
+                {s.amount && (
                   <span className="text-sm text-muted-foreground">
-                    {s.label}
+                    {s.amount}
                   </span>
-                </div>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="font-display text-4xl font-bold leading-none">
-                    {s.count}
-                  </span>
-                  {s.amount && (
-                    <span className="text-sm text-muted-foreground">
-                      {s.amount}
-                    </span>
-                  )}
-                </div>
-                <h3 className="mt-4 text-base font-bold">{s.stage}</h3>
-                <div className="mt-2 space-y-1">
-                  {s.subs.map(([label, n]) => (
-                    <p key={label} className="text-sm text-muted-foreground">
-                      {label} ({n})
-                    </p>
-                  ))}
-                </div>
+                )}
+              </div>
+              <h3 className="mt-4 text-base font-bold">{s.stage}</h3>
+              <div className="mt-2 space-y-1">
+                {s.subs.map(([label, n]) => (
+                  <p key={label} className="text-sm text-muted-foreground">
+                    {label} ({n})
+                  </p>
+                ))}
               </div>
             </div>
           );
