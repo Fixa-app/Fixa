@@ -4,52 +4,11 @@ import { useState, useEffect, type ReactElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tooltip } from "@base-ui/react/tooltip";
-import {
-  ArrowLeft,
-  ArrowRight,
-  FileText,
-  Inbox,
-  Plus,
-  Receipt,
-  Users,
-  Wrench,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
 import { SETTINGS_NAV } from "./settings/nav";
-
-const CREATE_ITEMS = [
-  {
-    label: "Klant",
-    icon: Users,
-    href: "/dashboard/customers",
-    color: "text-foreground",
-  },
-  {
-    label: "Aanvraag",
-    icon: Inbox,
-    href: "#",
-    color: "text-burgundy-bright",
-  },
-  {
-    label: "Offerte",
-    icon: FileText,
-    href: "/dashboard/quotes/new",
-    color: "text-primary",
-  },
-  {
-    label: "Opdracht",
-    icon: Wrench,
-    href: "#",
-    color: "text-violet-bright",
-  },
-  {
-    label: "Factuur",
-    icon: Receipt,
-    href: "/dashboard/invoices",
-    color: "text-teal-bright",
-  },
-];
+import { CREATE_ITEMS } from "./create-items";
 
 // Styled flyout label shown on hover while the rail is collapsed. Portals to
 // the body so it escapes the nav's overflow clipping.
