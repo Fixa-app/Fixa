@@ -145,7 +145,7 @@ function QuotesContent() {
 
   return (
     <>
-      <div className="px-4 py-8 lg:px-6">
+      <div className="px-4 py-8 lg:px-6 lg:pt-6">
         {/* Title row */}
         <div className="mb-6 flex items-center justify-between gap-4">
           <h1 className="font-display text-3xl font-medium leading-[1.05] tracking-tight">

@@ -29,7 +29,7 @@ export default async function DashboardOnboardingPage() {
   const completed = steps.filter((s) => s.completed).length;
 
   return (
-    <div className="px-6 py-8 md:px-10">
+    <div className="px-6 py-8 md:px-10 lg:pt-6">
       <div className="mx-auto w-full max-w-2xl space-y-6">
         <div className="space-y-1">
           <h1 className="font-display text-3xl font-bold">Aan de slag</h1>

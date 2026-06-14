@@ -9,7 +9,7 @@ export default async function DashboardSectionPage({
   const label = labelForSlug(section);
 
   return (
-    <div className="space-y-2 px-6 py-8 md:px-10">
+    <div className="space-y-2 px-6 py-8 md:px-10 lg:pt-6">
       <h1 className="font-display text-3xl font-bold">{label}</h1>
       <p className="text-muted-foreground">Binnenkort beschikbaar.</p>
     </div>

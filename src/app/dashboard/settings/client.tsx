@@ -202,7 +202,7 @@ export function SettingsClient({
         </div>
 
         {/* Scrollable content */}
-        <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 pb-32 lg:px-10">
+        <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 pb-32 lg:px-10 lg:pt-6">
 
         {/* Company info tab */}
         {activeTab === "company" && (
