@@ -184,24 +184,17 @@ function QuotesContent() {
                     onClick={() => setMoreOpen(false)}
                     className="fixed inset-0 z-40 cursor-default"
                   />
-                  <div className="absolute top-full right-0 z-50 mt-2 flex w-72 flex-col gap-1 rounded-2xl bg-card p-2 shadow-xl">
+                  <div className="absolute top-full right-0 z-50 mt-2 flex w-56 flex-col gap-1 rounded-2xl bg-card p-2 shadow-xl">
                     <button
                       type="button"
                       onClick={() => {
                         setMoreOpen(false);
                         router.push("/dashboard/quotes/new?import=photo");
                       }}
-                      className="flex items-start gap-3 rounded-lg p-2 text-left transition-colors hover:bg-hover"
+                      className="flex items-center gap-3 rounded-lg p-2 text-left text-base font-bold text-foreground transition-colors hover:bg-hover"
                     >
-                      <Camera className="mt-0.5 size-5 shrink-0 text-foreground" />
-                      <span>
-                        <span className="block text-base font-bold text-foreground">
-                          Offerte importeren
-                        </span>
-                        <span className="block text-sm text-muted-foreground">
-                          Maak een foto van een bestaande offerte
-                        </span>
-                      </span>
+                      <Camera className="size-5 shrink-0" />
+                      <span>Offerte importeren</span>
                     </button>
                     <button
                       type="button"
@@ -209,17 +202,10 @@ function QuotesContent() {
                         setMoreOpen(false);
                         router.push("/dashboard/quotes/new?template=1");
                       }}
-                      className="flex items-start gap-3 rounded-lg p-2 text-left transition-colors hover:bg-hover"
+                      className="flex items-center gap-3 rounded-lg p-2 text-left text-base font-bold text-foreground transition-colors hover:bg-hover"
                     >
-                      <LayoutTemplate className="mt-0.5 size-5 shrink-0 text-foreground" />
-                      <span>
-                        <span className="block text-base font-bold text-foreground">
-                          Sjabloon kiezen
-                        </span>
-                        <span className="block text-sm text-muted-foreground">
-                          Kies een sjabloonofferte
-                        </span>
-                      </span>
+                      <LayoutTemplate className="size-5 shrink-0" />
+                      <span>Sjabloon kiezen</span>
                     </button>
                   </div>
                 </>
