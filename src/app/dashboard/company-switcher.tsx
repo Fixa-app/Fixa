@@ -54,7 +54,7 @@ export function CompanySwitcher({
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1 text-left transition-colors hover:bg-foreground/[0.06]"
+        className="flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1 text-left transition-colors hover:bg-hover"
       >
         <span className="truncate text-base font-bold" title={companyName}>
           {companyName}
@@ -69,7 +69,7 @@ export function CompanySwitcher({
               key={c.id}
               type="button"
               onClick={() => choose(c.id)}
-              className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-left text-sm font-medium transition-colors hover:bg-muted"
+              className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-left text-sm font-medium transition-colors hover:bg-hover"
             >
               <span className="truncate">{c.name}</span>
               {c.id === activeId && (

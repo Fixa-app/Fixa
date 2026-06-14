@@ -32,25 +32,22 @@ export function DashboardHeader({
       <div className="flex items-center gap-1">
         <button
           type="button"
-          className="mr-1 flex h-9 items-center gap-2 rounded-lg bg-muted px-3 text-sm text-muted-foreground transition-colors hover:bg-muted/70"
+          className="mr-1 flex h-9 items-center gap-2 rounded-lg bg-card px-3 text-sm text-muted-foreground transition-colors hover:bg-hover"
         >
           <Search className="size-4" />
           <span>Zoeken</span>
-          <kbd className="ml-3 rounded border border-border bg-background px-1.5 text-xs text-muted-foreground">
-            /
-          </kbd>
         </button>
         <button
           type="button"
           aria-label="Berichten"
-          className="flex size-9 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted"
+          className="flex size-9 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-hover"
         >
           <Bell className="size-5" strokeWidth={2} />
         </button>
         <button
           type="button"
           aria-label="Help"
-          className="flex size-9 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted"
+          className="flex size-9 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-hover"
         >
           <HelpCircle className="size-5" strokeWidth={2} />
         </button>
