@@ -118,12 +118,7 @@ const WORKFLOW_STAGES = [
 function WorkflowSection() {
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">Workflow</h2>
-        <p className="text-sm text-muted-foreground">
-          Overzicht van je pijplijn
-        </p>
-      </div>
+      <h2 className="text-xl font-semibold tracking-tight">Workflow</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {WORKFLOW_STAGES.map((s) => {
           const Icon = s.icon;
@@ -194,12 +189,7 @@ function DashboardSection({
   return (
     <div className="rounded-2xl bg-muted/50 p-5">
       <div className="mb-1 flex items-start justify-between">
-        <div>
-          <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-          <p className="text-sm text-muted-foreground">
-            {rows.length > 0 ? "Jouw volgende acties" : ""}
-          </p>
-        </div>
+        <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
         {showAdd && (
           <div className="group relative">
             <button
