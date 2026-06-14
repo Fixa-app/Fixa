@@ -173,21 +173,16 @@ export function DashboardSidebar({}: {
                 onClick={() => setCreateOpen(false)}
                 className="fixed inset-0 z-40 cursor-default"
               />
-              <div className="absolute top-2 left-full z-50 ml-2 flex w-52 flex-col gap-0.5 rounded-2xl border border-border bg-card p-2 shadow-xl">
+              <div className="absolute top-2 left-full z-50 ml-2 flex w-52 flex-col gap-1 rounded-2xl bg-card p-2 shadow-xl">
                 {CREATE_ITEMS.map(({ label, icon: Icon, href, color }) => (
                   <Link
                     key={label}
                     href={href}
                     onClick={() => setCreateOpen(false)}
-                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/40"
+                    className="flex items-center gap-3 rounded-lg p-2 text-base font-bold text-foreground transition-colors hover:bg-hover"
                   >
-                    <Icon
-                      className={`size-5 shrink-0 ${color}`}
-                      strokeWidth={2}
-                    />
-                    <span className="text-base font-semibold text-foreground">
-                      {label}
-                    </span>
+                    <Icon className={`size-5 shrink-0 ${color}`} />
+                    <span>{label}</span>
                   </Link>
                 ))}
               </div>
