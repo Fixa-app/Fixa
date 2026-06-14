@@ -307,7 +307,7 @@ export function HomeContent({
   const invoiceRows = getInvoiceDashboardRows(MOCK_INVOICES);
 
   return (
-    <div className="space-y-4 px-4 py-8 lg:px-6">
+    <div className="space-y-4 px-4 py-8 lg:px-6 lg:pt-6">
       <h1 className="font-display text-3xl font-medium leading-[1.05] tracking-tight">
         {greeting}
         {firstName ? `, ${firstName}` : ""}
