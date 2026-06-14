@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, ChevronDown, Check, MoreHorizontal } from "lucide-react";
+import {
+  Plus,
+  ChevronDown,
+  Check,
+  MoreHorizontal,
+  Camera,
+  LayoutTemplate,
+} from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -93,6 +100,7 @@ function QuotesContent() {
   const [sort, setSort] = useState<SortOption>("newest");
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -156,9 +164,67 @@ function QuotesContent() {
               <Plus className="size-4" />
               Nieuwe offerte
             </Button>
-            <Button variant="outline" size="icon" aria-label="Meer opties">
-              <MoreHorizontal className="size-5" />
-            </Button>
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label="Meer opties"
+                aria-expanded={moreOpen}
+                onClick={() => setMoreOpen((v) => !v)}
+              >
+                <MoreHorizontal className="size-5" />
+              </Button>
+
+              {moreOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-hidden
+                    tabIndex={-1}
+                    onClick={() => setMoreOpen(false)}
+                    className="fixed inset-0 z-40 cursor-default"
+                  />
+                  <div className="absolute top-full right-0 z-50 mt-2 flex w-72 flex-col gap-1 rounded-2xl bg-card p-2 shadow-xl">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        router.push("/dashboard/quotes/new?import=photo");
+                      }}
+                      className="flex items-start gap-3 rounded-lg p-2 text-left transition-colors hover:bg-hover"
+                    >
+                      <Camera className="mt-0.5 size-5 shrink-0 text-foreground" />
+                      <span>
+                        <span className="block text-base font-bold text-foreground">
+                          Offerte importeren
+                        </span>
+                        <span className="block text-sm text-muted-foreground">
+                          Maak een foto van een bestaande offerte
+                        </span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMoreOpen(false);
+                        router.push("/dashboard/quotes/new?template=1");
+                      }}
+                      className="flex items-start gap-3 rounded-lg p-2 text-left transition-colors hover:bg-hover"
+                    >
+                      <LayoutTemplate className="mt-0.5 size-5 shrink-0 text-foreground" />
+                      <span>
+                        <span className="block text-base font-bold text-foreground">
+                          Sjabloon kiezen
+                        </span>
+                        <span className="block text-sm text-muted-foreground">
+                          Kies een sjabloonofferte
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
