@@ -244,76 +244,90 @@ export default function NewQuotePreviewPage() {
 
           <h1 className="font-display text-2xl font-bold mb-6">Controleer je offerte</h1>
 
-          {/* Setup checklist — toon alleen als iets ontbreekt */}
+          {/* Setup kaarten — toon alleen als iets ontbreekt */}
           {needsSetup && (
-            <div className="mb-6 rounded-2xl border border-border bg-muted/30 p-5 space-y-4">
-              <p className="text-sm font-medium">Nog even dit instellen voor je verstuurt:</p>
+            <div className="mb-6 space-y-3">
+              <p className="text-sm text-muted-foreground">Stel dit in voordat je verstuurt:</p>
 
-              {/* Logo */}
-              <div className="flex items-start gap-3">
-                <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${!needsLogo ? "border-green-500 bg-green-500" : "border-border"}`}>
-                  {!needsLogo && <Check className="h-3 w-3 text-white" />}
-                </div>
-                <div className="flex-1 space-y-2">
-                  <p className="text-sm font-medium">Bedrijfslogo</p>
-                  {needsLogo ? (
+              {/* Logo kaart */}
+              {needsLogo && (
+                <div className="rounded-2xl bg-card border border-border p-5 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Camera className="h-5 w-5 text-primary flex-shrink-0" />
+                    <p className="font-bold">Bedrijfslogo</p>
+                  </div>
+                  {logoUrl ? (
+                    <div className="flex items-center gap-3">
+                      <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain rounded-lg border border-border p-1" />
+                      <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                        <Check className="h-4 w-4" />
+                        Logo toegevoegd
+                      </div>
+                    </div>
+                  ) : (
                     <>
-                      <p className="text-xs text-muted-foreground">Zorg dat je logo een transparante achtergrond heeft en minimaal 300px breed is.</p>
-                      <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm hover:bg-muted/40 transition-colors">
-                        <Camera className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground">Zorg dat je logo een transparante achtergrond heeft en minimaal 300px breed is. JPG of PNG, max 1MB.</p>
+                      <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium hover:bg-muted/40 transition-colors">
+                        {logoUploading ? (
+                          <div className="h-4 w-4 animate-spin rounded-full border border-muted-foreground border-t-transparent" />
+                        ) : (
+                          <Camera className="h-4 w-4 text-muted-foreground" />
+                        )}
                         {logoUploading ? "Uploaden..." : "Logo uploaden"}
                         <input type="file" accept="image/jpeg,image/png" className="hidden" disabled={logoUploading}
                           onChange={(e) => { const f = e.target.files?.[0]; if (f) handleLogoUpload(f); e.target.value = ""; }} />
                       </label>
                     </>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <img src={logoUrl!} alt="Logo" className="h-8 w-auto object-contain" />
-                      <span className="text-xs text-muted-foreground">Toegevoegd</span>
-                    </div>
                   )}
                 </div>
-              </div>
+              )}
 
-              {/* Offertenummer */}
-              <div className="flex items-start gap-3">
-                <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${numberSaved || !needsQuoteNumber ? "border-green-500 bg-green-500" : "border-border"}`}>
-                  {(numberSaved || !needsQuoteNumber) && <Check className="h-3 w-3 text-white" />}
-                </div>
-                <div className="flex-1 space-y-2">
-                  <p className="text-sm font-medium">Offertenummer</p>
-                  {needsQuoteNumber && !numberSaved ? (
+              {/* Offertenummer kaart */}
+              {needsQuoteNumber && (
+                <div className="rounded-2xl bg-card border border-border p-5 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Send className="h-5 w-5 text-primary flex-shrink-0" />
+                    <p className="font-bold">Offertenummering</p>
+                  </div>
+                  {numberSaved ? (
+                    <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                      <Check className="h-4 w-4" />
+                      Volgend nummer: {formatQuoteNumber(settings?.quote_number_format ?? '{YEAR}-{NUMBER}', savedQuoteNumber!)}
+                    </div>
+                  ) : (
                     <>
                       {settings?.last_parsed_quote_number && (
-                        <p className="text-xs text-muted-foreground">
-                          Het offertenummer op de offerte die je deelde was: <span className="font-medium text-foreground">{settings.last_parsed_quote_number}</span>
+                        <p className="text-sm text-muted-foreground">
+                          Het offertenummer op de offerte die je deelde was:{" "}
+                          <span className="font-medium text-foreground">{settings.last_parsed_quote_number}</span>
                         </p>
                       )}
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          inputMode="numeric"
-                          value={quoteNumberInput}
-                          onChange={(e) => setQuoteNumberInput(e.target.value)}
-                          placeholder="Wat wordt je eerste offertenummer?"
-                          className="flex-1 h-10 rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        />
-                        <Button
-                          size="sm"
-                          onClick={handleSaveQuoteNumber}
-                          disabled={!quoteNumberInput || savingNumber}
-                        >
-                          {savingNumber ? "..." : "Opslaan"}
-                        </Button>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium" htmlFor="quote-number-input">
+                          Wat wordt je eerstvolgende offertenummer?
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            id="quote-number-input"
+                            type="number"
+                            inputMode="numeric"
+                            value={quoteNumberInput}
+                            onChange={(e) => setQuoteNumberInput(e.target.value)}
+                            placeholder={settings?.last_parsed_quote_number ? "Bijv. " + (parseInt(settings.last_parsed_quote_number.replace(/\D/g, "").slice(-4) || "0") + 1) : "Bijv. 1"}
+                            className="flex-1 h-10 rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          />
+                          <Button
+                            onClick={handleSaveQuoteNumber}
+                            disabled={!quoteNumberInput || savingNumber}
+                          >
+                            {savingNumber ? "Bezig..." : "Opslaan"}
+                          </Button>
+                        </div>
                       </div>
                     </>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Volgend nummer: <span className="font-medium text-foreground">{formatQuoteNumber(settings?.quote_number_format ?? '{YEAR}-{NUMBER}', savedQuoteNumber!)}</span>
-                    </p>
                   )}
                 </div>
-              </div>
+              )}
             </div>
           )}
 
