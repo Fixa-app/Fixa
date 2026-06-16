@@ -69,6 +69,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       client,
       company,
       settings,
+      companyId: quote.company_id,
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
@@ -134,6 +135,34 @@ export async function POST(request: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json({ success: true, quoteNumber });
+  } catch (error) {
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+  }
+}
+
+// PATCH — update logo of offertenummer vanuit preview
+export async function PATCH(request: NextRequest, { params }: Params) {
+  try {
+    const { id } = await params;
+    const { userId, logoUrl, nextQuoteNumber, companyId } = await request.json();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const service = createServiceClient();
+
+    if (logoUrl && companyId) {
+      await service.from('companies').update({ logo_url: logoUrl }).eq('id', companyId);
+    }
+
+    if (nextQuoteNumber && companyId) {
+      await service.from('company_settings')
+        .update({ next_quote_number: nextQuoteNumber })
+        .eq('company_id', companyId);
+    }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }

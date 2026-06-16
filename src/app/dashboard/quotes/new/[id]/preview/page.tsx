@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Camera, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -108,6 +108,11 @@ export default function NewQuotePreviewPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [quoteNumberDraft, setQuoteNumberDraft] = useState("");
+  const [savingQuoteNumber, setSavingQuoteNumber] = useState(false);
+  const [savedQuoteNumber, setSavedQuoteNumber] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -119,6 +124,8 @@ export default function NewQuotePreviewPage() {
 
       const json = await res.json();
       setData(json);
+      setLogoUrl(json.company?.logo_url ?? null);
+      setSavedQuoteNumber(json.settings?.next_quote_number ?? null);
       setLoading(false);
     }
     load();
@@ -140,6 +147,39 @@ export default function NewQuotePreviewPage() {
       setTimeout(() => router.push("/dashboard/quotes"), 1500);
     }
     setSending(false);
+  }
+
+  async function handleLogoUpload(file: File) {
+    if (file.size > 1024 * 1024) return;
+    setLogoUploading(true);
+    const supabase = createClient();
+    const ext = file.name.split(".").pop() ?? "png";
+    const path = `${data?.company?.name?.replace(/\s+/g, "-") ?? "company"}/logo.${ext}`;
+    const { error } = await supabase.storage.from("company-assets").upload(path, file, { upsert: true });
+    if (!error) {
+      const { data: urlData } = supabase.storage.from("company-assets").getPublicUrl(path);
+      const url = urlData.publicUrl + `?t=${Date.now()}`;
+      await fetch(`/api/quotes/${id}/preview`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: await getCurrentUserId(), logoUrl: url, companyId: data?.company ? (data as any).companyId : null }),
+      });
+      setLogoUrl(url);
+    }
+    setLogoUploading(false);
+  }
+
+  async function handleSaveQuoteNumber() {
+    setSavingQuoteNumber(true);
+    const userId = await getCurrentUserId();
+    const num = parseInt(quoteNumberDraft) || 1;
+    await fetch(`/api/quotes/${id}/preview`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, nextQuoteNumber: num, companyId: (data as any)?.quote?.company_id }),
+    });
+    setSavedQuoteNumber(num);
+    setSavingQuoteNumber(false);
   }
 
   if (loading || !data) {
@@ -192,16 +232,23 @@ export default function NewQuotePreviewPage() {
             <div className="p-6 border-b border-border">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
-                  {company?.logo_url ? (
+                  {logoUrl ? (
                     <img
-                      src={company.logo_url}
-                      alt={company.name}
+                      src={logoUrl}
+                      alt={company?.name}
                       className="h-12 w-auto object-contain mb-2"
                     />
                   ) : (
-                    <p className="font-bold text-lg">{company?.name}</p>
+                    <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 px-3 py-2 mb-2 hover:bg-muted/60 transition-colors">
+                      <Camera className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">
+                        {logoUploading ? "Uploaden..." : "Logo toevoegen"}
+                      </span>
+                      <input type="file" accept="image/jpeg,image/png" className="hidden" disabled={logoUploading}
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleLogoUpload(f); e.target.value = ""; }} />
+                    </label>
                   )}
-                  {company?.logo_url && <p className="font-bold">{company?.name}</p>}
+                  <p className="font-bold">{company?.name}</p>
                   {company?.street && <p className="text-sm text-muted-foreground">{company.street}</p>}
                   {company?.postal && company?.city && (
                     <p className="text-sm text-muted-foreground">{company.postal} {company.city}</p>
@@ -225,8 +272,29 @@ export default function NewQuotePreviewPage() {
                   {client?.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
                 </div>
                 <div className="text-right space-y-1 flex-shrink-0">
-                  <p className="text-sm"><span className="text-muted-foreground">Offerte:</span> <span className="font-medium">{quoteNumber}</span></p>
+                  {savedQuoteNumber || quote.quote_number ? (
+                    <p className="text-sm"><span className="text-muted-foreground">Offerte:</span> <span className="font-medium">{quoteNumber}</span></p>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-muted-foreground">Offerte:</span>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        value={quoteNumberDraft}
+                        onChange={(e) => setQuoteNumberDraft(e.target.value)}
+                        placeholder="Nr."
+                        className="w-16 h-7 rounded-md border border-dashed border-border bg-muted/40 px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      />
+                      {quoteNumberDraft && (
+                        <button onClick={handleSaveQuoteNumber} disabled={savingQuoteNumber}
+                          className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90">
+                          <Check className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                   <p className="text-sm"><span className="text-muted-foreground">Datum:</span> <span className="font-medium">{quoteDate}</span></p>
+                  <p className="text-sm"><span className="text-muted-foreground">Geldig tot:</span> <span className="font-medium">{new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" })}</span></p>
                 </div>
               </div>
             </div>
@@ -299,21 +367,7 @@ export default function NewQuotePreviewPage() {
             )}
           </div>
 
-          {/* Offerte info */}
-          {!settings?.next_quote_number && (
-            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
-              <p className="text-sm text-amber-700 dark:text-amber-400">
-                Stel eerst je offertenummering in via{" "}
-                <button
-                  onClick={() => router.push("/dashboard/settings?tab=templates")}
-                  className="underline font-medium"
-                >
-                  Instellingen
-                </button>{" "}
-                voordat je de offerte verstuurt.
-              </p>
-            </div>
-          )}
+
         </div>
 
         {/* Sticky footer */}
@@ -328,7 +382,7 @@ export default function NewQuotePreviewPage() {
             <Button
               className="w-full"
               onClick={handleSend}
-              disabled={sending || sent || !settings?.next_quote_number}
+              disabled={sending || sent || (!settings?.next_quote_number && !savedQuoteNumber)}
             >
               {sent ? "✓ Verstuurd" : sending ? "Bezig..." : (
                 <span className="flex items-center gap-2">
