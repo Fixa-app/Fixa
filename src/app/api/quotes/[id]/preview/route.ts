@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     // Company settings
     const { data: settings } = await service
       .from('company_settings')
-      .select('quote_intro, quote_disclaimer, next_quote_number, quote_number_format')
+      .select('quote_intro, quote_disclaimer, next_quote_number, quote_number_format, last_parsed_quote_number')
       .eq('company_id', quote.company_id)
       .single();
 
