@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Check, ChevronRight } from "lucide-react";
 import { cookies } from "next/headers";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { onboardingSteps, ONBOARDING_TOTAL } from "../onboarding-steps";
 
 export default async function DashboardOnboardingPage() {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   let hasLogo = false;
@@ -13,11 +14,20 @@ export default async function DashboardOnboardingPage() {
 
   if (user) {
     const cookieId = (await cookies()).get("active_company_id")?.value;
+    const { data: companies } = await supabase.rpc("get_user_companies", { p_user_id: user.id });
+    const active = (cookieId && companies?.find((c: { company_id: string }) => c.company_id === cookieId)) || companies?.[0];
+    const companyId = active?.company_id;
 
-    if (cookieId) {
+    if (companyId) {
+      const service = createServiceClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        { auth: { autoRefreshToken: false, persistSession: false } }
+      );
+
       const [{ data: company }, { data: settings }] = await Promise.all([
-        supabase.from("companies").select("logo_url").eq("id", cookieId).single(),
-        supabase.from("company_settings").select("next_quote_number, quote_number_format").eq("company_id", cookieId).single(),
+        service.from("companies").select("logo_url").eq("id", companyId).single(),
+        service.from("company_settings").select("next_quote_number, quote_number_format").eq("company_id", companyId).single(),
       ]);
 
       hasLogo = !!company?.logo_url;
