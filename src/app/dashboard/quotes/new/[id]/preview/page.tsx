@@ -250,8 +250,8 @@ export default function NewQuotePreviewPage() {
               <p className="text-sm text-muted-foreground">Stel dit in voordat je verstuurt:</p>
 
               {/* Logo kaart */}
-              {needsLogo && (
-                <div className="rounded-2xl bg-card border border-border p-5 space-y-3">
+              {
+                <div className="rounded-2xl bg-card p-5 space-y-3">
                   <div className="flex items-center gap-3">
                     <Camera className="h-5 w-5 text-primary flex-shrink-0" />
                     <p className="font-bold">Bedrijfslogo</p>
@@ -280,11 +280,11 @@ export default function NewQuotePreviewPage() {
                     </>
                   )}
                 </div>
-              )}
+              }
 
               {/* Offertenummer kaart */}
               {needsQuoteNumber && (
-                <div className="rounded-2xl bg-card border border-border p-5 space-y-3">
+                <div className="rounded-2xl bg-card p-5 space-y-3">
                   <div className="flex items-center gap-3">
                     <Send className="h-5 w-5 text-primary flex-shrink-0" />
                     <p className="font-bold">Offertenummering</p>
@@ -306,6 +306,9 @@ export default function NewQuotePreviewPage() {
                         <label className="text-sm font-medium" htmlFor="quote-number-input">
                           Wat wordt je eerstvolgende offertenummer?
                         </label>
+                        {!settings?.last_parsed_quote_number && (
+                          <p className="text-sm text-muted-foreground">Vul het nummer in dat je wilt gebruiken voor je eerste offerte.</p>
+                        )}
                         <div className="flex items-center gap-2">
                           <input
                             id="quote-number-input"
