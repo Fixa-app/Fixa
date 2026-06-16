@@ -1,10 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { getOnboardingProgress } from "./onboarding-progress";
 import { HomeContent } from "./home-content";
 
 export default async function DashboardPage() {
-  const { completed, total } = await getOnboardingProgress();
-
   const supabase = await createClient();
   const {
     data: { user },
@@ -17,11 +14,5 @@ export default async function DashboardPage() {
         .replace(/^./, (c) => c.toUpperCase())
     : "";
 
-  return (
-    <HomeContent
-      firstName={firstName}
-      onboardingCompleted={completed}
-      onboardingTotal={total}
-    />
-  );
+  return <HomeContent firstName={firstName} />;
 }

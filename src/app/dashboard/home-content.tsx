@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Plus,
   ChevronRight,
-  Rocket,
   Inbox,
   FileText,
   Hammer,
@@ -153,16 +151,11 @@ function FloatingAddButton({ onSelect }: { onSelect: (type: string) => void }) {
 
   return (
     <>
-      {/* Backdrop */}
       {open && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setOpen(false)}
-        />
+        <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
       )}
 
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 lg:hidden">
-        {/* Options */}
         {open && (
           <div className="flex flex-col items-end gap-2">
             {options.map((option) => {
@@ -196,32 +189,19 @@ function FloatingAddButton({ onSelect }: { onSelect: (type: string) => void }) {
           </div>
         )}
 
-        {/* FAB */}
         <button
           onClick={() => setOpen((o) => !o)}
           aria-label={open ? "Sluiten" : "Nieuw item toevoegen"}
           className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-95"
         >
-          {open ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Plus className="h-6 w-6" />
-          )}
+          {open ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
         </button>
       </div>
     </>
   );
 }
 
-export function HomeContent({
-  firstName,
-  onboardingCompleted,
-  onboardingTotal,
-}: {
-  firstName: string;
-  onboardingCompleted: number;
-  onboardingTotal: number;
-}) {
+export function HomeContent({ firstName }: { firstName: string }) {
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
   const [greeting, setGreeting] = useState("Goedenavond");
@@ -257,21 +237,6 @@ export function HomeContent({
         {firstName ? `, ${firstName}` : ""}
       </h1>
 
-      {onboardingCompleted < onboardingTotal && (
-        <Link
-          href="/dashboard/onboarding"
-          className="flex items-center justify-between gap-2 rounded-2xl border border-primary/30 bg-primary/5 px-5 py-4 text-primary transition-colors hover:bg-primary/10"
-        >
-          <span className="flex items-center gap-2.5 text-base font-bold">
-            <Rocket className="size-5 shrink-0" />
-            Aan de slag
-          </span>
-          <span className="text-base font-bold">
-            {onboardingCompleted}/{onboardingTotal}
-          </span>
-        </Link>
-      )}
-
       {showNotification && (
         <div
           role="alert"
@@ -286,9 +251,7 @@ export function HomeContent({
         icon={FileText}
         accentClass="text-primary"
         rows={quoteRows}
-        onRowClick={(status) =>
-          router.push(`/dashboard/quotes?filter=${status}`)
-        }
+        onRowClick={(status) => router.push(`/dashboard/quotes?filter=${status}`)}
         onViewAll={() => router.push("/dashboard/quotes")}
         emptyMessage="Alles op orde. Klaar om je volgende offerte te sturen?"
       />
@@ -298,9 +261,7 @@ export function HomeContent({
         icon={Receipt}
         accentClass="text-teal-bright"
         rows={invoiceRows}
-        onRowClick={(status) =>
-          router.push(`/dashboard/invoices?filter=${status}`)
-        }
+        onRowClick={(status) => router.push(`/dashboard/invoices?filter=${status}`)}
         onViewAll={() => router.push("/dashboard/invoices")}
         emptyMessage="Geen openstaande facturen."
       />
