@@ -24,6 +24,7 @@ type QuoteData = {
     disclaimer: string | null;
     quote_number: string | null;
     status: string;
+    company_id: string;
   };
   lineItems: LineItem[];
   client: {
@@ -47,7 +48,9 @@ type QuoteData = {
   settings: {
     next_quote_number: number | null;
     quote_number_format: string | null;
+    last_parsed_quote_number: string | null;
   } | null;
+  companyId: string;
 };
 
 async function getCurrentUserId(): Promise<string | null> {
@@ -70,7 +73,6 @@ function resolveTokens(text: string, clientName: string, address: string): strin
   const expiryStr = expiryDate.toLocaleDateString("nl-NL", {
     day: "numeric", month: "long", year: "numeric"
   });
-
   return text
     .replace(/\[klantnaam\]/gi, clientName)
     .replace(/\[adres\]/gi, address)
@@ -91,13 +93,11 @@ function calcTotals(items: LineItem[]) {
   return { subtotal, byTax, taxTotal, total: subtotal + taxTotal };
 }
 
-function previewQuoteNumber(settings: QuoteData['settings']): string {
-  if (!settings?.next_quote_number) return "—";
+function formatQuoteNumber(format: string, num: number): string {
   const year = new Date().getFullYear();
-  const format = settings.quote_number_format ?? '{YEAR}-{NUMBER}';
   return format
     .replace('{YEAR}', String(year))
-    .replace('{NUMBER}', String(settings.next_quote_number).padStart(3, '0'));
+    .replace('{NUMBER}', String(num).padStart(3, '0'));
 }
 
 export default function NewQuotePreviewPage() {
@@ -108,11 +108,14 @@ export default function NewQuotePreviewPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+
+  // Setup state
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoUploading, setLogoUploading] = useState(false);
-  const [quoteNumberDraft, setQuoteNumberDraft] = useState("");
-  const [savingQuoteNumber, setSavingQuoteNumber] = useState(false);
+  const [quoteNumberInput, setQuoteNumberInput] = useState("");
   const [savedQuoteNumber, setSavedQuoteNumber] = useState<number | null>(null);
+  const [savingNumber, setSavingNumber] = useState(false);
+  const [numberSaved, setNumberSaved] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -122,7 +125,7 @@ export default function NewQuotePreviewPage() {
       const res = await fetch(`/api/quotes/${id}/preview?userId=${userId}`);
       if (!res.ok) return;
 
-      const json = await res.json();
+      const json: QuoteData = await res.json();
       setData(json);
       setLogoUrl(json.company?.logo_url ?? null);
       setSavedQuoteNumber(json.settings?.next_quote_number ?? null);
@@ -130,6 +133,52 @@ export default function NewQuotePreviewPage() {
     }
     load();
   }, [id]);
+
+  const needsLogo = !logoUrl;
+  const needsQuoteNumber = !savedQuoteNumber;
+  const needsSetup = needsLogo || needsQuoteNumber;
+
+  async function handleLogoUpload(file: File) {
+    if (!data) return;
+    if (file.size > 1024 * 1024) return;
+    setLogoUploading(true);
+
+    const supabase = createClient();
+    const ext = file.name.split(".").pop() ?? "png";
+    const path = `${data.companyId}/logo.${ext}`;
+
+    const { error } = await supabase.storage.from("company-assets").upload(path, file, { upsert: true });
+    if (!error) {
+      const { data: urlData } = supabase.storage.from("company-assets").getPublicUrl(path);
+      const url = urlData.publicUrl + `?t=${Date.now()}`;
+
+      const userId = await getCurrentUserId();
+      await fetch(`/api/quotes/${id}/preview`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, logoUrl: url, companyId: data.companyId }),
+      });
+      setLogoUrl(url);
+    }
+    setLogoUploading(false);
+  }
+
+  async function handleSaveQuoteNumber() {
+    if (!data) return;
+    const num = parseInt(quoteNumberInput);
+    if (!num || num < 1) return;
+
+    setSavingNumber(true);
+    const userId = await getCurrentUserId();
+    await fetch(`/api/quotes/${id}/preview`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, nextQuoteNumber: num, companyId: data.companyId }),
+    });
+    setSavedQuoteNumber(num);
+    setNumberSaved(true);
+    setSavingNumber(false);
+  }
 
   async function handleSend() {
     setSending(true);
@@ -149,39 +198,6 @@ export default function NewQuotePreviewPage() {
     setSending(false);
   }
 
-  async function handleLogoUpload(file: File) {
-    if (file.size > 1024 * 1024) return;
-    setLogoUploading(true);
-    const supabase = createClient();
-    const ext = file.name.split(".").pop() ?? "png";
-    const path = `${data?.company?.name?.replace(/\s+/g, "-") ?? "company"}/logo.${ext}`;
-    const { error } = await supabase.storage.from("company-assets").upload(path, file, { upsert: true });
-    if (!error) {
-      const { data: urlData } = supabase.storage.from("company-assets").getPublicUrl(path);
-      const url = urlData.publicUrl + `?t=${Date.now()}`;
-      await fetch(`/api/quotes/${id}/preview`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: await getCurrentUserId(), logoUrl: url, companyId: data?.company ? (data as any).companyId : null }),
-      });
-      setLogoUrl(url);
-    }
-    setLogoUploading(false);
-  }
-
-  async function handleSaveQuoteNumber() {
-    setSavingQuoteNumber(true);
-    const userId = await getCurrentUserId();
-    const num = parseInt(quoteNumberDraft) || 1;
-    await fetch(`/api/quotes/${id}/preview`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, nextQuoteNumber: num, companyId: (data as any)?.quote?.company_id }),
-    });
-    setSavedQuoteNumber(num);
-    setSavingQuoteNumber(false);
-  }
-
   if (loading || !data) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -196,8 +212,11 @@ export default function NewQuotePreviewPage() {
   const introText = resolveTokens(quote.intro_text ?? "", clientName, clientAddress);
   const disclaimerText = resolveTokens(quote.disclaimer ?? "", clientName, clientAddress);
   const { subtotal, byTax, taxTotal, total } = calcTotals(lineItems);
-  const quoteNumber = quote.quote_number ?? previewQuoteNumber(settings);
+  const quoteNumber = quote.quote_number ?? (savedQuoteNumber
+    ? formatQuoteNumber(settings?.quote_number_format ?? '{YEAR}-{NUMBER}', savedQuoteNumber)
+    : "—");
   const quoteDate = new Date().toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+  const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
 
   return (
     <>
@@ -225,29 +244,89 @@ export default function NewQuotePreviewPage() {
 
           <h1 className="font-display text-2xl font-bold mb-6">Controleer je offerte</h1>
 
-          {/* Offerte document */}
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          {/* Setup checklist — toon alleen als iets ontbreekt */}
+          {needsSetup && (
+            <div className="mb-6 rounded-2xl border border-border bg-muted/30 p-5 space-y-4">
+              <p className="text-sm font-medium">Nog even dit instellen voor je verstuurt:</p>
+
+              {/* Logo */}
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${!needsLogo ? "border-green-500 bg-green-500" : "border-border"}`}>
+                  {!needsLogo && <Check className="h-3 w-3 text-white" />}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm font-medium">Bedrijfslogo</p>
+                  {needsLogo ? (
+                    <>
+                      <p className="text-xs text-muted-foreground">Zorg dat je logo een transparante achtergrond heeft en minimaal 300px breed is.</p>
+                      <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm hover:bg-muted/40 transition-colors">
+                        <Camera className="h-4 w-4 text-muted-foreground" />
+                        {logoUploading ? "Uploaden..." : "Logo uploaden"}
+                        <input type="file" accept="image/jpeg,image/png" className="hidden" disabled={logoUploading}
+                          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleLogoUpload(f); e.target.value = ""; }} />
+                      </label>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <img src={logoUrl!} alt="Logo" className="h-8 w-auto object-contain" />
+                      <span className="text-xs text-muted-foreground">Toegevoegd</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Offertenummer */}
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border ${numberSaved || !needsQuoteNumber ? "border-green-500 bg-green-500" : "border-border"}`}>
+                  {(numberSaved || !needsQuoteNumber) && <Check className="h-3 w-3 text-white" />}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm font-medium">Offertenummer</p>
+                  {needsQuoteNumber && !numberSaved ? (
+                    <>
+                      {settings?.last_parsed_quote_number && (
+                        <p className="text-xs text-muted-foreground">
+                          Het offertenummer op de offerte die je deelde was: <span className="font-medium text-foreground">{settings.last_parsed_quote_number}</span>
+                        </p>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          value={quoteNumberInput}
+                          onChange={(e) => setQuoteNumberInput(e.target.value)}
+                          placeholder="Wat wordt je eerste offertenummer?"
+                          className="flex-1 h-10 rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        />
+                        <Button
+                          size="sm"
+                          onClick={handleSaveQuoteNumber}
+                          disabled={!quoteNumberInput || savingNumber}
+                        >
+                          {savingNumber ? "..." : "Opslaan"}
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Volgend nummer: <span className="font-medium text-foreground">{formatQuoteNumber(settings?.quote_number_format ?? '{YEAR}-{NUMBER}', savedQuoteNumber!)}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Offerte document — altijd zichtbaar, maar visueel gedempt als setup nodig */}
+          <div className={`rounded-2xl border border-border bg-card overflow-hidden transition-opacity ${needsSetup ? "opacity-40 pointer-events-none select-none" : ""}`}>
 
             {/* Header offerte */}
             <div className="p-6 border-b border-border">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
                   {logoUrl ? (
-                    <img
-                      src={logoUrl}
-                      alt={company?.name}
-                      className="h-12 w-auto object-contain mb-2"
-                    />
-                  ) : (
-                    <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 px-3 py-2 mb-2 hover:bg-muted/60 transition-colors">
-                      <Camera className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
-                        {logoUploading ? "Uploaden..." : "Logo toevoegen"}
-                      </span>
-                      <input type="file" accept="image/jpeg,image/png" className="hidden" disabled={logoUploading}
-                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleLogoUpload(f); e.target.value = ""; }} />
-                    </label>
-                  )}
+                    <img src={logoUrl} alt={company?.name} className="h-12 w-auto object-contain mb-2" />
+                  ) : null}
                   <p className="font-bold">{company?.name}</p>
                   {company?.street && <p className="text-sm text-muted-foreground">{company.street}</p>}
                   {company?.postal && company?.city && (
@@ -272,29 +351,9 @@ export default function NewQuotePreviewPage() {
                   {client?.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
                 </div>
                 <div className="text-right space-y-1 flex-shrink-0">
-                  {savedQuoteNumber || quote.quote_number ? (
-                    <p className="text-sm"><span className="text-muted-foreground">Offerte:</span> <span className="font-medium">{quoteNumber}</span></p>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-muted-foreground">Offerte:</span>
-                      <input
-                        type="number"
-                        inputMode="numeric"
-                        value={quoteNumberDraft}
-                        onChange={(e) => setQuoteNumberDraft(e.target.value)}
-                        placeholder="Nr."
-                        className="w-16 h-7 rounded-md border border-dashed border-border bg-muted/40 px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                      />
-                      {quoteNumberDraft && (
-                        <button onClick={handleSaveQuoteNumber} disabled={savingQuoteNumber}
-                          className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90">
-                          <Check className="h-3 w-3" />
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  <p className="text-sm"><span className="text-muted-foreground">Offerte:</span> <span className="font-medium">{quoteNumber}</span></p>
                   <p className="text-sm"><span className="text-muted-foreground">Datum:</span> <span className="font-medium">{quoteDate}</span></p>
-                  <p className="text-sm"><span className="text-muted-foreground">Geldig tot:</span> <span className="font-medium">{new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" })}</span></p>
+                  <p className="text-sm"><span className="text-muted-foreground">Geldig tot:</span> <span className="font-medium">{expiryDate}</span></p>
                 </div>
               </div>
             </div>
@@ -366,8 +425,6 @@ export default function NewQuotePreviewPage() {
               </div>
             )}
           </div>
-
-
         </div>
 
         {/* Sticky footer */}
@@ -382,7 +439,7 @@ export default function NewQuotePreviewPage() {
             <Button
               className="w-full"
               onClick={handleSend}
-              disabled={sending || sent || (!settings?.next_quote_number && !savedQuoteNumber)}
+              disabled={sending || sent || needsSetup}
             >
               {sent ? "✓ Verstuurd" : sending ? "Bezig..." : (
                 <span className="flex items-center gap-2">
