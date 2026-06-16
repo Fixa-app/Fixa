@@ -12,6 +12,7 @@ import {
   Hammer,
   Receipt,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,6 +62,8 @@ function StatusPill({ status, label }: { status: string; label: string }) {
 
 type SectionProps = {
   title: string;
+  icon: LucideIcon;
+  accentClass: string;
   rows: DashboardStatusRow[];
   onRowClick: (status: string) => void;
   onViewAll: () => void;
@@ -69,6 +72,8 @@ type SectionProps = {
 
 function DashboardSection({
   title,
+  icon: Icon,
+  accentClass,
   rows,
   onRowClick,
   onViewAll,
@@ -82,9 +87,10 @@ function DashboardSection({
   }, []);
 
   return (
-    <div className="rounded-2xl bg-muted/50 p-5">
-      <div className="mb-1">
-        <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+    <div className="rounded-2xl bg-card p-5">
+      <div className={`mb-1 flex items-center gap-3 text-base font-bold ${accentClass}`}>
+        <Icon className="size-5 shrink-0" />
+        <span>{title}</span>
       </div>
 
       {rows.length === 0 ? (
@@ -277,6 +283,8 @@ export function HomeContent({
 
       <DashboardSection
         title="Offertes"
+        icon={FileText}
+        accentClass="text-primary"
         rows={quoteRows}
         onRowClick={(status) =>
           router.push(`/dashboard/quotes?filter=${status}`)
@@ -287,6 +295,8 @@ export function HomeContent({
 
       <DashboardSection
         title="Facturen"
+        icon={Receipt}
+        accentClass="text-teal-bright"
         rows={invoiceRows}
         onRowClick={(status) =>
           router.push(`/dashboard/invoices?filter=${status}`)
