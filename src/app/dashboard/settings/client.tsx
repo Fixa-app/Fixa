@@ -402,12 +402,7 @@ export function SettingsClient({
                   <div>
                     <p className="text-xs text-muted-foreground">Volgend offertenummer</p>
                     <p className="font-bold text-lg">
-                      {nextQuoteNumber
-                        ? formatQuoteNumber(
-                            initialSettings?.quote_number_format ?? "{YEAR}-{NUMBER}",
-                            nextQuoteNumber
-                          )
-                        : "Nog niet ingesteld"}
+                      {nextQuoteNumber ?? "Nog niet ingesteld"}
                     </p>
                   </div>
                   <button
