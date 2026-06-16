@@ -1,4 +1,6 @@
-export type Json =
+Need to install the following packages:
+supabase@2.106.0
+Ok to proceed? (y) export type Json =
   | string
   | number
   | boolean
@@ -490,6 +492,7 @@ export type Database = {
           id: string
           intro_text: string | null
           job_title: string | null
+          quote_number: string | null
           sent_at: string | null
           status: Database["public"]["Enums"]["quote_status"]
           subtotal: number | null
@@ -508,6 +511,7 @@ export type Database = {
           id?: string
           intro_text?: string | null
           job_title?: string | null
+          quote_number?: string | null
           sent_at?: string | null
           status: Database["public"]["Enums"]["quote_status"]
           subtotal?: number | null
@@ -526,6 +530,7 @@ export type Database = {
           id?: string
           intro_text?: string | null
           job_title?: string | null
+          quote_number?: string | null
           sent_at?: string | null
           status?: Database["public"]["Enums"]["quote_status"]
           subtotal?: number | null
