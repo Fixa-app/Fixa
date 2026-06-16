@@ -93,13 +93,6 @@ function calcTotals(items: LineItem[]) {
   return { subtotal, byTax, taxTotal, total: subtotal + taxTotal };
 }
 
-function formatQuoteNumber(format: string, num: number): string {
-  const year = new Date().getFullYear();
-  return format
-    .replace('{YEAR}', String(year))
-    .replace('{NUMBER}', String(num).padStart(3, '0'));
-}
-
 export default function NewQuotePreviewPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
@@ -113,7 +106,7 @@ export default function NewQuotePreviewPage() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoUploading, setLogoUploading] = useState(false);
   const [quoteNumberInput, setQuoteNumberInput] = useState("");
-  const [savedQuoteNumber, setSavedQuoteNumber] = useState<number | null>(null);
+  const [savedQuoteNumberStr, setSavedQuoteNumberStr] = useState<string | null>(null);
   const [savingNumber, setSavingNumber] = useState(false);
   const [numberSaved, setNumberSaved] = useState(false);
 
@@ -128,14 +121,20 @@ export default function NewQuotePreviewPage() {
       const json: QuoteData = await res.json();
       setData(json);
       setLogoUrl(json.company?.logo_url ?? null);
-      setSavedQuoteNumber(json.settings?.next_quote_number ?? null);
+
+      // Als next_quote_number al ingesteld is, gebruik dat als string
+      if (json.settings?.next_quote_number) {
+        setSavedQuoteNumberStr(String(json.settings.next_quote_number));
+        setNumberSaved(true);
+      }
+
       setLoading(false);
     }
     load();
   }, [id]);
 
   const needsLogo = !logoUrl;
-  const needsQuoteNumber = !savedQuoteNumber;
+  const needsQuoteNumber = !numberSaved;
   const needsSetup = needsLogo || needsQuoteNumber;
 
   async function handleLogoUpload(file: File) {
@@ -147,9 +146,14 @@ export default function NewQuotePreviewPage() {
     const ext = file.name.split(".").pop() ?? "png";
     const path = `${data.companyId}/logo.${ext}`;
 
-    const { error } = await supabase.storage.from("company-assets").upload(path, file, { upsert: true });
+    const { error } = await supabase.storage
+      .from("company-assets")
+      .upload(path, file, { upsert: true });
+
     if (!error) {
-      const { data: urlData } = supabase.storage.from("company-assets").getPublicUrl(path);
+      const { data: urlData } = supabase.storage
+        .from("company-assets")
+        .getPublicUrl(path);
       const url = urlData.publicUrl + `?t=${Date.now()}`;
 
       const userId = await getCurrentUserId();
@@ -159,23 +163,32 @@ export default function NewQuotePreviewPage() {
         body: JSON.stringify({ userId, logoUrl: url, companyId: data.companyId }),
       });
       setLogoUrl(url);
+    } else {
+      console.error("Logo upload error:", error);
     }
     setLogoUploading(false);
   }
 
   async function handleSaveQuoteNumber() {
-    if (!data) return;
-    const num = parseInt(quoteNumberInput);
-    if (!num || num < 1) return;
-
+    if (!data || !quoteNumberInput.trim()) return;
     setSavingNumber(true);
+
     const userId = await getCurrentUserId();
+    // Sla het volledige nummer op als string in last_parsed en als getal (laatste 4 cijfers) in next_quote_number
+    const numericPart = parseInt(quoteNumberInput.replace(/\D/g, "").slice(-4)) || 1;
+
     await fetch(`/api/quotes/${id}/preview`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, nextQuoteNumber: num, companyId: data.companyId }),
+      body: JSON.stringify({
+        userId,
+        nextQuoteNumber: numericPart,
+        quoteNumberString: quoteNumberInput.trim(),
+        companyId: data.companyId,
+      }),
     });
-    setSavedQuoteNumber(num);
+
+    setSavedQuoteNumberStr(quoteNumberInput.trim());
     setNumberSaved(true);
     setSavingNumber(false);
   }
@@ -212,262 +225,280 @@ export default function NewQuotePreviewPage() {
   const introText = resolveTokens(quote.intro_text ?? "", clientName, clientAddress);
   const disclaimerText = resolveTokens(quote.disclaimer ?? "", clientName, clientAddress);
   const { subtotal, byTax, taxTotal, total } = calcTotals(lineItems);
-  const quoteNumber = quote.quote_number ?? (savedQuoteNumber
-    ? formatQuoteNumber(settings?.quote_number_format ?? '{YEAR}-{NUMBER}', savedQuoteNumber)
-    : "—");
-  const quoteDate = new Date().toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
-  const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+  const quoteNumber = quote.quote_number ?? savedQuoteNumberStr ?? "—";
+  const quoteDate = new Date().toLocaleDateString("nl-NL", {
+    day: "numeric", month: "long", year: "numeric"
+  });
+  const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("nl-NL", {
+    day: "numeric", month: "long", year: "numeric"
+  });
 
   return (
-    <>
-      <div className="flex min-h-screen flex-col">
-        <div className="flex-1 p-4 md:p-6 mx-auto w-full max-w-2xl pb-32">
+    <div className="flex min-h-screen flex-col">
+      <div className="flex-1 p-4 md:p-6 mx-auto w-full max-w-2xl pb-32">
 
-          {/* Header */}
-          <div className="flex items-center gap-4 mb-6">
-            <button
-              onClick={() => router.push(`/dashboard/quotes/new/${id}/items`)}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Terug"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <div className="flex flex-1 items-center justify-between">
-              <div className="flex-1">
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                  <div className="h-full w-full bg-primary transition-all" />
-                </div>
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={() => router.push(`/dashboard/quotes/new/${id}/items`)}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Terug"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <div className="flex flex-1 items-center justify-between">
+            <div className="flex-1">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full w-full bg-primary transition-all" />
               </div>
-              <span className="ml-4 text-sm text-muted-foreground">3/3</span>
+            </div>
+            <span className="ml-4 text-sm text-muted-foreground">3/3</span>
+          </div>
+        </div>
+
+        <h1 className="font-display text-2xl font-bold mb-6">Controleer je offerte</h1>
+
+        {/* Setup kaarten */}
+        {needsSetup && (
+          <div className="mb-6 space-y-3">
+            <p className="text-sm text-muted-foreground">Stel dit in voordat je verstuurt:</p>
+
+            {/* Logo kaart */}
+            <div className="rounded-2xl bg-card p-5 space-y-3">
+              <div className="flex items-center gap-3">
+                <Camera className="h-5 w-5 text-primary flex-shrink-0" />
+                <p className="font-bold">Bedrijfslogo</p>
+              </div>
+              {logoUrl ? (
+                <div className="flex items-center gap-3">
+                  <img
+                    src={logoUrl}
+                    alt="Logo"
+                    className="h-10 w-auto object-contain rounded-lg border border-border p-1"
+                  />
+                  <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                    <Check className="h-4 w-4" />
+                    Logo toegevoegd
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    Zorg dat je logo een transparante achtergrond heeft en minimaal 300px breed is. JPG of PNG, max 1MB.
+                  </p>
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium hover:bg-muted/40 transition-colors">
+                    {logoUploading ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border border-muted-foreground border-t-transparent" />
+                    ) : (
+                      <Camera className="h-4 w-4 text-muted-foreground" />
+                    )}
+                    {logoUploading ? "Uploaden..." : "Logo uploaden"}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png"
+                      className="hidden"
+                      disabled={logoUploading}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleLogoUpload(f);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                </>
+              )}
+            </div>
+
+            {/* Offertenummer kaart */}
+            {needsQuoteNumber && (
+              <div className="rounded-2xl bg-card p-5 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Send className="h-5 w-5 text-primary flex-shrink-0" />
+                  <p className="font-bold">Offertenummering</p>
+                </div>
+                {numberSaved ? (
+                  <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                    <Check className="h-4 w-4" />
+                    Volgend nummer: {savedQuoteNumberStr}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {settings?.last_parsed_quote_number && (
+                      <p className="text-sm text-muted-foreground">
+                        Het offertenummer op de offerte die je deelde was:{" "}
+                        <span className="font-medium text-foreground">
+                          {settings.last_parsed_quote_number}
+                        </span>
+                      </p>
+                    )}
+                    <label className="text-sm font-medium" htmlFor="quote-number-input">
+                      Wat wordt je eerstvolgende offertenummer?
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="quote-number-input"
+                        type="text"
+                        value={quoteNumberInput}
+                        onChange={(e) => setQuoteNumberInput(e.target.value)}
+                        placeholder={settings?.last_parsed_quote_number ?? "Bijv. 2026-030"}
+                        className="flex-1 h-10 rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      />
+                      <Button
+                        onClick={handleSaveQuoteNumber}
+                        disabled={!quoteNumberInput.trim() || savingNumber}
+                      >
+                        {savingNumber ? "Bezig..." : "Opslaan"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Offerte preview — gedempt als setup nodig */}
+        <div className={`rounded-2xl border border-border bg-card overflow-hidden transition-opacity ${needsSetup ? "opacity-40 pointer-events-none select-none" : ""}`}>
+
+          {/* Bedrijfsinfo */}
+          <div className="p-6 border-b border-border">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                {logoUrl ? (
+                  <img src={logoUrl} alt={company?.name ?? ""} className="h-12 w-auto object-contain mb-2" />
+                ) : null}
+                <p className="font-bold">{company?.name}</p>
+                {company?.street && <p className="text-sm text-muted-foreground">{company.street}</p>}
+                {company?.postal && company?.city && (
+                  <p className="text-sm text-muted-foreground">{company.postal} {company.city}</p>
+                )}
+                {company?.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
+                {company?.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
+              </div>
+              <div className="text-right space-y-1 flex-shrink-0">
+                {company?.kvk && <p className="text-xs text-muted-foreground">KVK: {company.kvk}</p>}
+                {company?.vat_number && <p className="text-xs text-muted-foreground">BTW: {company.vat_number}</p>}
+                {company?.iban && <p className="text-xs text-muted-foreground">IBAN: {company.iban}</p>}
+              </div>
             </div>
           </div>
 
-          <h1 className="font-display text-2xl font-bold mb-6">Controleer je offerte</h1>
+          {/* Klant + offerte info */}
+          <div className="p-6 border-b border-border">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <p className="font-bold">{client?.name}</p>
+                {client?.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
+              </div>
+              <div className="text-right space-y-1 flex-shrink-0">
+                <p className="text-sm">
+                  <span className="text-muted-foreground">Offerte: </span>
+                  <span className="font-medium">{quoteNumber}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="text-muted-foreground">Datum: </span>
+                  <span className="font-medium">{quoteDate}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="text-muted-foreground">Geldig tot: </span>
+                  <span className="font-medium">{expiryDate}</span>
+                </p>
+              </div>
+            </div>
+          </div>
 
-          {/* Setup kaarten — toon alleen als iets ontbreekt */}
-          {needsSetup && (
-            <div className="mb-6 space-y-3">
-              <p className="text-sm text-muted-foreground">Stel dit in voordat je verstuurt:</p>
-
-              {/* Logo kaart */}
-              {
-                <div className="rounded-2xl bg-card p-5 space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Camera className="h-5 w-5 text-primary flex-shrink-0" />
-                    <p className="font-bold">Bedrijfslogo</p>
-                  </div>
-                  {logoUrl ? (
-                    <div className="flex items-center gap-3">
-                      <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain rounded-lg border border-border p-1" />
-                      <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
-                        <Check className="h-4 w-4" />
-                        Logo toegevoegd
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-sm text-muted-foreground">Zorg dat je logo een transparante achtergrond heeft en minimaal 300px breed is. JPG of PNG, max 1MB.</p>
-                      <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium hover:bg-muted/40 transition-colors">
-                        {logoUploading ? (
-                          <div className="h-4 w-4 animate-spin rounded-full border border-muted-foreground border-t-transparent" />
-                        ) : (
-                          <Camera className="h-4 w-4 text-muted-foreground" />
-                        )}
-                        {logoUploading ? "Uploaden..." : "Logo uploaden"}
-                        <input type="file" accept="image/jpeg,image/png" className="hidden" disabled={logoUploading}
-                          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleLogoUpload(f); e.target.value = ""; }} />
-                      </label>
-                    </>
-                  )}
-                </div>
-              }
-
-              {/* Offertenummer kaart */}
-              {needsQuoteNumber && (
-                <div className="rounded-2xl bg-card p-5 space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Send className="h-5 w-5 text-primary flex-shrink-0" />
-                    <p className="font-bold">Offertenummering</p>
-                  </div>
-                  {numberSaved ? (
-                    <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
-                      <Check className="h-4 w-4" />
-                      Volgend nummer: {formatQuoteNumber(settings?.quote_number_format ?? '{YEAR}-{NUMBER}', savedQuoteNumber!)}
-                    </div>
-                  ) : (
-                    <>
-                      {settings?.last_parsed_quote_number && (
-                        <p className="text-sm text-muted-foreground">
-                          Het offertenummer op de offerte die je deelde was:{" "}
-                          <span className="font-medium text-foreground">{settings.last_parsed_quote_number}</span>
-                        </p>
-                      )}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium" htmlFor="quote-number-input">
-                          Wat wordt je eerstvolgende offertenummer?
-                        </label>
-                        {!settings?.last_parsed_quote_number && (
-                          <p className="text-sm text-muted-foreground">Vul het nummer in dat je wilt gebruiken voor je eerste offerte.</p>
-                        )}
-                        <div className="flex items-center gap-2">
-                          <input
-                            id="quote-number-input"
-                            type="number"
-                            inputMode="numeric"
-                            value={quoteNumberInput}
-                            onChange={(e) => setQuoteNumberInput(e.target.value)}
-                            placeholder={settings?.last_parsed_quote_number ? "Bijv. " + (parseInt(settings.last_parsed_quote_number.replace(/\D/g, "").slice(-4) || "0") + 1) : "Bijv. 1"}
-                            className="flex-1 h-10 rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          />
-                          <Button
-                            onClick={handleSaveQuoteNumber}
-                            disabled={!quoteNumberInput || savingNumber}
-                          >
-                            {savingNumber ? "Bezig..." : "Opslaan"}
-                          </Button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
+          {/* Aanhef */}
+          {introText && (
+            <div className="p-6 border-b border-border">
+              <p className="text-sm whitespace-pre-line">{introText}</p>
             </div>
           )}
 
-          {/* Offerte document — altijd zichtbaar, maar visueel gedempt als setup nodig */}
-          <div className={`rounded-2xl border border-border bg-card overflow-hidden transition-opacity ${needsSetup ? "opacity-40 pointer-events-none select-none" : ""}`}>
-
-            {/* Header offerte */}
-            <div className="p-6 border-b border-border">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1">
-                  {logoUrl ? (
-                    <img src={logoUrl} alt={company?.name} className="h-12 w-auto object-contain mb-2" />
-                  ) : null}
-                  <p className="font-bold">{company?.name}</p>
-                  {company?.street && <p className="text-sm text-muted-foreground">{company.street}</p>}
-                  {company?.postal && company?.city && (
-                    <p className="text-sm text-muted-foreground">{company.postal} {company.city}</p>
-                  )}
-                  {company?.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
-                  {company?.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
-                </div>
-                <div className="text-right space-y-1 flex-shrink-0">
-                  {company?.kvk && <p className="text-xs text-muted-foreground">KVK: {company.kvk}</p>}
-                  {company?.vat_number && <p className="text-xs text-muted-foreground">BTW: {company.vat_number}</p>}
-                  {company?.iban && <p className="text-xs text-muted-foreground">IBAN: {company.iban}</p>}
-                </div>
-              </div>
-            </div>
-
-            {/* Klant + offerte info */}
-            <div className="p-6 border-b border-border">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="font-bold">{client?.name}</p>
-                  {client?.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
-                </div>
-                <div className="text-right space-y-1 flex-shrink-0">
-                  <p className="text-sm"><span className="text-muted-foreground">Offerte:</span> <span className="font-medium">{quoteNumber}</span></p>
-                  <p className="text-sm"><span className="text-muted-foreground">Datum:</span> <span className="font-medium">{quoteDate}</span></p>
-                  <p className="text-sm"><span className="text-muted-foreground">Geldig tot:</span> <span className="font-medium">{expiryDate}</span></p>
-                </div>
-              </div>
-            </div>
-
-            {/* Aanhef */}
-            {introText && (
-              <div className="p-6 border-b border-border">
-                <p className="text-sm whitespace-pre-line">{introText}</p>
-              </div>
-            )}
-
-            {/* Line items */}
-            <div className="p-6 border-b border-border">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left font-medium text-muted-foreground pb-2">Omschrijving</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-12">Aant.</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-20">Prijs</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-12">BTW</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-24">Totaal</th>
+          {/* Line items */}
+          <div className="p-6 border-b border-border overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left font-medium text-muted-foreground pb-2">Omschrijving</th>
+                  <th className="text-right font-medium text-muted-foreground pb-2 w-12">Aant.</th>
+                  <th className="text-right font-medium text-muted-foreground pb-2 w-20">Prijs</th>
+                  <th className="text-right font-medium text-muted-foreground pb-2 w-12">BTW</th>
+                  <th className="text-right font-medium text-muted-foreground pb-2 w-24">Totaal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lineItems.map((item) => (
+                  <tr key={item.id} className="border-b border-border/50">
+                    <td className="py-3">
+                      <p className="font-medium">{item.title || "—"}</p>
+                      {item.description && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                      )}
+                    </td>
+                    <td className="text-right py-3 text-muted-foreground">{item.quantity}</td>
+                    <td className="text-right py-3">{formatCurrency(item.rate)}</td>
+                    <td className="text-right py-3 text-muted-foreground">{item.tax_percentage}%</td>
+                    <td className="text-right py-3 font-medium">{formatCurrency(item.quantity * item.rate)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {lineItems.map((item) => (
-                    <tr key={item.id} className="border-b border-border/50">
-                      <td className="py-3">
-                        <p className="font-medium">{item.title || "—"}</p>
-                        {item.description && (
-                          <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
-                        )}
-                      </td>
-                      <td className="text-right py-3 text-muted-foreground">{item.quantity}</td>
-                      <td className="text-right py-3">{formatCurrency(item.rate)}</td>
-                      <td className="text-right py-3 text-muted-foreground">{item.tax_percentage}%</td>
-                      <td className="text-right py-3 font-medium">{formatCurrency(item.quantity * item.rate)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Totalen */}
-            <div className="p-6 border-b border-border">
-              <div className="ml-auto max-w-xs space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotaal ex BTW</span>
-                  <span>{formatCurrency(subtotal)}</span>
-                </div>
-                {Object.entries(byTax).map(([rate, base]) =>
-                  base > 0 ? (
-                    <div key={rate} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{rate}% BTW</span>
-                      <span>{formatCurrency(base * (Number(rate) / 100))}</span>
-                    </div>
-                  ) : null
-                )}
-                <div className="flex justify-between font-bold pt-2 border-t border-border">
-                  <span>Totaal incl. BTW</span>
-                  <span>{formatCurrency(total)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            {disclaimerText && (
-              <div className="p-6">
-                <p className="text-xs text-muted-foreground whitespace-pre-line">{disclaimerText}</p>
-              </div>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
 
-        {/* Sticky footer */}
-        <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-          <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
-            <button
-              onClick={() => router.push("/dashboard/quotes")}
-              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-            >
-              Opslaan als concept
-            </button>
-            <Button
-              className="w-full"
-              onClick={handleSend}
-              disabled={sending || sent || needsSetup}
-            >
-              {sent ? "✓ Verstuurd" : sending ? "Bezig..." : (
-                <span className="flex items-center gap-2">
-                  <Send className="h-4 w-4" />
-                  Offerte versturen
-                </span>
+          {/* Totalen */}
+          <div className="p-6 border-b border-border">
+            <div className="ml-auto max-w-xs space-y-1">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Subtotaal ex BTW</span>
+                <span>{formatCurrency(subtotal)}</span>
+              </div>
+              {Object.entries(byTax).map(([rate, base]) =>
+                base > 0 ? (
+                  <div key={rate} className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{rate}% BTW</span>
+                    <span>{formatCurrency(base * (Number(rate) / 100))}</span>
+                  </div>
+                ) : null
               )}
-            </Button>
+              <div className="flex justify-between font-bold pt-2 border-t border-border">
+                <span>Totaal incl. BTW</span>
+                <span>{formatCurrency(total)}</span>
+              </div>
+            </div>
           </div>
+
+          {/* Disclaimer */}
+          {disclaimerText && (
+            <div className="p-6">
+              <p className="text-xs text-muted-foreground whitespace-pre-line">{disclaimerText}</p>
+            </div>
+          )}
         </div>
       </div>
-    </>
+
+      {/* Sticky footer */}
+      <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
+          <button
+            onClick={() => router.push("/dashboard/quotes")}
+            className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+          >
+            Opslaan als concept
+          </button>
+          <Button
+            className="w-full"
+            onClick={handleSend}
+            disabled={sending || sent || needsSetup}
+          >
+            {sent ? "✓ Verstuurd" : sending ? "Bezig..." : (
+              <span className="flex items-center gap-2">
+                <Send className="h-4 w-4" />
+                Offerte versturen
+              </span>
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
