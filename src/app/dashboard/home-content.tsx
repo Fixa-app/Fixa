@@ -11,6 +11,7 @@ import {
   FileText,
   Hammer,
   Receipt,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,126 +59,20 @@ function StatusPill({ status, label }: { status: string; label: string }) {
   );
 }
 
-// Funnel overview across the four pipeline stages. The icon + label header on
-// each card uses a bright/primary brand accent.
-const WORKFLOW_STAGES = [
-  {
-    key: "requests",
-    label: "Aanvragen",
-    icon: Inbox,
-    accentClass: "text-burgundy-bright",
-    count: 0,
-    amount: null,
-    stage: "Nieuw",
-    subs: [
-      ["Beoordeling klaar", 0],
-      ["Te laat", 0],
-    ],
-  },
-  {
-    key: "quotes",
-    label: "Offertes",
-    icon: FileText,
-    accentClass: "text-primary",
-    count: 0,
-    amount: null,
-    stage: "Goedgekeurd",
-    subs: [
-      ["Concept", 0],
-      ["Wijziging gevraagd", 0],
-    ],
-  },
-  {
-    key: "jobs",
-    label: "Opdrachten",
-    icon: Hammer,
-    accentClass: "text-violet-bright",
-    count: 0,
-    amount: null,
-    stage: "Te factureren",
-    subs: [
-      ["Actief", 0],
-      ["Actie vereist", 0],
-    ],
-  },
-  {
-    key: "invoices",
-    label: "Facturen",
-    icon: Receipt,
-    accentClass: "text-teal-bright",
-    count: 1,
-    amount: "€7.500",
-    stage: "Wacht op betaling",
-    subs: [
-      ["Concept", 0],
-      ["Achterstallig", 0],
-    ],
-  },
-] as const;
-
-function WorkflowSection() {
-  return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold tracking-tight">Workflow</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {WORKFLOW_STAGES.map((s) => {
-          const Icon = s.icon;
-          return (
-            <div key={s.key} className="rounded-2xl bg-card p-5">
-              <div
-                className={`flex items-center gap-3 text-base font-bold ${s.accentClass}`}
-              >
-                <Icon className="size-5 shrink-0" />
-                <span>{s.label}</span>
-              </div>
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="font-display text-4xl font-bold leading-none">
-                  {s.count}
-                </span>
-                {s.amount && (
-                  <span className="text-sm text-muted-foreground">
-                    {s.amount}
-                  </span>
-                )}
-              </div>
-              <h3 className="mt-4 text-base font-bold">{s.stage}</h3>
-              <div className="mt-2 space-y-1">
-                {s.subs.map(([label, n]) => (
-                  <p key={label} className="text-sm text-muted-foreground">
-                    {label} ({n})
-                  </p>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 type SectionProps = {
   title: string;
   rows: DashboardStatusRow[];
   onRowClick: (status: string) => void;
-  onAddClick: () => void;
   onViewAll: () => void;
-  addLabel: string;
   emptyMessage: string;
-  emptyAction: string;
-  showAdd?: boolean;
 };
 
 function DashboardSection({
   title,
   rows,
   onRowClick,
-  onAddClick,
   onViewAll,
-  addLabel,
   emptyMessage,
-  emptyAction,
-  showAdd = true,
 }: SectionProps) {
   const [visible, setVisible] = useState(false);
 
@@ -188,37 +83,13 @@ function DashboardSection({
 
   return (
     <div className="rounded-2xl bg-muted/50 p-5">
-      <div className="mb-1 flex items-start justify-between">
+      <div className="mb-1">
         <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-        {showAdd && (
-          <div className="group relative">
-            <button
-              onClick={onAddClick}
-              aria-label={addLabel}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-            <span className="pointer-events-none absolute right-0 top-[-36px] hidden whitespace-nowrap rounded-lg border border-border bg-background px-2 py-1 text-xs group-hover:block">
-              {addLabel}
-            </span>
-          </div>
-        )}
       </div>
 
       {rows.length === 0 ? (
         <div className="mt-4">
           <p className="text-sm text-muted-foreground">{emptyMessage}</p>
-          {showAdd && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onAddClick}
-              className="mt-3"
-            >
-              {emptyAction}
-            </Button>
-          )}
         </div>
       ) : (
         <>
@@ -233,7 +104,7 @@ function DashboardSection({
               <button
                 key={row.status}
                 onClick={() => onRowClick(row.status)}
-                aria-label={`${title.slice(0, -1)}status: ${row.label}. ${row.count} items. ${formatCurrency(row.total)} totaal.`}
+                aria-label={`${title} status: ${row.label}. ${row.count} items. ${formatCurrency(row.total)} totaal.`}
                 className="grid w-full grid-cols-[1fr_48px_80px] items-center gap-2 rounded-xl px-1 py-2 text-left transition-colors hover:bg-background active:scale-[0.99]"
                 style={{
                   opacity: visible ? 1 : 0,
@@ -264,6 +135,78 @@ function DashboardSection({
   );
 }
 
+function FloatingAddButton({ onSelect }: { onSelect: (type: string) => void }) {
+  const [open, setOpen] = useState(false);
+
+  const options = [
+    { key: "request", label: "Aanvraag", icon: Inbox, disabled: false },
+    { key: "quote", label: "Offerte", icon: FileText, disabled: false },
+    { key: "invoice", label: "Factuur", icon: Receipt, disabled: false },
+    { key: "job", label: "Opdracht", icon: Hammer, disabled: true },
+  ];
+
+  return (
+    <>
+      {/* Backdrop */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+        {/* Options */}
+        {open && (
+          <div className="flex flex-col items-end gap-2">
+            {options.map((option) => {
+              const Icon = option.icon;
+              return (
+                <button
+                  key={option.key}
+                  onClick={() => {
+                    if (!option.disabled) {
+                      setOpen(false);
+                      onSelect(option.key);
+                    }
+                  }}
+                  disabled={option.disabled}
+                  className={`flex items-center gap-3 rounded-2xl border border-border bg-background px-4 py-3 shadow-md transition-all animate-in fade-in slide-in-from-bottom-2 ${
+                    option.disabled
+                      ? "cursor-not-allowed opacity-40"
+                      : "hover:bg-muted active:scale-[0.98]"
+                  }`}
+                >
+                  <span className="text-sm font-medium">
+                    {option.label}
+                    {option.disabled && (
+                      <span className="ml-2 text-xs text-muted-foreground">binnenkort</span>
+                    )}
+                  </span>
+                  <Icon className="h-4 w-4 text-muted-foreground" />
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* FAB */}
+        <button
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Sluiten" : "Nieuw item toevoegen"}
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-95"
+        >
+          {open ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Plus className="h-6 w-6" />
+          )}
+        </button>
+      </div>
+    </>
+  );
+}
+
 export function HomeContent({
   firstName,
   onboardingCompleted,
@@ -275,7 +218,6 @@ export function HomeContent({
 }) {
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
-  // Default matches the request; corrected to the local time of day on mount.
   const [greeting, setGreeting] = useState("Goedenavond");
 
   useEffect(() => {
@@ -295,6 +237,12 @@ export function HomeContent({
 
   const quoteRows = getQuoteDashboardRows(MOCK_QUOTES);
   const invoiceRows = getInvoiceDashboardRows(MOCK_INVOICES);
+
+  function handleAddSelect(type: string) {
+    if (type === "quote") router.push("/dashboard/quotes/new");
+    if (type === "request") router.push("/dashboard/requests/new");
+    if (type === "invoice") router.push("/dashboard/invoices/new");
+  }
 
   return (
     <div className="space-y-4 px-4 py-8 lg:px-6 lg:pt-6">
@@ -327,20 +275,14 @@ export function HomeContent({
         </div>
       )}
 
-      <WorkflowSection />
-
       <DashboardSection
         title="Offertes"
         rows={quoteRows}
         onRowClick={(status) =>
           router.push(`/dashboard/quotes?filter=${status}`)
         }
-        onAddClick={() => router.push("/dashboard/quotes/new")}
         onViewAll={() => router.push("/dashboard/quotes")}
-        addLabel="Nieuwe offerte toevoegen"
         emptyMessage="Alles op orde. Klaar om je volgende offerte te sturen?"
-        emptyAction="Nieuwe offerte"
-        showAdd={true}
       />
 
       <DashboardSection
@@ -349,13 +291,11 @@ export function HomeContent({
         onRowClick={(status) =>
           router.push(`/dashboard/invoices?filter=${status}`)
         }
-        onAddClick={() => router.push("/dashboard/invoices/new")}
         onViewAll={() => router.push("/dashboard/invoices")}
-        addLabel="Nieuwe factuur toevoegen"
         emptyMessage="Geen openstaande facturen."
-        emptyAction="Nieuwe factuur"
-        showAdd={false}
       />
+
+      <FloatingAddButton onSelect={handleAddSelect} />
     </div>
   );
 }

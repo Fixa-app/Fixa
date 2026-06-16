@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, Trash2, Plus, Camera } from "lucide-react";
+import { ArrowLeft, Trash2, Plus } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -19,13 +19,6 @@ type LineItem = {
   tax_percentage: number;
   item_type: ItemType;
   sort_order: number;
-};
-
-type Photo = {
-  id: string;
-  storage_path: string;
-  url: string | null;
-  line_item_id: string | null;
 };
 
 async function getCurrentUserId(): Promise<string | null> {
@@ -86,15 +79,12 @@ export default function NewQuoteItemsPage() {
   const { id } = useParams<{ id: string }>();
 
   const [items, setItems] = useState<LineItem[]>([]);
-  const [photos, setPhotos] = useState<Photo[]>([]);
   const [jobTitle, setJobTitle] = useState("");
   const [introText, setIntroText] = useState("");
   const [disclaimer, setDisclaimer] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
-  const [uploadingFor, setUploadingFor] = useState<string | null>(null);
-  const [maxReachedFor, setMaxReachedFor] = useState<string | null>(null);
 
   const introRef = useAutoResize(introText);
   const disclaimerRef = useAutoResize(disclaimer);
@@ -104,88 +94,20 @@ export default function NewQuoteItemsPage() {
       const userId = await getCurrentUserId();
       if (!userId) return;
 
-      const [itemsRes, photosRes] = await Promise.all([
-        fetch(`/api/quotes/${id}/items?userId=${userId}`),
-        fetch(`/api/quotes/${id}/photos?userId=${userId}`),
-      ]);
+      const res = await fetch(`/api/quotes/${id}/items?userId=${userId}`);
+      if (!res.ok) return;
 
-      if (itemsRes.ok) {
-        const { quote, lineItems, defaults, clientName, clientAddress } = await itemsRes.json();
-        setItems(lineItems);
-        setJobTitle(quote.job_title ?? "");
-        const defaultIntro = `Beste [klantnaam],\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.\n\n[adres]`;
-        setIntroText(quote.intro_text ?? defaults.intro ?? defaultIntro);
-        setDisclaimer(quote.disclaimer ?? defaults.disclaimer ?? "Deze offerte is geldig tot [offertedatum + 30 dagen]. Na deze periode kunnen prijzen wijzigen.");
-      }
+      const { quote, lineItems, defaults, clientName } = await res.json();
 
-      if (photosRes.ok) {
-        const { photos } = await photosRes.json();
-        setPhotos(photos ?? []);
-      }
-
+      setItems(lineItems);
+      setJobTitle(quote.job_title ?? "");
+      const defaultIntro = `Beste [klantnaam],\n\nHierbij ontvangt u van ons de offerte voor de onderstaande werkzaamheden.\n\n[adres]`;
+      setIntroText(quote.intro_text ?? defaults.intro ?? defaultIntro);
+      setDisclaimer(quote.disclaimer ?? defaults.disclaimer ?? "Deze offerte is geldig tot [offertedatum + 30 dagen]. Na deze periode kunnen prijzen wijzigen.");
       setLoading(false);
     }
     load();
   }, [id]);
-
-  function photosForItem(itemId: string) {
-    return photos.filter(p => p.line_item_id === itemId);
-  }
-
-  async function handlePhotoUpload(itemId: string, file: File) {
-    const userId = await getCurrentUserId();
-    if (!userId) return;
-
-    setUploadingFor(itemId);
-
-    // Upload to Supabase Storage via browser client
-    const supabase = createClient();
-    const ext = file.name.split('.').pop() ?? 'jpg';
-    const path = `${userId}/${id}/${itemId}/${Date.now()}.${ext}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('quote-photos')
-      .upload(path, file);
-
-    if (uploadError) {
-      console.error('Upload error:', uploadError);
-      setUploadingFor(null);
-      return;
-    }
-
-    // Save reference via API
-    const res = await fetch(`/api/quotes/${id}/photos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, storagePath: path, lineItemId: itemId, sortOrder: photosForItem(itemId).length }),
-    });
-
-    if (res.ok) {
-      const { photo } = await res.json();
-      setPhotos(prev => [...prev, photo]);
-    }
-
-    setUploadingFor(null);
-  }
-
-  async function handlePhotoDelete(photo: Photo) {
-    const userId = await getCurrentUserId();
-    if (!userId) return;
-
-    await fetch(`/api/quotes/${id}/photos?userId=${userId}&photoId=${photo.id}&storagePath=${encodeURIComponent(photo.storage_path)}`, {
-      method: 'DELETE',
-    });
-
-    setPhotos(prev => {
-      const updated = prev.filter(p => p.id !== photo.id);
-      // Clear max warning if we now have room
-      if (photo.line_item_id) {
-        const remaining = updated.filter(p => p.line_item_id === photo.line_item_id).length;
-        if (remaining < 3) setMaxReachedFor(null);
-      }
-      return updated;
-    });
-  }
 
   async function saveQuoteField(field: string, value: string) {
     const userId = await getCurrentUserId();
@@ -225,7 +147,6 @@ export default function NewQuoteItemsPage() {
     if (!userId) return;
     await fetch(`/api/quotes/${id}/items?userId=${userId}&itemId=${itemId}`, { method: "DELETE" });
     setItems(prev => prev.filter(i => i.id !== itemId));
-    setPhotos(prev => prev.filter(p => p.line_item_id !== itemId));
   }
 
   function handleChange(itemId: string, field: keyof LineItem, value: unknown) {
@@ -291,10 +212,10 @@ export default function NewQuoteItemsPage() {
             </div>
           </div>
 
-          {/* Job title */}
-          <div className="space-y-2">
+          {/* Klusnaam */}
+          <div className="space-y-3">
             <h1 className="font-display text-2xl font-bold">Wat offreer je?</h1>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="job-title">Klusnaam</label>
               <input
                 id="job-title"
@@ -311,167 +232,85 @@ export default function NewQuoteItemsPage() {
 
           {/* Line items */}
           <div className="space-y-4">
-            {items.map((item) => {
-              const itemPhotos = photosForItem(item.id);
-              const isUploading = uploadingFor === item.id;
+            {items.map((item) => (
+              <div key={item.id} className="rounded-2xl border border-border bg-card p-4 space-y-4">
 
-              return (
-                <div key={item.id} className="rounded-2xl border border-border bg-card p-4 space-y-4">
-
-                  {/* Title + delete */}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={item.title ?? ""}
-                      onChange={(e) => handleChange(item.id, "title", e.target.value)}
-                      placeholder="Bijv. Uurloon, Tegelwerk, Reiskosten"
-                      className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      aria-label="Verwijder dit item"
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-muted transition-colors flex-shrink-0"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  {/* Photo upload — max 3 vakjes */}
-                  <div className="flex gap-2">
-                    {Array.from({ length: 3 }).map((_, slotIndex) => {
-                      const photo = itemPhotos[slotIndex];
-                      const isThisSlotUploading = isUploading && !photo && slotIndex === itemPhotos.length;
-
-                      if (photo) {
-                        // Gevuld vakje
-                        return (
-                          <div key={photo.id} className="group relative h-20 w-20 flex-shrink-0">
-                            {photo.url && (
-                              <img
-                                src={photo.url}
-                                alt="Foto"
-                                className="h-full w-full rounded-lg object-cover"
-                              />
-                            )}
-                            <button
-                              onClick={() => handlePhotoDelete(photo)}
-                              className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm cursor-pointer hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
-                              aria-label="Verwijder foto"
-                            >
-                              <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
-                            </button>
-                          </div>
-                        );
-                      }
-
-                      if (slotIndex === itemPhotos.length) {
-                        // Eerste lege slot — upload knop
-                        return (
-                          <label
-                            key={`slot-${slotIndex}`}
-                            className="flex h-20 w-20 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 transition-colors hover:bg-muted/60"
-                          >
-                            {isThisSlotUploading ? (
-                              <div className="h-4 w-4 animate-spin rounded-full border border-muted-foreground border-t-transparent" />
-                            ) : (
-                              <Camera className="h-5 w-5 text-muted-foreground" />
-                            )}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              className="hidden"
-                              disabled={isUploading}
-                              onChange={(e) => {
-                                const files = Array.from(e.target.files ?? []);
-                                const remaining = 3 - itemPhotos.length;
-                                if (files.length > remaining) {
-                                  setMaxReachedFor(item.id);
-                                }
-                                files.slice(0, remaining).forEach(file => handlePhotoUpload(item.id, file));
-                                e.target.value = '';
-                              }}
-                            />
-                          </label>
-                        );
-                      }
-
-                      // Leeg slot na de upload knop — disabled weergave
-                      return (
-                        <div
-                          key={`slot-${slotIndex}`}
-                          className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-lg border border-dashed border-border/40 bg-muted/10"
-                        >
-                          <Camera className="h-5 w-5 text-muted-foreground/30" />
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {maxReachedFor === item.id && (
-                    <p className="text-xs text-muted-foreground animate-in fade-in">
-                      Maximum 3 foto's per post bereikt
-                    </p>
-                  )}
-
-                  {/* Description */}
+                {/* Title + delete */}
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    value={item.description}
-                    onChange={(e) => handleChange(item.id, "description", e.target.value)}
-                    placeholder="Beschrijf kort de werkzaamheden"
-                    className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    value={item.title ?? ""}
+                    onChange={(e) => handleChange(item.id, "title", e.target.value)}
+                    placeholder="Bijv. Uurloon, Tegelwerk, Reiskosten"
+                    className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    aria-label="Verwijder dit item"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-muted transition-colors flex-shrink-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
 
-                  {/* Quantity + Rate + Tax */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-xs text-muted-foreground">Aantal</label>
+                {/* Description */}
+                <input
+                  type="text"
+                  value={item.description}
+                  onChange={(e) => handleChange(item.id, "description", e.target.value)}
+                  placeholder="Beschrijf kort de werkzaamheden"
+                  className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+
+                {/* Quantity + Rate + Tax */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">Aantal</label>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={item.quantity}
+                      onChange={(e) => handleChange(item.id, "quantity", Number(e.target.value) || 0)}
+                      className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">Stukprijs</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">€</span>
                       <input
                         type="number"
-                        inputMode="numeric"
-                        value={item.quantity}
-                        onChange={(e) => handleChange(item.id, "quantity", Number(e.target.value) || 0)}
-                        className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        inputMode="decimal"
+                        value={item.rate}
+                        onChange={(e) => handleChange(item.id, "rate", Number(e.target.value) || 0)}
+                        className="w-full h-10 rounded-lg border border-input bg-background pl-7 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       />
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-xs text-muted-foreground">Stukprijs</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">€</span>
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          value={item.rate}
-                          onChange={(e) => handleChange(item.id, "rate", Number(e.target.value) || 0)}
-                          className="w-full h-10 rounded-lg border border-input bg-background pl-7 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs text-muted-foreground">BTW</label>
-                      <select
-                        value={item.tax_percentage}
-                        onChange={(e) => handleChange(item.id, "tax_percentage", Number(e.target.value) as TaxRate)}
-                        className="w-full h-10 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <option value={21}>21%</option>
-                        <option value={9}>9%</option>
-                        <option value={0}>0%</option>
-                      </select>
-                    </div>
                   </div>
-
-                  {item.quantity > 0 && item.rate > 0 && (
-                    <p className="text-sm text-muted-foreground text-right">
-                      Subtotaal (ex BTW):{" "}
-                      <span className="font-medium text-foreground">
-                        {formatCurrency(calcItemSubtotal(item))}
-                      </span>
-                    </p>
-                  )}
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">BTW</label>
+                    <select
+                      value={item.tax_percentage}
+                      onChange={(e) => handleChange(item.id, "tax_percentage", Number(e.target.value) as TaxRate)}
+                      className="w-full h-10 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value={21}>21%</option>
+                      <option value={9}>9%</option>
+                      <option value={0}>0%</option>
+                    </select>
+                  </div>
                 </div>
-              );
-            })}
+
+                {item.quantity > 0 && item.rate > 0 && (
+                  <p className="text-sm text-muted-foreground text-right">
+                    Subtotaal (ex BTW):{" "}
+                    <span className="font-medium text-foreground">
+                      {formatCurrency(calcItemSubtotal(item))}
+                    </span>
+                  </p>
+                )}
+              </div>
+            ))}
 
             <button
               onClick={handleAdd}
