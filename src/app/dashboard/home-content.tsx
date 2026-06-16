@@ -88,9 +88,9 @@ function DashboardSection({
 
   return (
     <div className="rounded-2xl bg-card p-5">
-      <div className={`mb-1 flex items-center gap-3 text-base font-bold ${accentClass}`}>
-        <Icon className="size-5 shrink-0" />
-        <span>{title}</span>
+      <div className="mb-1 flex items-center gap-3">
+        <Icon className={`size-5 shrink-0 ${accentClass}`} />
+        <span className="text-base font-bold text-foreground">{title}</span>
       </div>
 
       {rows.length === 0 ? (
@@ -145,10 +145,10 @@ function FloatingAddButton({ onSelect }: { onSelect: (type: string) => void }) {
   const [open, setOpen] = useState(false);
 
   const options = [
-    { key: "request", label: "Aanvraag", icon: Inbox, disabled: false },
-    { key: "quote", label: "Offerte", icon: FileText, disabled: false },
-    { key: "invoice", label: "Factuur", icon: Receipt, disabled: false },
-    { key: "job", label: "Opdracht", icon: Hammer, disabled: true },
+    { key: "request", label: "Aanvraag", icon: Inbox, iconClass: "text-burgundy-bright", disabled: false },
+    { key: "quote", label: "Offerte", icon: FileText, iconClass: "text-primary", disabled: false },
+    { key: "invoice", label: "Factuur", icon: Receipt, iconClass: "text-teal-bright", disabled: false },
+    { key: "job", label: "Opdracht", icon: Hammer, iconClass: "text-violet-bright", disabled: true },
   ];
 
   return (
@@ -189,7 +189,7 @@ function FloatingAddButton({ onSelect }: { onSelect: (type: string) => void }) {
                       <span className="ml-2 text-xs text-muted-foreground">binnenkort</span>
                     )}
                   </span>
-                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  <Icon className={`h-4 w-4 ${option.disabled ? "text-muted-foreground" : option.iconClass}`} />
                 </button>
               );
             })}
