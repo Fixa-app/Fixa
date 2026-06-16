@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { DashboardSidebar } from "./sidebar";
 import { DashboardHeader } from "./header";
 import { ONBOARDING_TOTAL, onboardingCompletedCount } from "./onboarding-steps";
@@ -10,7 +11,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -40,23 +41,20 @@ export default async function DashboardLayout({
       companyName = active.company_name ?? "";
       role = active.user_role ?? "";
 
-      // Check logo and quote numbering
-      const { data: company } = await supabase
-        .from("companies")
-        .select("logo_url")
-        .eq("id", activeCompanyId)
-        .single();
+      // Service role client om RLS te omzeilen
+      const service = createServiceClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        { auth: { autoRefreshToken: false, persistSession: false } }
+      );
 
-      const { data: settings } = await supabase
-        .from("company_settings")
-        .select("next_quote_number, quote_number_format")
-        .eq("company_id", activeCompanyId)
-        .single();
+      const [{ data: company }, { data: settings }] = await Promise.all([
+        service.from("companies").select("logo_url").eq("id", activeCompanyId).single(),
+        service.from("company_settings").select("next_quote_number, quote_number_format").eq("company_id", activeCompanyId).single(),
+      ]);
 
       hasLogo = !!company?.logo_url;
-      hasQuoteNumber = !!(
-        settings?.next_quote_number && settings?.quote_number_format
-      );
+      hasQuoteNumber = !!(settings?.next_quote_number && settings?.quote_number_format);
     }
   }
 
