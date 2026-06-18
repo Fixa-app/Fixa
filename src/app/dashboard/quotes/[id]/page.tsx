@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import {
   ArrowLeft,
-  Mail,
+  Phone,
+  MessageCircle,
   MoreVertical,
   Pencil,
   Archive,
@@ -69,7 +70,7 @@ const STATUS_BADGE_VARIANT: Record<QuoteStatus, "default" | "secondary" | "teal"
   archived: "secondary",
 };
 
-const STATUS_OPTIONS: QuoteStatus[] = [
+const WORKFLOW_STATUS_OPTIONS: QuoteStatus[] = [
   "draft",
   "awaiting_response",
   "ready_to_schedule",
@@ -115,6 +116,14 @@ function calcTotals(items: LineItem[]) {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function toWhatsAppNumber(phone: string): string {
+  // Verwacht NL-nummers; +31 of 06 formaat naar internationaal zonder + en spaties
+  const digits = phone.replace(/[^\d]/g, "");
+  if (digits.startsWith("31")) return digits;
+  if (digits.startsWith("0")) return "31" + digits.slice(1);
+  return digits;
 }
 
 export default function QuoteDetailPage() {
@@ -168,12 +177,15 @@ export default function QuoteDetailPage() {
 
   async function handleArchive() {
     if (!data) return;
+    setUpdatingStatus(true);
     const userId = await getCurrentUserId();
     await fetch(`/api/quotes/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, status: "archived" }),
     });
+    setUpdatingStatus(false);
+    setStatusSheetOpen(false);
     setArchiveConfirmOpen(false);
     router.push("/dashboard/quotes");
   }
@@ -194,6 +206,10 @@ export default function QuoteDetailPage() {
   const { subtotal, byTax, total } = calcTotals(lineItems);
   const canConvert = quote.status === "ready_to_schedule";
   const wasEdited = quote.updated_at !== quote.created_at;
+  const whatsappHref = client?.phone
+    ? `https://wa.me/${toWhatsAppNumber(client.phone)}`
+    : undefined;
+  const phoneHref = client?.phone ? `tel:${client.phone}` : undefined;
 
   return (
     <>
@@ -224,13 +240,26 @@ export default function QuoteDetailPage() {
             <div className="flex items-center justify-between">
               <h2 className="font-display text-xl font-bold">Klant</h2>
               <div className="flex items-center gap-2">
-                <a
-                  href={client?.email ? `mailto:${client.email}` : undefined}
-                  aria-label="Stuur e-mail naar klant"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-muted hover:bg-muted/70 transition-colors"
-                >
-                  <Mail className="h-4 w-4" />
-                </a>
+                {phoneHref && (
+                  <a
+                    href={phoneHref}
+                    aria-label="Bel klant"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-muted hover:bg-muted/70 transition-colors"
+                  >
+                    <Phone className="h-4 w-4" />
+                  </a>
+                )}
+                {whatsappHref && (
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Stuur WhatsApp naar klant"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-muted hover:bg-muted/70 transition-colors"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </a>
+                )}
                 <div className="relative" ref={overflowRef}>
                   <button
                     onClick={() => setOverflowOpen((o) => !o)}
@@ -242,11 +271,10 @@ export default function QuoteDetailPage() {
                   {overflowOpen && (
                     <div className="absolute right-0 top-11 z-10 w-48 rounded-xl border border-border bg-background shadow-md animate-in fade-in duration-200">
                       <button
-                        onClick={() => { setOverflowOpen(false); setArchiveConfirmOpen(true); }}
+                        onClick={() => { setOverflowOpen(false); setStatusSheetOpen(true); }}
                         className="flex w-full items-center gap-2 px-4 py-3 text-sm text-left hover:bg-muted/40 transition-colors rounded-xl"
                       >
-                        <Archive className="h-4 w-4 text-muted-foreground" />
-                        Offerte archiveren
+                        Status wijzigen
                       </button>
                     </div>
                   )}
@@ -261,15 +289,9 @@ export default function QuoteDetailPage() {
                 {client?.phone && <p className="text-sm text-muted-foreground">{client.phone}</p>}
                 {client?.email && <p className="text-sm text-muted-foreground">{client.email}</p>}
               </div>
-              <button
-                onClick={() => setStatusSheetOpen(true)}
-                aria-label={`Status: ${STATUS_LABEL[quote.status]}. Tik om te wijzigen.`}
-                className="flex-shrink-0"
-              >
-                <Badge variant={STATUS_BADGE_VARIANT[quote.status]}>
-                  {STATUS_LABEL[quote.status]}
-                </Badge>
-              </button>
+              <Badge variant={STATUS_BADGE_VARIANT[quote.status]} className="flex-shrink-0">
+                {STATUS_LABEL[quote.status]}
+              </Badge>
             </div>
           </div>
 
@@ -414,7 +436,7 @@ export default function QuoteDetailPage() {
             <div className="mx-auto mt-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-muted" />
             <div className="p-6 space-y-1">
               <Drawer.Title className="font-display text-xl font-bold mb-3">Status wijzigen</Drawer.Title>
-              {STATUS_OPTIONS.map((status) => (
+              {WORKFLOW_STATUS_OPTIONS.map((status) => (
                 <button
                   key={status}
                   onClick={() => handleStatusChange(status)}
@@ -425,6 +447,17 @@ export default function QuoteDetailPage() {
                   {quote.status === status && <Check className="h-4 w-4 text-primary" />}
                 </button>
               ))}
+
+              <div className="border-t border-border my-2" />
+
+              <button
+                onClick={() => { setStatusSheetOpen(false); setArchiveConfirmOpen(true); }}
+                disabled={updatingStatus}
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-3 text-left hover:bg-muted/40 transition-colors text-muted-foreground"
+              >
+                <Archive className="h-4 w-4" />
+                <span className="text-sm font-medium">Archiveren</span>
+              </button>
             </div>
           </Drawer.Content>
         </Drawer.Portal>
