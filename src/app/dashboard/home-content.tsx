@@ -15,12 +15,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  MOCK_QUOTES,
   MOCK_INVOICES,
-  getQuoteDashboardRows,
+  QUOTE_STATUS_LABELS,
+  DASHBOARD_QUOTE_STATUSES,
   getInvoiceDashboardRows,
   type DashboardStatusRow,
 } from "@/lib/mock-data";
+import type { Database } from "@/lib/database.types";
+
+type QuoteStatus = Database["public"]["Enums"]["quote_status"];
+
+type Quote = {
+  id: string;
+  status: QuoteStatus;
+  total_amount: number;
+};
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("nl-NL", {
@@ -56,6 +65,20 @@ function StatusPill({ status, label }: { status: string; label: string }) {
       <ChevronRight className="size-3" />
     </Badge>
   );
+}
+
+function getQuoteRows(quotes: Quote[]): DashboardStatusRow[] {
+  return DASHBOARD_QUOTE_STATUSES.reduce<DashboardStatusRow[]>((acc, status) => {
+    const rows = quotes.filter((q) => q.status === status);
+    if (rows.length === 0) return acc;
+    acc.push({
+      status,
+      label: QUOTE_STATUS_LABELS[status],
+      count: rows.length,
+      total: rows.reduce((sum, q) => sum + q.total_amount, 0),
+    });
+    return acc;
+  }, []);
 }
 
 type SectionProps = {
@@ -205,6 +228,8 @@ export function HomeContent({ firstName }: { firstName: string }) {
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
   const [greeting, setGreeting] = useState("Goedenavond");
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [loadingQuotes, setLoadingQuotes] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -221,7 +246,23 @@ export function HomeContent({ firstName }: { firstName: string }) {
     );
   }, []);
 
-  const quoteRows = getQuoteDashboardRows(MOCK_QUOTES);
+  useEffect(() => {
+    async function loadQuotes() {
+      const companyRes = await fetch("/api/quotes/company");
+      if (!companyRes.ok) { setLoadingQuotes(false); return; }
+      const { companyId, userId } = await companyRes.json();
+
+      const res = await fetch(`/api/quotes/list?userId=${userId}&companyId=${companyId}`);
+      if (!res.ok) { setLoadingQuotes(false); return; }
+
+      const { quotes } = await res.json();
+      setQuotes(quotes ?? []);
+      setLoadingQuotes(false);
+    }
+    loadQuotes();
+  }, []);
+
+  const quoteRows = getQuoteRows(quotes);
   const invoiceRows = getInvoiceDashboardRows(MOCK_INVOICES);
 
   function handleAddSelect(type: string) {
@@ -246,15 +287,17 @@ export function HomeContent({ firstName }: { firstName: string }) {
         </div>
       )}
 
-      <DashboardSection
-        title="Offertes"
-        icon={FileText}
-        accentClass="text-primary"
-        rows={quoteRows}
-        onRowClick={(status) => router.push(`/dashboard/quotes?filter=${status}`)}
-        onViewAll={() => router.push("/dashboard/quotes")}
-        emptyMessage="Alles op orde. Klaar om je volgende offerte te sturen?"
-      />
+      {!loadingQuotes && (
+        <DashboardSection
+          title="Offertes"
+          icon={FileText}
+          accentClass="text-primary"
+          rows={quoteRows}
+          onRowClick={(status) => router.push(`/dashboard/quotes?filter=${status}`)}
+          onViewAll={() => router.push("/dashboard/quotes")}
+          emptyMessage="Alles op orde. Klaar om je volgende offerte te sturen?"
+        />
+      )}
 
       <DashboardSection
         title="Facturen"

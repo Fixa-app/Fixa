@@ -13,13 +13,18 @@ import {
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  MOCK_QUOTES,
-  QUOTE_STATUS_LABELS,
-} from "@/lib/mock-data";
+import { QUOTE_STATUS_LABELS } from "@/lib/mock-data";
 import type { Database } from "@/lib/database.types";
 
 type QuoteStatus = Database["public"]["Enums"]["quote_status"];
+
+type Quote = {
+  id: string;
+  client_name: string;
+  status: QuoteStatus;
+  total_amount: number;
+  updated_at: string;
+};
 
 const ALL_STATUSES: QuoteStatus[] = [
   "draft",
@@ -96,6 +101,8 @@ function QuotesContent() {
   const searchParams = useSearchParams();
   const initialFilter = searchParams.get("filter") ?? "all";
 
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>(initialFilter);
   const [sort, setSort] = useState<SortOption>("newest");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -104,10 +111,26 @@ function QuotesContent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    async function load() {
+      const companyRes = await fetch("/api/quotes/company");
+      if (!companyRes.ok) { setLoading(false); return; }
+      const { companyId, userId } = await companyRes.json();
+
+      const res = await fetch(`/api/quotes/list?userId=${userId}&companyId=${companyId}`);
+      if (!res.ok) { setLoading(false); return; }
+
+      const { quotes } = await res.json();
+      setQuotes(quotes ?? []);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  useEffect(() => {
     setVisible(false);
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
-  }, [filter, sort]);
+  }, [filter, sort, quotes]);
 
   const filterOptions = [
     { value: "all", label: "All quotes" },
@@ -122,34 +145,42 @@ function QuotesContent() {
   ];
 
   const filtered = useMemo(() => {
-    let quotes =
+    let result =
       filter === "all"
-        ? MOCK_QUOTES
-        : MOCK_QUOTES.filter((q) => q.status === filter);
+        ? quotes
+        : quotes.filter((q) => q.status === filter);
     switch (sort) {
       case "newest":
-        return [...quotes].sort(
+        return [...result].sort(
           (a, b) =>
             new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
         );
       case "oldest":
-        return [...quotes].sort(
+        return [...result].sort(
           (a, b) =>
             new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
         );
       case "highest":
-        return [...quotes].sort((a, b) => b.total_amount - a.total_amount);
+        return [...result].sort((a, b) => b.total_amount - a.total_amount);
       case "name":
-        return [...quotes].sort((a, b) =>
+        return [...result].sort((a, b) =>
           a.client_name.localeCompare(b.client_name)
         );
     }
-  }, [filter, sort]);
+  }, [filter, sort, quotes]);
 
   const filterLabel =
     filter === "all"
       ? "All quotes"
       : QUOTE_STATUS_LABELS[filter as QuoteStatus];
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-sm text-muted-foreground">Laden...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -260,15 +291,23 @@ function QuotesContent() {
           {filtered.length === 0 ? (
             <div className="py-6 text-center">
               <p className="mb-3 text-sm text-muted-foreground">
-                Geen offertes gevonden voor dit filter.
+                {quotes.length === 0
+                  ? "Je hebt nog geen offertes."
+                  : "Geen offertes gevonden voor dit filter."}
               </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setFilter("all")}
-              >
-                Filter wissen
-              </Button>
+              {quotes.length === 0 ? (
+                <Button onClick={() => router.push("/dashboard/quotes/new")}>
+                  Nieuwe offerte
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFilter("all")}
+                >
+                  Filter wissen
+                </Button>
+              )}
             </div>
           ) : (
             <div className="space-y-2">
