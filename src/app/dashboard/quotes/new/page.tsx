@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSmartBack } from "@/lib/use-smart-back";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -68,6 +69,7 @@ function NewQuoteStep1Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefill = searchParams.get("prefill") ?? "";
+  const goBack = useSmartBack("/dashboard/quotes");
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -134,7 +136,6 @@ function NewQuoteStep1Content() {
 
     const name = capitalizeNL(query.trim());
 
-    // Check if client with same name already exists (exact, case-insensitive)
     const checkRes = await fetch(`/api/quotes/clients?userId=${userId}&exact=${encodeURIComponent(name)}`);
     if (checkRes.ok) {
       const { client: existing } = await checkRes.json();
@@ -178,14 +179,12 @@ function NewQuoteStep1Content() {
     const userId = await getCurrentUserId();
     if (!userId) { setSaving(false); return; }
 
-    // Update client
     await fetch("/api/quotes/clients", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selectedClient.id, address, phone, email, userId }),
     });
 
-    // Create draft quote
     const res = await fetch("/api/quotes/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -247,7 +246,6 @@ function NewQuoteStep1Content() {
 
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="address">Adres</label>
-            {/* TODO: Replace with Google Places Autocomplete */}
             <input
               id="address"
               type="text"
@@ -315,9 +313,9 @@ function NewQuoteStep1Content() {
       <div className="flex-1 space-y-6 p-6 mx-auto w-full max-w-2xl pb-32">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.push("/dashboard/quotes")}
+            onClick={goBack}
             className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Terug naar offertes"
+            aria-label="Terug"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>

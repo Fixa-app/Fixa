@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useSmartBack } from "@/lib/use-smart-back";
 import { ArrowLeft, Trash2, Plus } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
@@ -69,6 +70,7 @@ function NewQuoteItemsContent() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const fromDetail = searchParams.get("from") === "detail";
+  const smartBack = useSmartBack("/dashboard/quotes/new");
 
   const [items, setItems] = useState<LineItem[]>([]);
   const [jobTitle, setJobTitle] = useState("");
@@ -179,7 +181,7 @@ function NewQuoteItemsContent() {
     if (fromDetail) {
       router.push(`/dashboard/quotes/new/${id}?from=detail`);
     } else {
-      router.push("/dashboard/quotes/new");
+      smartBack();
     }
   }
 

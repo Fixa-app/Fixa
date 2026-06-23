@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useSmartBack } from "@/lib/use-smart-back";
 import {
   ArrowLeft,
   Phone,
@@ -129,6 +130,7 @@ function toWhatsAppNumber(phone: string): string {
 export default function QuoteDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const goBack = useSmartBack("/dashboard/quotes");
 
   const [data, setData] = useState<QuoteData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -219,9 +221,9 @@ export default function QuoteDetailPage() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <button
-              onClick={() => router.push("/dashboard/quotes")}
+              onClick={goBack}
               className="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Terug naar offertes"
+              aria-label="Terug"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
