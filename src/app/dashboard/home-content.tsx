@@ -89,6 +89,7 @@ type SectionProps = {
   onRowClick: (status: string) => void;
   onViewAll: () => void;
   emptyMessage: string;
+  emptyAction?: { label: string; onClick: () => void };
 };
 
 function DashboardSection({
@@ -99,6 +100,7 @@ function DashboardSection({
   onRowClick,
   onViewAll,
   emptyMessage,
+  emptyAction,
 }: SectionProps) {
   const [visible, setVisible] = useState(false);
 
@@ -115,8 +117,13 @@ function DashboardSection({
       </div>
 
       {rows.length === 0 ? (
-        <div className="mt-4">
+        <div className="mt-4 space-y-3">
           <p className="text-sm text-muted-foreground">{emptyMessage}</p>
+          {emptyAction && (
+            <Button variant="outline" size="sm" onClick={emptyAction.onClick}>
+              {emptyAction.label}
+            </Button>
+          )}
         </div>
       ) : (
         <>
@@ -295,7 +302,8 @@ export function HomeContent({ firstName }: { firstName: string }) {
           rows={quoteRows}
           onRowClick={(status) => router.push(`/dashboard/quotes?filter=${status}`)}
           onViewAll={() => router.push("/dashboard/quotes")}
-          emptyMessage="Alles op orde. Klaar om je volgende offerte te sturen?"
+          emptyMessage="Nog geen offertes om te tonen."
+          emptyAction={{ label: "Nieuwe offerte", onClick: () => router.push("/dashboard/quotes/new") }}
         />
       )}
 
