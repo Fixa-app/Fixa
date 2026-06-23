@@ -118,10 +118,10 @@ function DashboardSection({
         <div className="mt-4 space-y-3">
           <p className="text-sm text-muted-foreground">{emptyMessage}</p>
           {emptyAction && (
-            <Button variant="outline" size="sm" onClick={emptyAction.onClick}>
-              {emptyAction.label}
-            </Button>
-          )}
+  <Button size="sm" onClick={emptyAction.onClick}>
+    {emptyAction.label}
+  </Button>
+)}
         </div>
       ) : (
         <>
