@@ -73,7 +73,8 @@ export default function EditQuoteStep1Page() {
       body: JSON.stringify({ id: clientId, address, phone, email, userId }),
     });
 
-    router.push(`/dashboard/quotes/new/${id}/items`);
+    // Komt vanuit quote detail (edit-potlood) — stap 2 moet daarna terug naar detail i.p.v. preview
+    router.push(`/dashboard/quotes/new/${id}/items?from=detail`);
   }
 
   if (loading) {

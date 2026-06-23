@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { ArrowLeft, Trash2, Plus } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
@@ -64,19 +64,11 @@ function useAutoResize(value: string) {
   return ref;
 }
 
-function getExpiryDate(): string {
-  const date = new Date();
-  date.setDate(date.getDate() + 30);
-  return date.toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
-}
-
-function resolveDisclaimer(template: string): string {
-  return template.replace(/\[offertedatum \+ 30 dagen\]/gi, getExpiryDate());
-}
-
-export default function NewQuoteItemsPage() {
+function NewQuoteItemsContent() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const fromDetail = searchParams.get("from") === "detail";
 
   const [items, setItems] = useState<LineItem[]>([]);
   const [jobTitle, setJobTitle] = useState("");
@@ -97,7 +89,7 @@ export default function NewQuoteItemsPage() {
       const res = await fetch(`/api/quotes/${id}/items?userId=${userId}`);
       if (!res.ok) return;
 
-      const { quote, lineItems, defaults, clientName } = await res.json();
+      const { quote, lineItems, defaults } = await res.json();
 
       setItems(lineItems);
       setJobTitle(quote.job_title ?? "");
@@ -163,7 +155,12 @@ export default function NewQuoteItemsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, job_title: jobTitle, intro_text: introText, disclaimer }),
     });
-    router.push(`/dashboard/quotes/new/${id}/preview`);
+
+    if (fromDetail) {
+      router.push(`/dashboard/quotes/${id}`);
+    } else {
+      router.push(`/dashboard/quotes/new/${id}/preview`);
+    }
     setSaving(false);
   }
 
@@ -178,7 +175,15 @@ export default function NewQuoteItemsPage() {
     router.push("/dashboard/quotes");
   }
 
-  const { subtotal, byTax, taxTotal, total } = calcTotals(items);
+  function handleBack() {
+    if (fromDetail) {
+      router.push(`/dashboard/quotes/new/${id}?from=detail`);
+    } else {
+      router.push("/dashboard/quotes/new");
+    }
+  }
+
+  const { subtotal, byTax, total } = calcTotals(items);
 
   if (loading) {
     return (
@@ -196,7 +201,7 @@ export default function NewQuoteItemsPage() {
           {/* Header */}
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push("/dashboard/quotes/new")}
+              onClick={handleBack}
               className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Terug"
             >
@@ -380,14 +385,23 @@ export default function NewQuoteItemsPage() {
         {/* Sticky footer */}
         <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
-            <button
-              onClick={() => setShowDiscard(true)}
-              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-            >
-              Verwijderen
-            </button>
+            {fromDetail ? (
+              <button
+                onClick={() => router.push(`/dashboard/quotes/${id}`)}
+                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Annuleren
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowDiscard(true)}
+                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Verwijderen
+              </button>
+            )}
             <Button className="w-full" onClick={handleSave} disabled={saving}>
-              {saving ? "Bezig..." : "Concept opslaan"}
+              {saving ? "Bezig..." : fromDetail ? "Wijzigingen opslaan" : "Concept opslaan"}
             </Button>
           </div>
         </div>
@@ -416,5 +430,13 @@ export default function NewQuoteItemsPage() {
         </Drawer.Portal>
       </Drawer.Root>
     </>
+  );
+}
+
+export default function NewQuoteItemsPage() {
+  return (
+    <Suspense fallback={<div />}>
+      <NewQuoteItemsContent />
+    </Suspense>
   );
 }
