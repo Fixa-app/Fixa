@@ -86,9 +86,9 @@ export default function NewRequestStep1Page() {
         .upload(path, file);
 
       if (!error) {
-        const { data: urlData } = supabase.storage
+        const { data: signedData } = await supabase.storage
           .from("request-photos")
-          .getPublicUrl(path);
+          .createSignedUrl(path, 3600);
 
         setItems((prev) =>
           prev.map((item) =>
@@ -97,7 +97,7 @@ export default function NewRequestStep1Page() {
                   ...item,
                   photos: item.photos.map((p) =>
                     p.id === tempPhoto.id
-                      ? { id: path, url: urlData.publicUrl, uploading: false }
+                      ? { id: path, url: signedData?.signedUrl ?? p.url, uploading: false }
                       : p
                   ),
                 }
