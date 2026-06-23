@@ -15,10 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  MOCK_INVOICES,
   QUOTE_STATUS_LABELS,
   DASHBOARD_QUOTE_STATUSES,
-  getInvoiceDashboardRows,
   type DashboardStatusRow,
 } from "@/lib/mock-data";
 import type { Database } from "@/lib/database.types";
@@ -270,7 +268,6 @@ export function HomeContent({ firstName }: { firstName: string }) {
   }, []);
 
   const quoteRows = getQuoteRows(quotes);
-  const invoiceRows = getInvoiceDashboardRows(MOCK_INVOICES);
 
   function handleAddSelect(type: string) {
     if (type === "quote") router.push("/dashboard/quotes/new");
@@ -307,15 +304,15 @@ export function HomeContent({ firstName }: { firstName: string }) {
         />
       )}
 
-      <DashboardSection
-        title="Facturen"
-        icon={Receipt}
-        accentClass="text-teal-bright"
-        rows={invoiceRows}
-        onRowClick={(status) => router.push(`/dashboard/invoices?filter=${status}`)}
-        onViewAll={() => router.push("/dashboard/invoices")}
-        emptyMessage="Geen openstaande facturen."
-      />
+      <div className="rounded-2xl bg-card p-5">
+        <div className="mb-1 flex items-center gap-3">
+          <Receipt className="size-5 shrink-0 text-teal-bright" />
+          <span className="text-base font-bold text-foreground">Facturen</span>
+        </div>
+        <div className="mt-4">
+          <p className="text-sm text-muted-foreground">Binnenkort beschikbaar.</p>
+        </div>
+      </div>
 
       <FloatingAddButton onSelect={handleAddSelect} />
     </div>
