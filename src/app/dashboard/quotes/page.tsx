@@ -6,9 +6,6 @@ import {
   Plus,
   ChevronDown,
   Check,
-  MoreHorizontal,
-  Camera,
-  LayoutTemplate,
 } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
@@ -107,7 +104,6 @@ function QuotesContent() {
   const [sort, setSort] = useState<SortOption>("newest");
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -190,59 +186,10 @@ function QuotesContent() {
           <h1 className="self-start font-display text-3xl font-medium leading-[1.05] tracking-tight">
             Offertes
           </h1>
-          <div className="flex items-center gap-2">
-            <Button onClick={() => router.push("/dashboard/quotes/new")}>
-              <Plus className="size-4" />
-              Nieuwe offerte
-            </Button>
-            <div className="relative">
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label="Meer opties"
-                aria-expanded={moreOpen}
-                onClick={() => setMoreOpen((v) => !v)}
-              >
-                <MoreHorizontal className="size-5" />
-              </Button>
-
-              {moreOpen && (
-                <>
-                  <button
-                    type="button"
-                    aria-hidden
-                    tabIndex={-1}
-                    onClick={() => setMoreOpen(false)}
-                    className="fixed inset-0 z-40 cursor-default"
-                  />
-                  <div className="absolute top-full right-0 z-50 mt-2 flex w-56 flex-col gap-1 rounded-2xl bg-card p-2 shadow-xl">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMoreOpen(false);
-                        router.push("/dashboard/quotes/new?import=photo");
-                      }}
-                      className="flex items-center gap-3 rounded-lg p-2 text-left text-base font-bold text-foreground transition-colors hover:bg-hover"
-                    >
-                      <Camera className="size-5 shrink-0" />
-                      <span>Offerte importeren</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMoreOpen(false);
-                        router.push("/dashboard/quotes/new?template=1");
-                      }}
-                      className="flex items-center gap-3 rounded-lg p-2 text-left text-base font-bold text-foreground transition-colors hover:bg-hover"
-                    >
-                      <LayoutTemplate className="size-5 shrink-0" />
-                      <span>Sjabloon kiezen</span>
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          <Button onClick={() => router.push("/dashboard/quotes/new")} aria-label="Nieuwe offerte">
+            <Plus className="size-4" />
+            <span className="hidden sm:inline">Nieuwe offerte</span>
+          </Button>
         </div>
 
         {/* Filter + Sort bar */}
