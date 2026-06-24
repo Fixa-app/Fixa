@@ -132,10 +132,11 @@ export async function POST(request: NextRequest, { params }: Params) {
     }
 
     // Line items uit de matches (uit de aanvraag, met eventuele prijs+eenheid)
+    // Omschrijving uit het oorspronkelijke request-item gaat altijd mee als context
     const lineItemRows = matches.map((match, index) => ({
       quote_id: quote.id,
       title: match.matched_title,
-      description: '',
+      description: (items ?? [])[match.request_item_index]?.description ?? '',
       quantity: 1,
       rate: match.matched_rate ?? 0,
       tax_percentage: 21,
