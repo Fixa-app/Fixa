@@ -87,8 +87,50 @@ export default function NewRequestStep1Page() {
     setItems((prev) => prev.filter((item) => item.localId !== localId));
   }
 
-  async function handlePhotoUpload(localId: string, files: FileList) {
-    const tempPhotos: RequestPhoto[] = Array.from(files).map((file) => ({
+  async function uploadSinglePhoto(localId: string, file: File, tempId: string) {
+    const supabase = createClient();
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+
+    const ext = file.name.split(".").pop() ?? "jpg";
+    const path = `${userId}/${crypto.randomUUID()}.${ext}`;
+
+    const { error } = await supabase.storage.from("request-photos").upload(path, file);
+
+    if (error) {
+      // Upload mislukt — verwijder de placeholder zodat er geen vastgelopen spinner blijft staan
+      setItems((prev) =>
+        prev.map((item) =>
+          item.localId === localId
+            ? { ...item, photos: item.photos.filter((p) => p.id !== tempId) }
+            : item
+        )
+      );
+      return;
+    }
+
+    const { data: signedData } = await supabase.storage
+      .from("request-photos")
+      .createSignedUrl(path, 3600);
+
+    setItems((prev) =>
+      prev.map((item) => {
+        if (item.localId !== localId) return item;
+        return {
+          ...item,
+          photos: item.photos.map((p) =>
+            p.id === tempId
+              ? { id: path, url: signedData?.signedUrl ?? p.url, uploading: false }
+              : p
+          ),
+        };
+      })
+    );
+  }
+
+  function handlePhotoUpload(localId: string, files: FileList) {
+    const fileArray = Array.from(files);
+    const tempPhotos: RequestPhoto[] = fileArray.map((file) => ({
       id: crypto.randomUUID(),
       url: URL.createObjectURL(file),
       uploading: true,
@@ -102,41 +144,10 @@ export default function NewRequestStep1Page() {
       )
     );
 
-    const supabase = createClient();
-    const userId = await getCurrentUserId();
-    if (!userId) return;
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const tempPhoto = tempPhotos[i];
-      const ext = file.name.split(".").pop() ?? "jpg";
-      const path = `${userId}/${crypto.randomUUID()}.${ext}`;
-
-      const { error } = await supabase.storage
-        .from("request-photos")
-        .upload(path, file);
-
-      if (!error) {
-        const { data: signedData } = await supabase.storage
-          .from("request-photos")
-          .createSignedUrl(path, 3600);
-
-        setItems((prev) =>
-          prev.map((item) =>
-            item.localId === localId
-              ? {
-                  ...item,
-                  photos: item.photos.map((p) =>
-                    p.id === tempPhoto.id
-                      ? { id: path, url: signedData?.signedUrl ?? p.url, uploading: false }
-                      : p
-                  ),
-                }
-              : item
-          )
-        );
-      }
-    }
+    // Elke foto onafhankelijk uploaden — geen gedeelde for-loop state die elkaar kan overschrijven
+    fileArray.forEach((file, i) => {
+      uploadSinglePhoto(localId, file, tempPhotos[i].id);
+    });
   }
 
   async function handleRemovePhoto(localId: string, photoId: string, uploading?: boolean) {
@@ -191,6 +202,7 @@ export default function NewRequestStep1Page() {
   }
 
   const hasValidItem = items.some((item) => item.title.trim().length > 0);
+  const hasUploadingPhoto = items.some((item) => item.photos.some((p) => p.uploading));
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -314,8 +326,8 @@ export default function NewRequestStep1Page() {
       {/* Sticky footer */}
       <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto w-full max-w-2xl px-6 py-4">
-          <Button className="w-full" onClick={handleContinue} disabled={saving || !hasValidItem}>
-            {saving ? "Bezig..." : "Volgende"}
+          <Button className="w-full" onClick={handleContinue} disabled={saving || !hasValidItem || hasUploadingPhoto}>
+            {saving ? "Bezig..." : hasUploadingPhoto ? "Foto's worden geupload..." : "Volgende"}
           </Button>
         </div>
       </div>

@@ -83,9 +83,12 @@ function RequestDetailContent() {
     });
 
     if (res.ok) {
-      const { quoteId, suggestedProducts } = await res.json();
+      const { quoteId, suggestedProducts, referencePhotosByLineItemId } = await res.json();
       if (suggestedProducts && suggestedProducts.length > 0) {
         sessionStorage.setItem("quote_suggested_products", JSON.stringify(suggestedProducts));
+      }
+      if (referencePhotosByLineItemId && Object.keys(referencePhotosByLineItemId).length > 0) {
+        sessionStorage.setItem("quote_reference_photos", JSON.stringify(referencePhotosByLineItemId));
       }
       router.push(`/dashboard/quotes/new/${quoteId}/items`);
     }

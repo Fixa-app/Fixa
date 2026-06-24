@@ -80,6 +80,7 @@ function NewQuoteItemsContent() {
   const [saving, setSaving] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [suggestedProducts, setSuggestedProducts] = useState<{ id: string; title: string; rate: number; unit: string }[]>([]);
+  const [referencePhotos, setReferencePhotos] = useState<Record<string, string[]>>({});
 
   const introRef = useAutoResize(introText);
   const disclaimerRef = useAutoResize(disclaimer);
@@ -89,6 +90,11 @@ function NewQuoteItemsContent() {
     if (stored) {
       setSuggestedProducts(JSON.parse(stored));
       sessionStorage.removeItem("quote_suggested_products");
+    }
+    const storedPhotos = sessionStorage.getItem("quote_reference_photos");
+    if (storedPhotos) {
+      setReferencePhotos(JSON.parse(storedPhotos));
+      sessionStorage.removeItem("quote_reference_photos");
     }
   }, []);
 
@@ -330,6 +336,22 @@ function NewQuoteItemsContent() {
                     </select>
                   </div>
                 </div>
+
+                {referencePhotos[item.id] && referencePhotos[item.id].length > 0 && (
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">Foto&apos;s van de aanvraag</p>
+                    <div className="flex flex-wrap gap-2">
+                      {referencePhotos[item.id].map((url, i) => (
+                        <img
+                          key={i}
+                          src={url}
+                          alt="Foto van de aanvraag"
+                          className="h-16 w-16 rounded-lg object-cover"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {item.quantity > 0 && item.rate > 0 && (
                   <p className="text-sm text-muted-foreground text-right">

@@ -13,78 +13,10 @@ function createServiceClient() {
 
 type Params = { params: Promise<{ id: string }> };
 
-type Product = { id: string; title: string; rate: number; unit: string };
-
-type MatchResult = {
-  request_item_index: number;
-  matched_title: string;
-  matched_rate: number | null;
-  matched_unit: string | null;
-  matched_product_id: string | null;
-};
-
-async function matchItemsAgainstProducts(
-  requestItems: { title: string | null; description: string | null }[],
-  products: Product[]
-): Promise<MatchResult[]> {
-  if (products.length === 0) {
-    return requestItems.map((item, i) => ({
-      request_item_index: i,
-      matched_title: item.title ?? "",
-      matched_rate: null,
-      matched_unit: null,
-      matched_product_id: null,
-    }));
-  }
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY!,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
-        messages: [{
-          role: 'user',
-          content: `Je krijgt een lijst van aanvraag-items (problemen die een klant heeft gemeld) en een lijst van eerder gebruikte producten/diensten met hun prijzen en eenheden (unit kan zijn: hour, piece, m2, project, etc.).
-
-Voor elk aanvraag-item: zoek het best passende product op basis van titel-overeenkomst (synoniemen en gelijkaardige klussen meetellen). Let op de eenheid — als de aanvraag bijvoorbeeld een oppervlakte-klus beschrijft, geef de voorkeur aan een product met unit "m2"; als het een tijdgebonden/onzekere klus is, geef de voorkeur aan "hour". Als er geen redelijke match is, geef matched_rate, matched_unit en matched_product_id als null en gebruik de oorspronkelijke titel.
-
-BELANGRIJK: matched_title moet ALTIJD een korte titel zijn (max 5-6 woorden), nooit de volledige beschrijving. Gebruik bij een match de titel van het gematchte product. Gebruik zonder match alleen de oorspronkelijke titel van het aanvraag-item, NOOIT de beschrijving erbij verwerken.
-
-Aanvraag-items:
-${requestItems.map((item, i) => `${i}. ${item.title ?? ''}${item.description ? ' - ' + item.description : ''}`).join('\n')}
-
-Eerder gebruikte producten (met id):
-${products.map((p) => `- [${p.id}] ${p.title} (€${p.rate}/${p.unit})`).join('\n')}
-
-Antwoord ALLEEN met een JSON array, geen andere tekst, in dit exacte formaat:
-[{"request_item_index": 0, "matched_title": "...", "matched_rate": 45.00, "matched_unit": "hour", "matched_product_id": "uuid-of-null"}, ...]`,
-        }],
-      }),
-    });
-
-    const data = await response.json();
-    const text = data.content?.[0]?.text ?? '[]';
-    const cleaned = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(cleaned);
-  } catch (error) {
-    console.error('AI matching failed, falling back to titles only:', error);
-    return requestItems.map((item, i) => ({
-      request_item_index: i,
-      matched_title: item.title ?? "",
-      matched_rate: null,
-      matched_unit: null,
-      matched_product_id: null,
-    }));
-  }
-}
-
-// POST — zet een request om naar een quote: gematchte regels + losse suggestie-producten
+// POST — zet een request 1-op-1 om naar een quote: elk request-item wordt een line item.
+// Geen AI-matching (te onbetrouwbaar bij kleine product-bibliotheken). Alle producten van
+// de pro worden los aangeboden als "suggestie chips" op de quote-items-pagina, zodat de
+// pro zelf, met eigen beoordeling, een relevante prijs kan toevoegen.
 export async function POST(request: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
@@ -107,15 +39,31 @@ export async function POST(request: NextRequest, { params }: Params) {
     }
 
     const [{ data: items }, { data: products }] = await Promise.all([
-      service.from('request_items').select('title, description').eq('request_id', id).order('sort_order', { ascending: true }),
+      service.from('request_items').select('id, title, description').eq('request_id', id).order('sort_order', { ascending: true }),
       service.from('products').select('id, title, rate, unit').eq('company_id', req.company_id),
     ]);
 
-    const matches = await matchItemsAgainstProducts(items ?? [], (products ?? []) as Product[]);
-    const matchedProductIds = new Set(matches.map((m) => m.matched_product_id).filter(Boolean));
+    // Foto's per item ophalen, signed URLs genereren voor referentie tijdens prijzen invullen
+    const itemIds = (items ?? []).map((i) => i.id);
+    const { data: photoRows } = itemIds.length > 0
+      ? await service.from('request_item_photos').select('request_item_id, storage_path').in('request_item_id', itemIds)
+      : { data: [] };
 
-    // Producten die niet matchten met deze aanvraag — beschikbaar als losse suggesties
-    const suggestedProducts = (products ?? []).filter((p) => !matchedProductIds.has(p.id));
+    const allPaths = (photoRows ?? []).map((p) => p.storage_path);
+    const signedUrlMap = new Map<string, string>();
+    if (allPaths.length > 0) {
+      const { data: signedUrls } = await service.storage.from('request-photos').createSignedUrls(allPaths, 3600);
+      for (const entry of signedUrls ?? []) {
+        if (entry.signedUrl && entry.path) signedUrlMap.set(entry.path, entry.signedUrl);
+      }
+    }
+
+    const photosByItemIndex = (items ?? []).map((item) =>
+      (photoRows ?? [])
+        .filter((p) => p.request_item_id === item.id)
+        .map((p) => signedUrlMap.get(p.storage_path))
+        .filter((url): url is string => !!url)
+    );
 
     // Maak de quote aan
     const { data: quote, error: quoteError } = await service
@@ -133,22 +81,31 @@ export async function POST(request: NextRequest, { params }: Params) {
       return NextResponse.json({ error: quoteError?.message ?? 'Failed to create quote' }, { status: 500 });
     }
 
-    // Line items uit de matches (uit de aanvraag, met eventuele prijs+eenheid)
-    // Omschrijving uit het oorspronkelijke request-item gaat altijd mee als context
-    const lineItemRows = matches.map((match, index) => ({
+    // 1-op-1: elk request-item wordt direct een line item, prijs op 0, pro vult zelf in
+    const lineItemRows = (items ?? []).map((item, index) => ({
       quote_id: quote.id,
-      title: match.matched_title,
-      description: (items ?? [])[match.request_item_index]?.description ?? '',
+      title: item.title ?? '',
+      description: item.description ?? '',
       quantity: 1,
-      rate: match.matched_rate ?? 0,
+      rate: 0,
       tax_percentage: 21,
       item_type: 'other',
       sort_order: index,
     }));
 
+    let createdLineItems: { id: string }[] = [];
     if (lineItemRows.length > 0) {
-      await service.from('line_items').insert(lineItemRows);
+      const { data: inserted } = await service.from('line_items').insert(lineItemRows).select('id');
+      createdLineItems = inserted ?? [];
     }
+
+    // Koppel referentie-foto's aan de juiste line item id, voor weergave tijdens prijzen invullen
+    const referencePhotosByLineItemId: Record<string, string[]> = {};
+    createdLineItems.forEach((li, index) => {
+      if (photosByItemIndex[index] && photosByItemIndex[index].length > 0) {
+        referencePhotosByLineItemId[li.id] = photosByItemIndex[index];
+      }
+    });
 
     await service.from('requests').update({
       status: 'converted',
@@ -157,12 +114,15 @@ export async function POST(request: NextRequest, { params }: Params) {
 
     return NextResponse.json({
       quoteId: quote.id,
-      suggestedProducts: suggestedProducts.map((p) => ({
+      // Alle producten van de pro, als losse suggesties — geen matching, gewoon zijn hele bibliotheek
+      suggestedProducts: (products ?? []).map((p) => ({
         id: p.id,
         title: p.title,
         rate: p.rate,
         unit: p.unit,
       })),
+      // Referentie-foto's per line item, voor weergave tijdens prijzen invullen
+      referencePhotosByLineItemId,
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });

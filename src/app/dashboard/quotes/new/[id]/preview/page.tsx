@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, Send, Camera, Check } from "lucide-react";
+import { ArrowLeft, Send, Camera, Check, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
+import { formatRelativeTime } from "@/lib/format-relative-time";
 
 type LineItem = {
   id: string;
@@ -25,6 +27,7 @@ type QuoteData = {
     quote_number: string | null;
     status: string;
     company_id: string;
+    updated_at: string;
   };
   lineItems: LineItem[];
   client: {
@@ -473,6 +476,15 @@ export default function NewQuotePreviewPage() {
               <p className="text-xs text-muted-foreground whitespace-pre-line">{disclaimerText}</p>
             </div>
           )}
+        </div>
+
+        {/* Status + tijdstip */}
+        <div className="mt-4 flex items-center gap-2">
+          <Badge variant="teal">
+            <CheckCircle2 className="h-3 w-3" />
+            {quote.status === "draft" ? "Concept" : quote.status === "awaiting_response" ? "Verstuurd" : quote.status}
+          </Badge>
+          <span className="text-sm text-muted-foreground">{formatRelativeTime(quote.updated_at)}</span>
         </div>
       </div>
 
