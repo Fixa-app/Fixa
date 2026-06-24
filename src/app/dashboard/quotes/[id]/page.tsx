@@ -161,7 +161,13 @@ export default function QuoteDetailPage() {
 
     if (!res.ok) { setSharing(false); return; }
     const { token } = await res.json();
-    const hubUrl = `${window.location.origin}/hub/${token}`;
+    // Vast hub-domein, los van app.hifixa.com — voorkomt conflict met de
+    // auth-redirect die niet-ingelogde bezoekers van de app naar de
+    // marketingsite stuurt. Hub moet altijd publiek bereikbaar zijn.
+    // URL-structuur: hub.hifixa.com/[token] (geen /hub/ prefix nodig,
+    // het domein zelf heet al "hub").
+    const hubBaseUrl = process.env.NEXT_PUBLIC_HUB_URL ?? "https://hub.hifixa.com";
+    const hubUrl = `${hubBaseUrl}/${token}`;
 
     // Geen 'text' meegeven — sommige share-doelen (zoals "Kopiëren") plakken
     // title/text en url samen, waardoor de URL niet los te gebruiken is.

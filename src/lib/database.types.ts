@@ -436,6 +436,35 @@ export type Database = {
           },
         ]
       }
+      quote_change_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          quote_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          quote_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          quote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_change_requests_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_photos: {
         Row: {
           created_at: string
@@ -482,6 +511,8 @@ export type Database = {
         Row: {
           approved_at: string | null
           client_id: string
+          client_token: string | null
+          client_token_expires_at: string | null
           company_id: string
           converted_to_job_id: string | null
           created_at: string
@@ -501,6 +532,8 @@ export type Database = {
         Insert: {
           approved_at?: string | null
           client_id: string
+          client_token?: string | null
+          client_token_expires_at?: string | null
           company_id: string
           converted_to_job_id?: string | null
           created_at?: string
@@ -520,6 +553,8 @@ export type Database = {
         Update: {
           approved_at?: string | null
           client_id?: string
+          client_token?: string | null
+          client_token_expires_at?: string | null
           company_id?: string
           converted_to_job_id?: string | null
           created_at?: string
