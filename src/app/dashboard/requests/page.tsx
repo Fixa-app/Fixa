@@ -7,8 +7,13 @@ import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatRelativeTime } from "@/lib/format-relative-time";
-
-type RequestStatus = "created" | "converted" | "archived";
+import {
+  REQUEST_STATUS_LABELS,
+  REQUEST_STATUS_BADGE,
+  ALL_REQUEST_STATUSES,
+  type RequestStatus,
+  type BadgeVariant,
+} from "@/lib/status-config";
 
 type RequestRow = {
   id: string;
@@ -17,21 +22,11 @@ type RequestRow = {
   updated_at: string;
 };
 
-const ALL_STATUSES: RequestStatus[] = ["created", "converted", "archived"];
+const ALL_STATUSES = ALL_REQUEST_STATUSES;
 
-const STATUS_LABEL: Record<RequestStatus, string> = {
-  created: "Aangemaakt",
-  converted: "Omgezet naar offerte",
-  archived: "Gearchiveerd",
-};
-
-type BadgeVariant = "default" | "secondary" | "teal" | "violet" | "burgundy" | "destructive";
-
-const STATUS_BADGE: Record<string, BadgeVariant> = {
-  created: "default",
-  converted: "teal",
-  archived: "secondary",
-};
+const STATUS_LABEL = REQUEST_STATUS_LABELS;
+// Cast naar Record<string, ...> zodat we ook met user-input (filter state) kunnen indexeren
+const STATUS_BADGE: Record<string, BadgeVariant> = REQUEST_STATUS_BADGE;
 
 type SortOption = "newest" | "oldest" | "name";
 

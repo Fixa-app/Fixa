@@ -10,10 +10,7 @@ import {
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { QUOTE_STATUS_LABELS } from "@/lib/mock-data";
-import type { Database } from "@/lib/database.types";
-
-type QuoteStatus = Database["public"]["Enums"]["quote_status"];
+import { QUOTE_STATUS_LABELS, QUOTE_STATUS_BADGE, ALL_QUOTE_STATUSES, type QuoteStatus, type BadgeVariant } from "@/lib/status-config";
 
 type Quote = {
   id: string;
@@ -41,22 +38,8 @@ const SORT_LABELS: Record<SortOption, string> = {
   name: "Name (A-Z)",
 };
 
-type BadgeVariant =
-  | "default"
-  | "secondary"
-  | "teal"
-  | "violet"
-  | "burgundy"
-  | "destructive";
-
-const STATUS_BADGE: Record<string, BadgeVariant> = {
-  ready_to_schedule: "teal",
-  changes_requested: "burgundy",
-  draft: "secondary",
-  awaiting_response: "default",
-  declined: "destructive",
-  archived: "secondary",
-};
+// Cast naar Record<string, ...> zodat we ook met user-input (filter state, via string) kunnen indexeren
+const STATUS_BADGE: Record<string, BadgeVariant> = QUOTE_STATUS_BADGE;
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("nl-NL", {

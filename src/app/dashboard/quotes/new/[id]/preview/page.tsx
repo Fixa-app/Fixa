@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { QUOTE_STATUS_LABELS, QUOTE_STATUS_BADGE } from "@/lib/status-config";
 
 type LineItem = {
   id: string;
@@ -263,9 +264,9 @@ export default function NewQuotePreviewPage() {
 
         {/* Status + tijdstip — direct onder titel */}
         <div className="mb-6 flex items-center gap-2">
-          <Badge variant="teal">
+          <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
             <CheckCircle2 className="h-3 w-3" />
-            {quote.status === "draft" ? "Concept" : quote.status === "awaiting_response" ? "Verstuurd" : quote.status}
+            {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
           </Badge>
           <span className="text-sm text-muted-foreground">{formatRelativeTime(quote.updated_at)}</span>
         </div>

@@ -15,14 +15,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  QUOTE_STATUS_LABELS,
-  DASHBOARD_QUOTE_STATUSES,
   type DashboardStatusRow,
 } from "@/lib/mock-data";
-import type { Database } from "@/lib/database.types";
-
-type QuoteStatus = Database["public"]["Enums"]["quote_status"];
-type RequestStatus = "created" | "converted" | "archived";
+import {
+  QUOTE_STATUS_LABELS,
+  QUOTE_STATUS_BADGE,
+  DASHBOARD_QUOTE_STATUSES,
+  REQUEST_STATUS_LABELS,
+  REQUEST_STATUS_BADGE,
+  DASHBOARD_REQUEST_STATUSES,
+  type QuoteStatus,
+  type RequestStatus,
+} from "@/lib/status-config";
 
 type Quote = {
   id: string;
@@ -54,25 +58,14 @@ type BadgeVariant =
   | "burgundy"
   | "destructive";
 
+// Facturen-statussen staan hier nog los — invoices-flow is nog niet gebouwd,
+// labels/kleuren komen mee naar status-config.ts zodra dat gebeurt.
 const STATUS_BADGE: Record<string, BadgeVariant> = {
-  ready_to_schedule: "teal",
-  changes_requested: "burgundy",
-  draft: "secondary",
+  ...QUOTE_STATUS_BADGE,
+  ...REQUEST_STATUS_BADGE,
   past_due: "destructive",
   awaiting_payment: "default",
-  created: "default",
-  converted: "teal",
 };
-
-const REQUEST_STATUS_LABEL: Record<RequestStatus, string> = {
-  created: "Aangemaakt",
-  converted: "Omgezet naar offerte",
-  archived: "Gearchiveerd",
-};
-
-// Op dashboard tonen we alleen "created" (open, actie vereist) — converted/archived
-// horen niet in de actieve shortlist, die zijn al afgehandeld.
-const DASHBOARD_REQUEST_STATUSES: RequestStatus[] = ["created"];
 
 function StatusPill({ status, label }: { status: string; label: string }) {
   return (
@@ -103,7 +96,7 @@ function getRequestRows(requests: RequestRow[]): DashboardStatusRow[] {
     if (rows.length === 0) return acc;
     acc.push({
       status,
-      label: REQUEST_STATUS_LABEL[status],
+      label: REQUEST_STATUS_LABELS[status],
       count: rows.length,
       total: 0,
     });

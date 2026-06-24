@@ -4,6 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSmartBack } from "@/lib/use-smart-back";
 import {
+  QUOTE_STATUS_LABELS,
+  QUOTE_STATUS_BADGE,
+  QUOTE_WORKFLOW_STATUS_OPTIONS,
+  type QuoteStatus,
+} from "@/lib/status-config";
+import {
   ArrowLeft,
   Phone,
   MessageCircle,
@@ -25,8 +31,6 @@ type LineItem = {
   rate: number;
   tax_percentage: number;
 };
-
-type QuoteStatus = "draft" | "awaiting_response" | "changes_requested" | "ready_to_schedule" | "declined" | "archived";
 
 type QuoteData = {
   quote: {
@@ -53,31 +57,9 @@ type QuoteData = {
   } | null;
 };
 
-const STATUS_LABEL: Record<QuoteStatus, string> = {
-  draft: "Concept",
-  awaiting_response: "Verstuurd, wacht op reactie",
-  changes_requested: "Wijziging gevraagd",
-  ready_to_schedule: "Geaccepteerd",
-  declined: "Geweigerd",
-  archived: "Gearchiveerd",
-};
-
-const STATUS_BADGE_VARIANT: Record<QuoteStatus, "default" | "secondary" | "teal" | "violet" | "burgundy" | "destructive"> = {
-  draft: "secondary",
-  awaiting_response: "default",
-  changes_requested: "burgundy",
-  ready_to_schedule: "teal",
-  declined: "destructive",
-  archived: "secondary",
-};
-
-const WORKFLOW_STATUS_OPTIONS: QuoteStatus[] = [
-  "draft",
-  "awaiting_response",
-  "ready_to_schedule",
-  "changes_requested",
-  "declined",
-];
+const STATUS_LABEL = QUOTE_STATUS_LABELS;
+const STATUS_BADGE_VARIANT = QUOTE_STATUS_BADGE;
+const WORKFLOW_STATUS_OPTIONS = QUOTE_WORKFLOW_STATUS_OPTIONS;
 
 async function getCurrentUserId(): Promise<string | null> {
   const supabase = createClient();
