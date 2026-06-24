@@ -17,7 +17,7 @@ type RequestItem = {
 type RequestData = {
   request: {
     id: string;
-    status: "open" | "converted" | "archived";
+    status: "created" | "converted" | "archived";
     created_at: string;
     converted_to_quote_id: string | null;
   };

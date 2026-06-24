@@ -553,6 +553,131 @@ export type Database = {
           },
         ]
       }
+      request_item_photos: {
+        Row: {
+          created_at: string | null
+          id: string
+          request_item_id: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          request_item_id: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          request_item_id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_item_photos_request_item_id_fkey"
+            columns: ["request_item_id"]
+            isOneToOne: false
+            referencedRelation: "request_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_items: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          request_id: string
+          sort_order: number
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          request_id: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          request_id?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_items_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requests: {
+        Row: {
+          client_id: string | null
+          company_id: string
+          converted_to_quote_id: string | null
+          created_at: string | null
+          created_by_user_id: string
+          id: string
+          status: Database["public"]["Enums"]["request_status"]
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          company_id: string
+          converted_to_quote_id?: string | null
+          created_at?: string | null
+          created_by_user_id: string
+          id?: string
+          status?: Database["public"]["Enums"]["request_status"]
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          company_id?: string
+          converted_to_quote_id?: string | null
+          created_at?: string | null
+          created_by_user_id?: string
+          id?: string
+          status?: Database["public"]["Enums"]["request_status"]
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requests_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requests_converted_to_quote_id_fkey"
+            columns: ["converted_to_quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -602,6 +727,7 @@ export type Database = {
         | "ready_to_schedule"
         | "declined"
         | "archived"
+      request_status: "created" | "converted" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -756,6 +882,7 @@ export const Constants = {
         "declined",
         "archived",
       ],
+      request_status: ["created", "converted", "archived"],
     },
   },
 } as const

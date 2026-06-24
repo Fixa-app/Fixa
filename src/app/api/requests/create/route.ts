@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       .insert({
         company_id: membership.company_id,
         created_by_user_id: userId,
-        status: 'open',
+        status: 'created',
       })
       .select()
       .single();
