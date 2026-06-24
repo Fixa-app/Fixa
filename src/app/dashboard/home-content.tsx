@@ -22,11 +22,17 @@ import {
 import type { Database } from "@/lib/database.types";
 
 type QuoteStatus = Database["public"]["Enums"]["quote_status"];
+type RequestStatus = "created" | "converted" | "archived";
 
 type Quote = {
   id: string;
   status: QuoteStatus;
   total_amount: number;
+};
+
+type RequestRow = {
+  id: string;
+  status: RequestStatus;
 };
 
 function formatCurrency(amount: number) {
@@ -54,7 +60,19 @@ const STATUS_BADGE: Record<string, BadgeVariant> = {
   draft: "secondary",
   past_due: "destructive",
   awaiting_payment: "default",
+  created: "default",
+  converted: "teal",
 };
+
+const REQUEST_STATUS_LABEL: Record<RequestStatus, string> = {
+  created: "Aangemaakt",
+  converted: "Omgezet naar offerte",
+  archived: "Gearchiveerd",
+};
+
+// Op dashboard tonen we alleen "created" (open, actie vereist) — converted/archived
+// horen niet in de actieve shortlist, die zijn al afgehandeld.
+const DASHBOARD_REQUEST_STATUSES: RequestStatus[] = ["created"];
 
 function StatusPill({ status, label }: { status: string; label: string }) {
   return (
@@ -79,6 +97,20 @@ function getQuoteRows(quotes: Quote[]): DashboardStatusRow[] {
   }, []);
 }
 
+function getRequestRows(requests: RequestRow[]): DashboardStatusRow[] {
+  return DASHBOARD_REQUEST_STATUSES.reduce<DashboardStatusRow[]>((acc, status) => {
+    const rows = requests.filter((r) => r.status === status);
+    if (rows.length === 0) return acc;
+    acc.push({
+      status,
+      label: REQUEST_STATUS_LABEL[status],
+      count: rows.length,
+      total: 0,
+    });
+    return acc;
+  }, []);
+}
+
 type SectionProps = {
   title: string;
   icon: LucideIcon;
@@ -88,6 +120,7 @@ type SectionProps = {
   onViewAll: () => void;
   emptyMessage: string;
   emptyAction?: { label: string; onClick: () => void };
+  showAmount?: boolean;
 };
 
 function DashboardSection({
@@ -99,6 +132,7 @@ function DashboardSection({
   onViewAll,
   emptyMessage,
   emptyAction,
+  showAmount = true,
 }: SectionProps) {
   const [visible, setVisible] = useState(false);
 
@@ -118,17 +152,17 @@ function DashboardSection({
         <div className="mt-4 space-y-3">
           <p className="text-sm text-muted-foreground">{emptyMessage}</p>
           {emptyAction && (
-  <Button size="sm" onClick={emptyAction.onClick}>
-    {emptyAction.label}
-  </Button>
-)}
+            <Button variant="outline" size="sm" onClick={emptyAction.onClick}>
+              {emptyAction.label}
+            </Button>
+          )}
         </div>
       ) : (
         <>
-          <div className="mb-2 mt-4 grid grid-cols-[1fr_48px_80px] gap-2 px-1 text-xs text-muted-foreground">
+          <div className={`mb-2 mt-4 grid gap-2 px-1 text-xs text-muted-foreground ${showAmount ? "grid-cols-[1fr_48px_80px]" : "grid-cols-[1fr_48px]"}`}>
             <span>Status</span>
             <span className="text-right">Aantal</span>
-            <span className="text-right">Bedrag</span>
+            {showAmount && <span className="text-right">Bedrag</span>}
           </div>
 
           <div className="space-y-1">
@@ -136,8 +170,8 @@ function DashboardSection({
               <button
                 key={row.status}
                 onClick={() => onRowClick(row.status)}
-                aria-label={`${title} status: ${row.label}. ${row.count} items. ${formatCurrency(row.total)} totaal.`}
-                className="grid w-full grid-cols-[1fr_48px_80px] items-center gap-2 rounded-xl px-1 py-2 text-left transition-colors hover:bg-background active:scale-[0.99]"
+                aria-label={`${title} status: ${row.label}. ${row.count} items.${showAmount ? ` ${formatCurrency(row.total)} totaal.` : ""}`}
+                className={`grid w-full items-center gap-2 rounded-xl px-1 py-2 text-left transition-colors hover:bg-background active:scale-[0.99] ${showAmount ? "grid-cols-[1fr_48px_80px]" : "grid-cols-[1fr_48px]"}`}
                 style={{
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(6px)",
@@ -148,9 +182,11 @@ function DashboardSection({
                 <span className="text-right text-sm text-muted-foreground">
                   {row.count}
                 </span>
-                <span className="text-right text-sm font-medium">
-                  {formatCurrency(row.total)}
-                </span>
+                {showAmount && (
+                  <span className="text-right text-sm font-medium">
+                    {formatCurrency(row.total)}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -234,7 +270,9 @@ export function HomeContent({ firstName }: { firstName: string }) {
   const [showNotification, setShowNotification] = useState(false);
   const [greeting, setGreeting] = useState("Goedenavond");
   const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [requests, setRequests] = useState<RequestRow[]>([]);
   const [loadingQuotes, setLoadingQuotes] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -252,22 +290,33 @@ export function HomeContent({ firstName }: { firstName: string }) {
   }, []);
 
   useEffect(() => {
-    async function loadQuotes() {
+    async function loadData() {
       const companyRes = await fetch("/api/quotes/company");
-      if (!companyRes.ok) { setLoadingQuotes(false); return; }
+      if (!companyRes.ok) { setLoadingQuotes(false); setLoadingRequests(false); return; }
       const { companyId, userId } = await companyRes.json();
 
-      const res = await fetch(`/api/quotes/list?userId=${userId}&companyId=${companyId}`);
-      if (!res.ok) { setLoadingQuotes(false); return; }
+      const [quotesRes, requestsRes] = await Promise.all([
+        fetch(`/api/quotes/list?userId=${userId}&companyId=${companyId}`),
+        fetch(`/api/requests/list?userId=${userId}&companyId=${companyId}`),
+      ]);
 
-      const { quotes } = await res.json();
-      setQuotes(quotes ?? []);
+      if (quotesRes.ok) {
+        const { quotes } = await quotesRes.json();
+        setQuotes(quotes ?? []);
+      }
       setLoadingQuotes(false);
+
+      if (requestsRes.ok) {
+        const { requests } = await requestsRes.json();
+        setRequests(requests ?? []);
+      }
+      setLoadingRequests(false);
     }
-    loadQuotes();
+    loadData();
   }, []);
 
   const quoteRows = getQuoteRows(quotes);
+  const requestRows = getRequestRows(requests);
 
   function handleAddSelect(type: string) {
     if (type === "quote") router.push("/dashboard/quotes/new");
@@ -289,6 +338,20 @@ export function HomeContent({ firstName }: { firstName: string }) {
         >
           🎉 Je bedrijf is ingesteld. Welkom bij Fixa!
         </div>
+      )}
+
+      {!loadingRequests && (
+        <DashboardSection
+          title="Aanvragen"
+          icon={Inbox}
+          accentClass="text-burgundy-bright"
+          rows={requestRows}
+          onRowClick={(status) => router.push(`/dashboard/requests?filter=${status}`)}
+          onViewAll={() => router.push("/dashboard/requests")}
+          emptyMessage="Nog geen aanvragen om te tonen."
+          emptyAction={{ label: "Nieuwe aanvraag", onClick: () => router.push("/dashboard/requests/new") }}
+          showAmount={false}
+        />
       )}
 
       {!loadingQuotes && (

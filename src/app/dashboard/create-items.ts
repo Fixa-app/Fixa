@@ -24,7 +24,7 @@ export const CREATE_ITEMS: {
   {
     label: "Aanvraag",
     icon: Inbox,
-    href: "#",
+    href: "/dashboard/requests/new",
     color: "text-burgundy-bright",
   },
   {

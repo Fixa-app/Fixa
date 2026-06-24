@@ -26,7 +26,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { label: "Home", href: "/dashboard", icon: Home },
-      { label: "Aanvragen", href: "/dashboard/requests", icon: Inbox, comingSoon: true },
+      { label: "Aanvragen", href: "/dashboard/requests", icon: Inbox },
       { label: "Offertes", href: "/dashboard/quotes", icon: FileText },
       { label: "Opdrachten", href: "/dashboard/jobs", icon: Wrench, comingSoon: true },
       { label: "Agenda", href: "/dashboard/schedule", icon: Calendar, comingSoon: true },
