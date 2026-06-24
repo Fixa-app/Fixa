@@ -183,11 +183,14 @@ export const MOCK_INVOICES: MockInvoice[] = [
   },
 ];
 
-// Dashboard-only statuses
+// Dashboard-only statuses — de meest "actionable" statussen per funnel-stadium,
+// die op het dashboard verschijnen als shortlist. Niet-actionable statussen
+// (declined, archived, paid) horen alleen in het volledige overzicht.
 export const DASHBOARD_QUOTE_STATUSES: QuoteStatus[] = [
-  "ready_to_schedule",
-  "changes_requested",
   "draft",
+  "awaiting_response",
+  "changes_requested",
+  "ready_to_schedule",
 ];
 
 export const DASHBOARD_INVOICE_STATUSES: InvoiceStatus[] = [
