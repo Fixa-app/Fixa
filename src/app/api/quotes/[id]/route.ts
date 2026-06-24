@@ -57,29 +57,54 @@ export async function GET(request: NextRequest, { params }: Params) {
   }
 }
 
-// PATCH — status wijzigen of archiveren
+// PATCH — generieke veld-update (job_title, intro_text, disclaimer, client_id, etc.)
+// EN status-wijziging (met automatische approved_at bij ready_to_schedule).
+// Beide gebruiken dezelfde route: alles behalve userId wordt als update doorgegeven.
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
-    const { userId, status } = await request.json();
+    const { userId, ...updates } = await request.json();
 
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const validStatuses = ['draft', 'awaiting_response', 'changes_requested', 'ready_to_schedule', 'declined', 'archived'];
-    if (!status || !validStatuses.includes(status)) {
-      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
+    }
+
+    // Extra validatie + side-effect alleen als er een status wordt meegestuurd
+    if ('status' in updates) {
+      const validStatuses = ['draft', 'awaiting_response', 'changes_requested', 'ready_to_schedule', 'declined', 'archived'];
+      if (!validStatuses.includes(updates.status)) {
+        return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+      }
+      if (updates.status === 'ready_to_schedule') {
+        updates.approved_at = new Date().toISOString();
+      }
     }
 
     const service = createServiceClient();
+    await service.from('quotes').update(updates).eq('id', id);
 
-    const updates: Record<string, unknown> = { status };
-    if (status === 'ready_to_schedule') {
-      updates.approved_at = new Date().toISOString();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+  }
+}
+
+// DELETE — concept hard verwijderen
+export async function DELETE(request: NextRequest, { params }: Params) {
+  try {
+    const { id } = await params;
+    const { userId } = await request.json();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await service.from('quotes').update(updates).eq('id', id);
+    const service = createServiceClient();
+    await service.from('quotes').delete().eq('id', id);
 
     return NextResponse.json({ success: true });
   } catch (error) {
