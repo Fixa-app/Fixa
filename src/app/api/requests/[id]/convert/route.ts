@@ -54,6 +54,8 @@ async function matchItemsAgainstProducts(
 
 Voor elk aanvraag-item: zoek het best passende product op basis van titel-overeenkomst (synoniemen en gelijkaardige klussen meetellen). Let op de eenheid — als de aanvraag bijvoorbeeld een oppervlakte-klus beschrijft, geef de voorkeur aan een product met unit "m2"; als het een tijdgebonden/onzekere klus is, geef de voorkeur aan "hour". Als er geen redelijke match is, geef matched_rate, matched_unit en matched_product_id als null en gebruik de oorspronkelijke titel.
 
+BELANGRIJK: matched_title moet ALTIJD een korte titel zijn (max 5-6 woorden), nooit de volledige beschrijving. Gebruik bij een match de titel van het gematchte product. Gebruik zonder match alleen de oorspronkelijke titel van het aanvraag-item, NOOIT de beschrijving erbij verwerken.
+
 Aanvraag-items:
 ${requestItems.map((item, i) => `${i}. ${item.title ?? ''}${item.description ? ' - ' + item.description : ''}`).join('\n')}
 
