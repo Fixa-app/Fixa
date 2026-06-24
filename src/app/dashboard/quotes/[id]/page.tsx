@@ -17,6 +17,7 @@ import {
   Pencil,
   Archive,
   Check,
+  Share2,
 } from "lucide-react";
 import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
@@ -120,6 +121,7 @@ export default function QuoteDetailPage() {
   const [overflowOpen, setOverflowOpen] = useState(false);
   const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const overflowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -144,6 +146,39 @@ export default function QuoteDetailPage() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  async function handleShare() {
+    if (!data) return;
+    setSharing(true);
+    const userId = await getCurrentUserId();
+    if (!userId) { setSharing(false); return; }
+
+    const res = await fetch(`/api/quotes/${id}/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!res.ok) { setSharing(false); return; }
+    const { token } = await res.json();
+    const hubUrl = `${window.location.origin}/hub/${token}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Offerte van ${data.company?.name ?? "Fixa"}`,
+          text: `Bekijk en beantwoord je offerte`,
+          url: hubUrl,
+        });
+      } catch {
+        // Gebruiker annuleerde het deelmenu — geen actie nodig
+      }
+    } else {
+      await navigator.clipboard.writeText(hubUrl);
+    }
+
+    setSharing(false);
+  }
 
   async function handleStatusChange(status: QuoteStatus) {
     if (!data) return;
@@ -211,9 +246,17 @@ export default function QuoteDetailPage() {
             </button>
             <h1 className="font-display text-2xl font-bold flex-1 ml-3">Offerte details</h1>
             <button
+              onClick={handleShare}
+              disabled={sharing}
+              aria-label="Deel met klant"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-muted hover:bg-muted/70 transition-colors"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+            <button
               onClick={() => router.push(`/dashboard/quotes/new/${id}`)}
               aria-label="Offerte bewerken"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-muted hover:bg-muted/70 transition-colors"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-muted hover:bg-muted/70 transition-colors ml-2"
             >
               <Pencil className="h-4 w-4" />
             </button>
