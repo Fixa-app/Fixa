@@ -2,25 +2,20 @@ import {
   FileText,
   Inbox,
   Receipt,
-  Users,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
 
 // Shared "Nieuw" create menu items. Icons are colored to match the workflow
 // stages (Aanvraag red, Offerte orange, Opdracht violet, Factuur teal).
+// Klant is hier bewust niet aanwezig — klanten worden alleen aangemaakt als
+// onderdeel van een aanvraag of offerte, geen losse "klant toevoegen"-flow.
 export const CREATE_ITEMS: {
   label: string;
   icon: LucideIcon;
   href: string;
   color: string;
 }[] = [
-  {
-    label: "Klant",
-    icon: Users,
-    href: "/dashboard/customers",
-    color: "text-foreground",
-  },
   {
     label: "Aanvraag",
     icon: Inbox,
