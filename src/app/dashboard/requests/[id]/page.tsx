@@ -83,7 +83,10 @@ function RequestDetailContent() {
     });
 
     if (res.ok) {
-      const { quoteId } = await res.json();
+      const { quoteId, suggestedProducts } = await res.json();
+      if (suggestedProducts && suggestedProducts.length > 0) {
+        sessionStorage.setItem("quote_suggested_products", JSON.stringify(suggestedProducts));
+      }
       router.push(`/dashboard/quotes/new/${quoteId}/items`);
     }
     setConverting(false);

@@ -79,9 +79,18 @@ function NewQuoteItemsContent() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
+  const [suggestedProducts, setSuggestedProducts] = useState<{ id: string; title: string; rate: number; unit: string }[]>([]);
 
   const introRef = useAutoResize(introText);
   const disclaimerRef = useAutoResize(disclaimer);
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem("quote_suggested_products");
+    if (stored) {
+      setSuggestedProducts(JSON.parse(stored));
+      sessionStorage.removeItem("quote_suggested_products");
+    }
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -141,6 +150,20 @@ function NewQuoteItemsContent() {
     if (!userId) return;
     await fetch(`/api/quotes/${id}/items?userId=${userId}&itemId=${itemId}`, { method: "DELETE" });
     setItems(prev => prev.filter(i => i.id !== itemId));
+  }
+
+  async function handleAddSuggestedProduct(product: { id: string; title: string; rate: number; unit: string }) {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+    const res = await fetch(`/api/quotes/${id}/items`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, item_type: "other", title: product.title, rate: product.rate }),
+    });
+    if (!res.ok) return;
+    const { lineItem } = await res.json();
+    setItems((prev) => [...prev, lineItem]);
+    setSuggestedProducts((prev) => prev.filter((p) => p.id !== product.id));
   }
 
   function handleChange(itemId: string, field: keyof LineItem, value: unknown) {
@@ -333,6 +356,26 @@ function NewQuoteItemsContent() {
               </div>
             </button>
           </div>
+
+          {/* Voorgestelde extra's uit eerdere offertes */}
+          {suggestedProducts.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Vaak gebruikt, niet in deze offerte:</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestedProducts.map((product) => (
+                  <button
+                    key={product.id}
+                    onClick={() => handleAddSuggestedProduct(product)}
+                    className="flex items-center gap-2 rounded-full border border-dashed border-border bg-background px-3 py-2 text-sm hover:bg-muted/40 transition-colors"
+                  >
+                    <Plus className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="font-medium">{product.title}</span>
+                    <span className="text-muted-foreground">{formatCurrency(product.rate)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Totals */}
           <div className="space-y-1 pt-2 border-t border-border" aria-live="polite">

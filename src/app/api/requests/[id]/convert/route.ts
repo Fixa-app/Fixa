@@ -13,24 +13,27 @@ function createServiceClient() {
 
 type Params = { params: Promise<{ id: string }> };
 
+type Product = { id: string; title: string; rate: number; unit: string };
+
 type MatchResult = {
   request_item_index: number;
   matched_title: string;
   matched_rate: number | null;
   matched_unit: string | null;
+  matched_product_id: string | null;
 };
 
 async function matchItemsAgainstProducts(
   requestItems: { title: string | null; description: string | null }[],
-  products: { title: string; rate: number; unit: string }[]
+  products: Product[]
 ): Promise<MatchResult[]> {
-  // Geen producten om tegen te matchen — geef alles terug zonder prijs
   if (products.length === 0) {
     return requestItems.map((item, i) => ({
       request_item_index: i,
       matched_title: item.title ?? "",
       matched_rate: null,
       matched_unit: null,
+      matched_product_id: null,
     }));
   }
 
@@ -47,18 +50,18 @@ async function matchItemsAgainstProducts(
         max_tokens: 1500,
         messages: [{
           role: 'user',
-          content: `Je krijgt een lijst van aanvraag-items (problemen die een klant heeft gemeld) en een lijst van eerder gebruikte producten/diensten met hun prijzen.
+          content: `Je krijgt een lijst van aanvraag-items (problemen die een klant heeft gemeld) en een lijst van eerder gebruikte producten/diensten met hun prijzen en eenheden (unit kan zijn: hour, piece, m2, project, etc.).
 
-Voor elk aanvraag-item: zoek het best passende product op basis van titel-overeenkomst (synoniemen en gelijkaardige klussen meetellen, bijv. "lekkende kraan" matcht met "kraan repareren"). Als er geen redelijke match is, geef matched_rate en matched_unit als null en gebruik de oorspronkelijke titel van het aanvraag-item als matched_title.
+Voor elk aanvraag-item: zoek het best passende product op basis van titel-overeenkomst (synoniemen en gelijkaardige klussen meetellen). Let op de eenheid — als de aanvraag bijvoorbeeld een oppervlakte-klus beschrijft, geef de voorkeur aan een product met unit "m2"; als het een tijdgebonden/onzekere klus is, geef de voorkeur aan "hour". Als er geen redelijke match is, geef matched_rate, matched_unit en matched_product_id als null en gebruik de oorspronkelijke titel.
 
 Aanvraag-items:
 ${requestItems.map((item, i) => `${i}. ${item.title ?? ''}${item.description ? ' - ' + item.description : ''}`).join('\n')}
 
-Eerder gebruikte producten:
-${products.map((p) => `- ${p.title} (€${p.rate}/${p.unit})`).join('\n')}
+Eerder gebruikte producten (met id):
+${products.map((p) => `- [${p.id}] ${p.title} (€${p.rate}/${p.unit})`).join('\n')}
 
 Antwoord ALLEEN met een JSON array, geen andere tekst, in dit exacte formaat:
-[{"request_item_index": 0, "matched_title": "...", "matched_rate": 45.00, "matched_unit": "hour"}, ...]`,
+[{"request_item_index": 0, "matched_title": "...", "matched_rate": 45.00, "matched_unit": "hour", "matched_product_id": "uuid-of-null"}, ...]`,
         }],
       }),
     });
@@ -74,11 +77,12 @@ Antwoord ALLEEN met een JSON array, geen andere tekst, in dit exacte formaat:
       matched_title: item.title ?? "",
       matched_rate: null,
       matched_unit: null,
+      matched_product_id: null,
     }));
   }
 }
 
-// POST — zet een request om naar een quote, met AI-matching tegen eerdere producten
+// POST — zet een request om naar een quote: gematchte regels + losse suggestie-producten
 export async function POST(request: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
@@ -102,10 +106,14 @@ export async function POST(request: NextRequest, { params }: Params) {
 
     const [{ data: items }, { data: products }] = await Promise.all([
       service.from('request_items').select('title, description').eq('request_id', id).order('sort_order', { ascending: true }),
-      service.from('products').select('title, rate, unit').eq('company_id', req.company_id),
+      service.from('products').select('id, title, rate, unit').eq('company_id', req.company_id),
     ]);
 
-    const matches = await matchItemsAgainstProducts(items ?? [], products ?? []);
+    const matches = await matchItemsAgainstProducts(items ?? [], (products ?? []) as Product[]);
+    const matchedProductIds = new Set(matches.map((m) => m.matched_product_id).filter(Boolean));
+
+    // Producten die niet matchten met deze aanvraag — beschikbaar als losse suggesties
+    const suggestedProducts = (products ?? []).filter((p) => !matchedProductIds.has(p.id));
 
     // Maak de quote aan
     const { data: quote, error: quoteError } = await service
@@ -123,7 +131,7 @@ export async function POST(request: NextRequest, { params }: Params) {
       return NextResponse.json({ error: quoteError?.message ?? 'Failed to create quote' }, { status: 500 });
     }
 
-    // Maak line items aan op basis van de matches
+    // Line items uit de matches (uit de aanvraag, met eventuele prijs+eenheid)
     const lineItemRows = matches.map((match, index) => ({
       quote_id: quote.id,
       title: match.matched_title,
@@ -139,13 +147,20 @@ export async function POST(request: NextRequest, { params }: Params) {
       await service.from('line_items').insert(lineItemRows);
     }
 
-    // Markeer request als omgezet
     await service.from('requests').update({
       status: 'converted',
       converted_to_quote_id: quote.id,
     }).eq('id', id);
 
-    return NextResponse.json({ quoteId: quote.id });
+    return NextResponse.json({
+      quoteId: quote.id,
+      suggestedProducts: suggestedProducts.map((p) => ({
+        id: p.id,
+        title: p.title,
+        rate: p.rate,
+        unit: p.unit,
+      })),
+    });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
