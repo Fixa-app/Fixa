@@ -342,7 +342,6 @@ export function HomeContent({ firstName }: { firstName: string }) {
           onRowClick={(status) => router.push(`/dashboard/requests?filter=${status}`)}
           onViewAll={() => router.push("/dashboard/requests")}
           emptyMessage="Nog geen aanvragen om te tonen."
-          emptyAction={{ label: "Nieuwe aanvraag", onClick: () => router.push("/dashboard/requests/new") }}
           showAmount={false}
         />
       )}
@@ -356,7 +355,6 @@ export function HomeContent({ firstName }: { firstName: string }) {
           onRowClick={(status) => router.push(`/dashboard/quotes?filter=${status}`)}
           onViewAll={() => router.push("/dashboard/quotes")}
           emptyMessage="Nog geen offertes om te tonen."
-          emptyAction={{ label: "Nieuwe offerte", onClick: () => router.push("/dashboard/quotes/new") }}
         />
       )}
 
