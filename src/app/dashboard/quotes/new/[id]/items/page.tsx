@@ -85,6 +85,7 @@ function NewQuoteItemsContent() {
 
   const introRef = useAutoResize(introText);
   const disclaimerRef = useAutoResize(disclaimer);
+  const jobTitleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("quote_suggested_products");
@@ -181,6 +182,8 @@ function NewQuoteItemsContent() {
   async function handleSave() {
     if (!jobTitle.trim()) {
       setJobTitleError(true);
+      jobTitleRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      jobTitleRef.current?.focus();
       return;
     }
     setJobTitleError(false);
@@ -260,6 +263,7 @@ function NewQuoteItemsContent() {
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="job-title">Klusnaam</label>
               <input
+                ref={jobTitleRef}
                 id="job-title"
                 type="text"
                 value={jobTitle}

@@ -259,7 +259,7 @@ export default function NewQuotePreviewPage() {
           </div>
         </div>
 
-        <h1 className="font-display text-2xl font-bold mb-2">Controleer je offerte</h1>
+        <h1 className="font-display text-2xl font-bold mb-2">{quote.job_title || "Naamloze offerte"}</h1>
 
         {/* Status + tijdstip — direct onder titel */}
         <div className="mb-6 flex items-center gap-2">

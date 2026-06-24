@@ -2,10 +2,12 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
-import { ArrowLeft, Phone, MessageCircle, FileText } from "lucide-react";
+import { ArrowLeft, Phone, MessageCircle, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
 import { useSmartBack } from "@/lib/use-smart-back";
+import { formatRelativeTime } from "@/lib/format-relative-time";
 
 type RequestItem = {
   id: string;
@@ -35,6 +37,18 @@ async function getCurrentUserId(): Promise<string | null> {
   const { data: { user } } = await supabase.auth.getUser();
   return user?.id ?? null;
 }
+
+const REQUEST_STATUS_LABEL: Record<string, string> = {
+  created: "Aangemaakt",
+  converted: "Omgezet naar offerte",
+  archived: "Gearchiveerd",
+};
+
+const REQUEST_STATUS_BADGE: Record<string, "default" | "secondary" | "teal" | "violet" | "burgundy" | "destructive"> = {
+  created: "default",
+  converted: "teal",
+  archived: "secondary",
+};
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
@@ -185,10 +199,16 @@ function RequestDetailContent() {
           ))}
         </div>
 
-        {/* Meta */}
-        <p className="text-xs text-muted-foreground px-1">
-          Aangemaakt op {formatDate(request.created_at)}
-        </p>
+        {/* Status + tijdstip */}
+        <div className="flex items-center gap-2 px-1">
+          <Badge variant={REQUEST_STATUS_BADGE[request.status] ?? "secondary"}>
+            <CheckCircle2 className="h-3 w-3" />
+            {REQUEST_STATUS_LABEL[request.status] ?? request.status}
+          </Badge>
+          <span className="text-sm text-muted-foreground">
+            {formatRelativeTime(request.status === "created" ? request.created_at : request.created_at)}
+          </span>
+        </div>
       </div>
 
       {/* Sticky footer */}
