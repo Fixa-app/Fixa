@@ -35,6 +35,37 @@ async function getCurrentUserId(): Promise<string | null> {
   return user?.id ?? null;
 }
 
+function useAutoResize(value: string) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.height = "auto";
+      ref.current.style.height = `${ref.current.scrollHeight}px`;
+    }
+  }, [value]);
+  return ref;
+}
+
+function ItemDescriptionInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const ref = useAutoResize(value);
+  return (
+    <textarea
+      ref={ref}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Extra details (optioneel)"
+      rows={1}
+      className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none overflow-hidden min-h-[40px]"
+    />
+  );
+}
+
 export default function NewRequestStep1Page() {
   const router = useRouter();
   const goBack = useSmartBack("/dashboard");
@@ -108,7 +139,8 @@ export default function NewRequestStep1Page() {
     }
   }
 
-  function handleRemovePhoto(localId: string, photoId: string) {
+  async function handleRemovePhoto(localId: string, photoId: string, uploading?: boolean) {
+    // Verwijder lokaal direct uit state
     setItems((prev) =>
       prev.map((item) =>
         item.localId === localId
@@ -116,6 +148,12 @@ export default function NewRequestStep1Page() {
           : item
       )
     );
+
+    // Als de foto al geüpload is (photoId is dan de storage path), ook uit storage verwijderen
+    if (!uploading) {
+      const supabase = createClient();
+      await supabase.storage.from("request-photos").remove([photoId]);
+    }
   }
 
   async function handleContinue() {
@@ -124,7 +162,6 @@ export default function NewRequestStep1Page() {
     const userId = await getCurrentUserId();
     if (!userId) { setSaving(false); return; }
 
-    // Filter lege items eruit (geen titel ingevuld)
     const validItems = items.filter((item) => item.title.trim().length > 0);
 
     if (validItems.length === 0) {
@@ -179,16 +216,16 @@ export default function NewRequestStep1Page() {
         </div>
 
         <div className="space-y-1">
-          <h1 className="font-display text-2xl font-bold">Wat is het probleem?</h1>
+          <h1 className="font-display text-2xl font-bold">Nieuwe aanvraag</h1>
           <p className="text-sm text-muted-foreground">
-            Noteer wat je ziet, voeg foto&apos;s toe. Klantgegevens komen in de volgende stap.
+            Beschrijf het probleem. Klantgegevens komen in de volgende stap.
           </p>
         </div>
 
         {/* Request items */}
         <div className="space-y-4">
           {items.map((item) => (
-            <div key={item.localId} className="rounded-2xl border border-border bg-card p-4 space-y-4">
+            <div key={item.localId} className="rounded-2xl bg-card p-4 space-y-4">
 
               {/* Title + delete */}
               <div className="flex items-center gap-2">
@@ -210,13 +247,10 @@ export default function NewRequestStep1Page() {
                 )}
               </div>
 
-              {/* Description */}
-              <input
-                type="text"
+              {/* Description — auto-resizing textarea */}
+              <ItemDescriptionInput
                 value={item.description}
-                onChange={(e) => updateItem(item.localId, { description: e.target.value })}
-                placeholder="Extra details (optioneel)"
-                className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onChange={(v) => updateItem(item.localId, { description: v })}
               />
 
               {/* Photos */}
@@ -233,15 +267,13 @@ export default function NewRequestStep1Page() {
                         <div className="h-4 w-4 animate-spin rounded-full border border-white border-t-transparent" />
                       </div>
                     )}
-                    {!photo.uploading && (
-                      <button
-                        onClick={() => handleRemovePhoto(item.localId, photo.id)}
-                        aria-label="Foto verwijderen"
-                        className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm hover:bg-red-50"
-                      >
-                        <X className="h-3 w-3 text-muted-foreground" />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleRemovePhoto(item.localId, photo.id, photo.uploading)}
+                      aria-label="Foto verwijderen"
+                      className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-background border border-border shadow-sm hover:bg-red-50"
+                    >
+                      <X className="h-3 w-3 text-muted-foreground" />
+                    </button>
                   </div>
                 ))}
                 <label className="flex h-20 w-20 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-border hover:bg-muted/40 transition-colors">

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { ArrowLeft, Phone, MessageCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -47,9 +47,11 @@ function toWhatsAppNumber(phone: string): string {
   return digits;
 }
 
-export default function RequestDetailPage() {
+function RequestDetailContent() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const isNew = searchParams.get("new") === "true";
   const goBack = useSmartBack("/dashboard");
 
   const [data, setData] = useState<RequestData | null>(null);
@@ -113,7 +115,18 @@ export default function RequestDetailPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h1 className="font-display text-2xl font-bold flex-1 ml-3">Aanvraag details</h1>
+          {isNew ? (
+            <div className="flex flex-1 items-center justify-between">
+              <div className="flex-1">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full w-full bg-primary transition-all" />
+                </div>
+              </div>
+              <span className="ml-4 text-sm text-muted-foreground">2/2</span>
+            </div>
+          ) : (
+            <h1 className="font-display text-2xl font-bold flex-1">Aanvraag details</h1>
+          )}
         </div>
 
         {/* Client sectie */}
@@ -197,5 +210,13 @@ export default function RequestDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RequestDetailPage() {
+  return (
+    <Suspense fallback={<div />}>
+      <RequestDetailContent />
+    </Suspense>
   );
 }

@@ -172,7 +172,7 @@ export default function NewRequestStep2ClientPage() {
       body: JSON.stringify({ userId, client_id: selectedClient.id }),
     });
 
-    router.push(`/dashboard/requests/${id}`);
+    router.push(`/dashboard/requests/${id}?new=true`);
   }
 
   const showRecent = !query.trim() && recentClients.length > 0;
