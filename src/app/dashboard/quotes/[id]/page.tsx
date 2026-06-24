@@ -163,11 +163,12 @@ export default function QuoteDetailPage() {
     const { token } = await res.json();
     const hubUrl = `${window.location.origin}/hub/${token}`;
 
+    // Geen 'text' meegeven — sommige share-doelen (zoals "Kopiëren") plakken
+    // title/text en url samen, waardoor de URL niet los te gebruiken is.
     if (navigator.share) {
       try {
         await navigator.share({
           title: `Offerte van ${data.company?.name ?? "Fixa"}`,
-          text: `Bekijk en beantwoord je offerte`,
           url: hubUrl,
         });
       } catch {
