@@ -79,6 +79,7 @@ function NewQuoteItemsContent() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
+  const [jobTitleError, setJobTitleError] = useState(false);
   const [suggestedProducts, setSuggestedProducts] = useState<{ id: string; title: string; rate: number; unit: string }[]>([]);
   const [referencePhotos, setReferencePhotos] = useState<Record<string, string[]>>({});
 
@@ -178,6 +179,11 @@ function NewQuoteItemsContent() {
   }
 
   async function handleSave() {
+    if (!jobTitle.trim()) {
+      setJobTitleError(true);
+      return;
+    }
+    setJobTitleError(false);
     setSaving(true);
     const userId = await getCurrentUserId();
     if (!userId) { setSaving(false); return; }
@@ -257,12 +263,20 @@ function NewQuoteItemsContent() {
                 id="job-title"
                 type="text"
                 value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
+                onChange={(e) => {
+                  setJobTitle(e.target.value);
+                  if (e.target.value.trim()) setJobTitleError(false);
+                }}
                 onBlur={() => saveQuoteField("job_title", jobTitle)}
                 placeholder="Bijv. Badkamer renovatie Jansen, Dak reparatie nr. 12"
                 aria-label="Klusnaam (niet zichtbaar voor klant)"
-                className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={`w-full h-12 rounded-xl border bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  jobTitleError ? "border-destructive" : "border-input"
+                }`}
               />
+              {jobTitleError && (
+                <p className="text-sm text-destructive">Geef deze offerte een klusnaam voordat je opslaat.</p>
+              )}
             </div>
           </div>
 

@@ -259,7 +259,16 @@ export default function NewQuotePreviewPage() {
           </div>
         </div>
 
-        <h1 className="font-display text-2xl font-bold mb-6">Controleer je offerte</h1>
+        <h1 className="font-display text-2xl font-bold mb-2">Controleer je offerte</h1>
+
+        {/* Status + tijdstip — direct onder titel */}
+        <div className="mb-6 flex items-center gap-2">
+          <Badge variant="teal">
+            <CheckCircle2 className="h-3 w-3" />
+            {quote.status === "draft" ? "Concept" : quote.status === "awaiting_response" ? "Verstuurd" : quote.status}
+          </Badge>
+          <span className="text-sm text-muted-foreground">{formatRelativeTime(quote.updated_at)}</span>
+        </div>
 
         {/* Setup kaarten */}
         {needsSetup && (
@@ -476,15 +485,6 @@ export default function NewQuotePreviewPage() {
               <p className="text-xs text-muted-foreground whitespace-pre-line">{disclaimerText}</p>
             </div>
           )}
-        </div>
-
-        {/* Status + tijdstip */}
-        <div className="mt-4 flex items-center gap-2">
-          <Badge variant="teal">
-            <CheckCircle2 className="h-3 w-3" />
-            {quote.status === "draft" ? "Concept" : quote.status === "awaiting_response" ? "Verstuurd" : quote.status}
-          </Badge>
-          <span className="text-sm text-muted-foreground">{formatRelativeTime(quote.updated_at)}</span>
         </div>
       </div>
 
