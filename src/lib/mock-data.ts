@@ -201,20 +201,20 @@ export const DASHBOARD_INVOICE_STATUSES: InvoiceStatus[] = [
 
 // Labels per status
 export const QUOTE_STATUS_LABELS: Record<QuoteStatus, string> = {
-  draft: "Draft",
-  awaiting_response: "Awaiting response",
-  changes_requested: "Changes requested",
-  ready_to_schedule: "Ready to schedule",
-  declined: "Declined",
-  archived: "Archived",
+  draft: "Concept",
+  awaiting_response: "Verstuurd, wacht op reactie",
+  changes_requested: "Wijziging gevraagd",
+  ready_to_schedule: "Geaccepteerd",
+  declined: "Geweigerd",
+  archived: "Gearchiveerd",
 };
 
 export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
-  draft: "Draft",
-  awaiting_payment: "Awaiting payment",
-  past_due: "Past due",
-  paid: "Paid",
-  archived: "Archived",
+  draft: "Concept",
+  awaiting_payment: "Wacht op betaling",
+  past_due: "Achterstallig",
+  paid: "Betaald",
+  archived: "Gearchiveerd",
 };
 
 // Aggregate quotes by status for dashboard

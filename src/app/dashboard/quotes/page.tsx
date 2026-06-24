@@ -55,7 +55,7 @@ const STATUS_BADGE: Record<string, BadgeVariant> = {
   draft: "secondary",
   awaiting_response: "default",
   declined: "destructive",
-  archived: "violet",
+  archived: "secondary",
 };
 
 function formatCurrency(amount: number) {
