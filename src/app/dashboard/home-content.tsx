@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   type DashboardStatusRow,
-} from "@/lib/mock-data";
+} from "@/lib/invoice-mock-data";
 import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_BADGE,
