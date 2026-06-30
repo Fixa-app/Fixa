@@ -56,6 +56,7 @@ type QuoteData = {
     name: string;
     logo_url: string | null;
   } | null;
+  changeRequests: { id: string; message: string; created_at: string }[];
 };
 
 const STATUS_LABEL = QUOTE_STATUS_LABELS;
@@ -436,7 +437,18 @@ export default function QuoteDetailPage() {
                   <p className="text-xs text-muted-foreground">{formatDate(quote.sent_at)}</p>
                 </div>
               )}
-              {!quote.sent_at && (
+              {data.changeRequests.map((cr, i) => (
+                <div
+                  key={cr.id}
+                  className="text-sm animate-in fade-in border-l-2 border-burgundy-bright/30 pl-3"
+                  style={{ animationDelay: `${200 + i * 100}ms` }}
+                >
+                  <p className="font-medium">Wijziging gevraagd door klant</p>
+                  <p className="text-xs text-muted-foreground mb-1">{formatDate(cr.created_at)}</p>
+                  <p className="text-sm italic text-foreground">&ldquo;{cr.message}&rdquo;</p>
+                </div>
+              ))}
+              {!quote.sent_at && data.changeRequests.length === 0 && (
                 <p className="text-sm text-muted-foreground">Nog geen verdere activiteit.</p>
               )}
             </div>

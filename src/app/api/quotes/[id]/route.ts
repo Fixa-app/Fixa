@@ -40,10 +40,12 @@ export async function GET(request: NextRequest, { params }: Params) {
       { data: lineItems },
       { data: client },
       { data: company },
+      { data: changeRequests },
     ] = await Promise.all([
       service.from('line_items').select('*').eq('quote_id', id).order('sort_order', { ascending: true }),
       service.from('clients').select('name, address, email, phone').eq('id', quote.client_id).single(),
       service.from('companies').select('name, street, city, postal, phone, email, kvk, vat_number, iban, logo_url').eq('id', quote.company_id).single(),
+      service.from('quote_change_requests').select('id, message, created_at').eq('quote_id', id).order('created_at', { ascending: false }),
     ]);
 
     return NextResponse.json({
@@ -51,6 +53,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       lineItems: lineItems ?? [],
       client,
       company,
+      changeRequests: changeRequests ?? [],
     });
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 });

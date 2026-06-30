@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Check, MessageSquare } from "lucide-react";
+import { Check, MessageSquare, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
 
@@ -156,114 +156,179 @@ export default function ClientHubPage() {
   const { subtotal, byTax, total } = calcTotals(lineItems);
   const quoteDate = new Date().toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
 
-  return (
-    <>
-      <div className="min-h-screen bg-muted/30">
-        <div className="mx-auto w-full max-w-2xl p-4 md:p-6 space-y-4 pb-32">
+  const ActionPanel = (
+    <div className="space-y-4">
+      <div className="rounded-2xl bg-card p-5 space-y-1">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <FileText className="h-4 w-4" />
+          <span className="text-xs uppercase tracking-wide">Offerte</span>
+        </div>
+        <p className="font-bold text-lg">{quote.job_title || company?.name}</p>
+        {quote.quote_number && <p className="text-sm text-muted-foreground">{quote.quote_number}</p>}
+      </div>
 
-          {/* Offerte document */}
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            <div className="p-6 border-b border-border">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1">
-                  {company?.logo_url && (
-                    <img src={company.logo_url} alt={company.name} className="h-12 w-auto object-contain mb-2" />
-                  )}
-                  <p className="font-bold">{company?.name}</p>
-                  {company?.street && <p className="text-sm text-muted-foreground">{company.street}</p>}
-                  {company?.postal && company?.city && (
-                    <p className="text-sm text-muted-foreground">{company.postal} {company.city}</p>
-                  )}
-                  {company?.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
-                  {company?.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
-                </div>
-                <div className="text-right space-y-1 flex-shrink-0">
-                  {company?.kvk && <p className="text-xs text-muted-foreground">KVK: {company.kvk}</p>}
-                  {company?.vat_number && <p className="text-xs text-muted-foreground">BTW: {company.vat_number}</p>}
-                  {company?.iban && <p className="text-xs text-muted-foreground">IBAN: {company.iban}</p>}
-                </div>
-              </div>
-            </div>
+      <div className="rounded-2xl bg-card p-5 space-y-1">
+        <p className="text-xs uppercase tracking-wide text-muted-foreground">Totaalbedrag</p>
+        <p className="font-display text-2xl font-bold">{formatCurrency(total)}</p>
+        <p className="text-xs text-muted-foreground">incl. BTW</p>
+      </div>
 
-            <div className="p-6 border-b border-border">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1">
-                  <p className="font-bold">{client?.name}</p>
-                  {client?.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
-                </div>
-                <div className="text-right space-y-1 flex-shrink-0">
-                  {quote.quote_number && (
-                    <p className="text-sm"><span className="text-muted-foreground">Offerte: </span><span className="font-medium">{quote.quote_number}</span></p>
-                  )}
-                  <p className="text-sm"><span className="text-muted-foreground">Datum: </span><span className="font-medium">{quoteDate}</span></p>
-                </div>
-              </div>
-            </div>
+      <div className="rounded-2xl bg-card p-5 space-y-3">
+        {actionTaken === "accepted" ? (
+          <div className="flex items-center gap-2 text-green-600 font-medium">
+            <Check className="h-5 w-5 flex-shrink-0" />
+            Je hebt deze offerte geaccepteerd
+          </div>
+        ) : actionTaken === "changes_requested" ? (
+          <div className="flex items-center gap-2 text-muted-foreground font-medium">
+            <MessageSquare className="h-5 w-5 flex-shrink-0" />
+            Je vraag is verstuurd
+          </div>
+        ) : (
+          <>
+            <Button className="w-full" onClick={handleAccept} disabled={submitting}>
+              {submitting ? "Bezig..." : "Offerte accepteren"}
+            </Button>
+            <button
+              onClick={() => setChangesSheetOpen(true)}
+              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+            >
+              Ik heb een vraag of wijziging
+            </button>
+          </>
+        )}
+      </div>
 
-            {introText && (
-              <div className="p-6 border-b border-border">
-                <p className="text-sm whitespace-pre-line">{introText}</p>
-              </div>
+      {company && (
+        <div className="rounded-2xl bg-card p-5 space-y-1">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Contact</p>
+          <p className="text-sm font-medium">{company.name}</p>
+          {company.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
+          {company.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
+        </div>
+      )}
+    </div>
+  );
+
+  const DocumentPanel = (
+    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+      <div className="p-6 border-b border-border">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            {company?.logo_url && (
+              <img src={company.logo_url} alt={company.name} className="h-12 w-auto object-contain mb-2" />
             )}
-
-            <div className="p-6 border-b border-border overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left font-medium text-muted-foreground pb-2">Omschrijving</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-12">Aant.</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-20">Prijs</th>
-                    <th className="text-right font-medium text-muted-foreground pb-2 w-24">Totaal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lineItems.map((item) => (
-                    <tr key={item.id} className="border-b border-border/50">
-                      <td className="py-3">
-                        <p className="font-medium">{item.title || "—"}</p>
-                        {item.description && <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>}
-                      </td>
-                      <td className="text-right py-3 text-muted-foreground">{item.quantity}</td>
-                      <td className="text-right py-3">{formatCurrency(item.rate)}</td>
-                      <td className="text-right py-3 font-medium">{formatCurrency(item.quantity * item.rate)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="p-6 border-b border-border">
-              <div className="ml-auto max-w-xs space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotaal ex BTW</span>
-                  <span>{formatCurrency(subtotal)}</span>
-                </div>
-                {Object.entries(byTax).map(([rate, base]) =>
-                  base > 0 ? (
-                    <div key={rate} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{rate}% BTW</span>
-                      <span>{formatCurrency(base * (Number(rate) / 100))}</span>
-                    </div>
-                  ) : null
-                )}
-                <div className="flex justify-between font-bold pt-2 border-t border-border">
-                  <span>Totaal incl. BTW</span>
-                  <span>{formatCurrency(total)}</span>
-                </div>
-              </div>
-            </div>
-
-            {disclaimerText && (
-              <div className="p-6">
-                <p className="text-xs text-muted-foreground whitespace-pre-line">{disclaimerText}</p>
-              </div>
+            <p className="font-bold">{company?.name}</p>
+            {company?.street && <p className="text-sm text-muted-foreground">{company.street}</p>}
+            {company?.postal && company?.city && (
+              <p className="text-sm text-muted-foreground">{company.postal} {company.city}</p>
             )}
+            {company?.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
+            {company?.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
+          </div>
+          <div className="text-right space-y-1 flex-shrink-0">
+            {company?.kvk && <p className="text-xs text-muted-foreground">KVK: {company.kvk}</p>}
+            {company?.vat_number && <p className="text-xs text-muted-foreground">BTW: {company.vat_number}</p>}
+            {company?.iban && <p className="text-xs text-muted-foreground">IBAN: {company.iban}</p>}
           </div>
         </div>
       </div>
 
-      {/* Sticky actiebar */}
-      <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="p-6 border-b border-border">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="font-bold">{client?.name}</p>
+            {client?.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
+          </div>
+          <div className="text-right space-y-1 flex-shrink-0">
+            {quote.quote_number && (
+              <p className="text-sm"><span className="text-muted-foreground">Offerte: </span><span className="font-medium">{quote.quote_number}</span></p>
+            )}
+            <p className="text-sm"><span className="text-muted-foreground">Datum: </span><span className="font-medium">{quoteDate}</span></p>
+          </div>
+        </div>
+      </div>
+
+      {introText && (
+        <div className="p-6 border-b border-border">
+          <p className="text-sm whitespace-pre-line">{introText}</p>
+        </div>
+      )}
+
+      <div className="p-6 border-b border-border overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left font-medium text-muted-foreground pb-2">Omschrijving</th>
+              <th className="text-right font-medium text-muted-foreground pb-2 w-12">Aant.</th>
+              <th className="text-right font-medium text-muted-foreground pb-2 w-20">Prijs</th>
+              <th className="text-right font-medium text-muted-foreground pb-2 w-24">Totaal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lineItems.map((item) => (
+              <tr key={item.id} className="border-b border-border/50">
+                <td className="py-3">
+                  <p className="font-medium">{item.title || "—"}</p>
+                  {item.description && <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>}
+                </td>
+                <td className="text-right py-3 text-muted-foreground">{item.quantity}</td>
+                <td className="text-right py-3">{formatCurrency(item.rate)}</td>
+                <td className="text-right py-3 font-medium">{formatCurrency(item.quantity * item.rate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="p-6 border-b border-border">
+        <div className="ml-auto max-w-xs space-y-1">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Subtotaal ex BTW</span>
+            <span>{formatCurrency(subtotal)}</span>
+          </div>
+          {Object.entries(byTax).map(([rate, base]) =>
+            base > 0 ? (
+              <div key={rate} className="flex justify-between text-sm">
+                <span className="text-muted-foreground">{rate}% BTW</span>
+                <span>{formatCurrency(base * (Number(rate) / 100))}</span>
+              </div>
+            ) : null
+          )}
+          <div className="flex justify-between font-bold pt-2 border-t border-border">
+            <span>Totaal incl. BTW</span>
+            <span>{formatCurrency(total)}</span>
+          </div>
+        </div>
+      </div>
+
+      {disclaimerText && (
+        <div className="p-6">
+          <p className="text-xs text-muted-foreground whitespace-pre-line">{disclaimerText}</p>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <div className="min-h-screen bg-muted/30">
+        {/* Desktop: twee kolommen, document links + sticky actiesidebar rechts */}
+        <div className="hidden lg:flex mx-auto w-full max-w-6xl gap-6 p-6">
+          <div className="flex-1 min-w-0">{DocumentPanel}</div>
+          <div className="w-80 flex-shrink-0">
+            <div className="sticky top-6">{ActionPanel}</div>
+          </div>
+        </div>
+
+        {/* Mobiel: gestapeld, document eerst, acties als sticky footer onderaan */}
+        <div className="lg:hidden mx-auto w-full max-w-2xl p-4 space-y-4 pb-32">
+          {DocumentPanel}
+        </div>
+      </div>
+
+      {/* Mobiele sticky actiebar — desktop heeft de sidebar al */}
+      <div className="lg:hidden sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
           {actionTaken === "accepted" ? (
             <div className="flex items-center justify-center gap-2 py-2 text-green-600 font-medium">
@@ -273,7 +338,7 @@ export default function ClientHubPage() {
           ) : actionTaken === "changes_requested" ? (
             <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground font-medium">
               <MessageSquare className="h-5 w-5" />
-              Je vraag is verstuurd naar de aannemer
+              Je vraag is verstuurd
             </div>
           ) : (
             <>
