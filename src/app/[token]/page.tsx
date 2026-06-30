@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Check, MessageSquare, FileText, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Drawer } from "vaul";
+import { QUOTE_STATUS_LABELS, QUOTE_STATUS_BADGE } from "@/lib/status-config";
+import { formatRelativeTime } from "@/lib/format-relative-time";
 
 type LineItem = {
   id: string;
@@ -190,22 +193,17 @@ export default function ClientHubPage() {
       </div>
 
       <div className="rounded-2xl bg-card p-5 space-y-3">
-        {actionTaken === "accepted" ? (
-          <div>
-            <div className="flex items-center gap-2 text-green-600 font-medium">
-              <Check className="h-5 w-5 flex-shrink-0" />
-              Geaccepteerd
-            </div>
-            {quote.approved_at && (
-              <p className="text-xs text-muted-foreground mt-1">{formatAcceptedDate(quote.approved_at)}</p>
-            )}
-          </div>
-        ) : actionTaken === "changes_requested" ? (
-          <div className="flex items-center gap-2 text-muted-foreground font-medium">
-            <MessageSquare className="h-5 w-5 flex-shrink-0" />
-            Je vraag is verstuurd
-          </div>
-        ) : (
+        <div className="flex items-center gap-2">
+          <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
+            <Check className="h-3 w-3" />
+            {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
+          </Badge>
+          {quote.approved_at && (
+            <span className="text-xs text-muted-foreground">{formatRelativeTime(quote.approved_at)}</span>
+          )}
+        </div>
+
+        {actionTaken === null && (
           <>
             <Button className="w-full" onClick={handleAccept} disabled={submitting}>
               {submitting ? "Bezig..." : "Offerte accepteren"}
@@ -218,36 +216,19 @@ export default function ClientHubPage() {
             </button>
           </>
         )}
+
+        {actionTaken === "changes_requested" && (
+          <p className="text-sm text-muted-foreground">
+            Je vraag is verstuurd naar de aannemer. Die neemt contact met je op.
+          </p>
+        )}
       </div>
 
       {company && (
-        <div className="rounded-2xl bg-card p-5 space-y-3">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Contact</p>
+        <div className="rounded-2xl bg-card p-5 space-y-1">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Contact</p>
           <p className="text-sm font-medium">{company.name}</p>
-          {(companyPhoneHref || companyWhatsappHref) && (
-            <div className="flex items-center gap-2">
-              {companyPhoneHref && (
-                <a
-                  href={companyPhoneHref}
-                  aria-label="Bel de aannemer"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-muted/40 transition-colors"
-                >
-                  <Phone className="h-4 w-4" />
-                </a>
-              )}
-              {companyWhatsappHref && (
-                <a
-                  href={companyWhatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Stuur WhatsApp naar de aannemer"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-muted/40 transition-colors"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </a>
-              )}
-            </div>
-          )}
+          {company.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
           {company.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
         </div>
       )}
@@ -373,57 +354,62 @@ export default function ClientHubPage() {
 
       {/* Mobiele sticky actiebar — desktop heeft de sidebar al */}
       <div className="lg:hidden sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
-          {actionTaken === "accepted" ? (
-            <div className="text-center py-2">
-              <div className="flex items-center justify-center gap-2 text-green-600 font-medium">
-                <Check className="h-5 w-5" />
-                Geaccepteerd
-              </div>
-              {quote.approved_at && (
-                <p className="text-xs text-muted-foreground mt-1">{formatAcceptedDate(quote.approved_at)}</p>
-              )}
-            </div>
-          ) : actionTaken === "changes_requested" ? (
-            <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground font-medium">
-              <MessageSquare className="h-5 w-5" />
-              Je vraag is verstuurd
-            </div>
-          ) : (
-            <>
-              <button
-                onClick={() => setChangesSheetOpen(true)}
-                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-              >
-                Ik heb een vraag of wijziging
-              </button>
-              <div className="flex items-center gap-2">
-                {companyPhoneHref && (
-                  <a
-                    href={companyPhoneHref}
-                    aria-label="Bel de aannemer"
-                    className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
-                  >
-                    <Phone className="h-4 w-4" />
-                  </a>
-                )}
-                {companyWhatsappHref && (
-                  <a
-                    href={companyWhatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Stuur WhatsApp naar de aannemer"
-                    className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                  </a>
-                )}
-                <Button className="flex-1" onClick={handleAccept} disabled={submitting}>
-                  {submitting ? "Bezig..." : "Offerte accepteren"}
-                </Button>
-              </div>
-            </>
+        <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-3">
+          <div className="flex items-center justify-center gap-2">
+            <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
+              <Check className="h-3 w-3" />
+              {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
+            </Badge>
+            {quote.approved_at && (
+              <span className="text-xs text-muted-foreground">{formatRelativeTime(quote.approved_at)}</span>
+            )}
+          </div>
+
+          {actionTaken === "changes_requested" && (
+            <p className="text-sm text-center text-muted-foreground">
+              Je vraag is verstuurd naar de aannemer.
+            </p>
           )}
+
+          {actionTaken === null && (
+            <button
+              onClick={() => setChangesSheetOpen(true)}
+              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+            >
+              Ik heb een vraag of wijziging
+            </button>
+          )}
+
+          {/* Contact + accepteren altijd zichtbaar, ook na acceptatie — klant kan
+              altijd nog contact opnemen, en accepteren-knop blijft bruikbaar tot
+              een andere status (bijv. archivering) dat overbodig maakt. */}
+          <div className="flex items-center gap-2">
+            {companyPhoneHref && (
+              <a
+                href={companyPhoneHref}
+                aria-label="Bel de aannemer"
+                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
+              >
+                <Phone className="h-4 w-4" />
+              </a>
+            )}
+            {companyWhatsappHref && (
+              <a
+                href={companyWhatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Stuur WhatsApp naar de aannemer"
+                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
+              >
+                <MessageCircle className="h-4 w-4" />
+              </a>
+            )}
+            {actionTaken === null && (
+              <Button className="flex-1" onClick={handleAccept} disabled={submitting}>
+                {submitting ? "Bezig..." : "Offerte accepteren"}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
