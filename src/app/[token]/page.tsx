@@ -97,6 +97,7 @@ export default function ClientHubPage() {
   const [actionTaken, setActionTaken] = useState<"accepted" | "changes_requested" | null>(null);
   const [changesSheetOpen, setChangesSheetOpen] = useState(false);
   const [changesMessage, setChangesMessage] = useState("");
+  const [submittedMessage, setSubmittedMessage] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -134,6 +135,7 @@ export default function ClientHubPage() {
     });
     if (res.ok) {
       setActionTaken("changes_requested");
+      setSubmittedMessage(changesMessage.trim());
       setChangesSheetOpen(false);
     }
     setSubmitting(false);
@@ -218,9 +220,16 @@ export default function ClientHubPage() {
         )}
 
         {actionTaken === "changes_requested" && (
-          <p className="text-sm text-muted-foreground">
-            Je vraag is verstuurd naar de aannemer. Die neemt contact met je op.
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Je vraag is verstuurd naar de aannemer. Die neemt contact met je op.
+            </p>
+            {submittedMessage && (
+              <p className="text-sm italic border-l-2 border-border pl-3">
+                &ldquo;{submittedMessage}&rdquo;
+              </p>
+            )}
+          </div>
         )}
       </div>
 
@@ -366,9 +375,14 @@ export default function ClientHubPage() {
           </div>
 
           {actionTaken === "changes_requested" && (
-            <p className="text-sm text-center text-muted-foreground">
-              Je vraag is verstuurd naar de aannemer.
-            </p>
+            <div className="text-center space-y-1">
+              <p className="text-sm text-muted-foreground">
+                Je vraag is verstuurd naar de aannemer.
+              </p>
+              {submittedMessage && (
+                <p className="text-sm italic">&ldquo;{submittedMessage}&rdquo;</p>
+              )}
+            </div>
           )}
 
           {actionTaken === null && (
