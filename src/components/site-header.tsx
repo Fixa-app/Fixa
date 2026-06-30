@@ -7,9 +7,17 @@ export async function SiteHeader() {
   // Hide on app routes
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
-  
+
   const appRoutes = ['/dashboard', '/onboarding', '/quotes', '/invoices', '/settings'];
   if (appRoutes.some(route => pathname.startsWith(route))) {
+    return null;
+  }
+
+  // Hide on the public client hub route (/[token]) — a single path segment,
+  // 20+ chars, matching the base64url tokens generated for quote sharing.
+  // This page must never show the marketing header or any pro/account info.
+  const isHubRoute = /^\/[A-Za-z0-9_-]{20,}\/?$/.test(pathname);
+  if (isHubRoute) {
     return null;
   }
 

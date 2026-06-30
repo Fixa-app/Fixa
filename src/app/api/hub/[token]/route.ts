@@ -40,7 +40,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       { data: company },
     ] = await Promise.all([
       service.from('line_items').select('*').eq('quote_id', quote.id).order('sort_order', { ascending: true }),
-      service.from('clients').select('name, address').eq('id', quote.client_id).single(),
+      service.from('clients').select('name, address, phone').eq('id', quote.client_id).single(),
       service.from('companies').select('name, street, city, postal, phone, email, kvk, vat_number, iban, logo_url').eq('id', quote.company_id).single(),
     ]);
 
@@ -52,6 +52,7 @@ export async function GET(request: NextRequest, { params }: Params) {
         disclaimer: quote.disclaimer,
         quote_number: quote.quote_number,
         status: quote.status,
+        approved_at: quote.approved_at,
       },
       lineItems: lineItems ?? [],
       client,

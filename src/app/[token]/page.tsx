@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Check, MessageSquare, FileText } from "lucide-react";
+import { Check, MessageSquare, FileText, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "vaul";
 
@@ -23,6 +23,7 @@ type HubData = {
     disclaimer: string | null;
     quote_number: string | null;
     status: string;
+    approved_at: string | null;
   };
   lineItems: LineItem[];
   client: { name: string; address: string | null } | null;
@@ -56,6 +57,19 @@ function resolveTokens(text: string, clientName: string, address: string): strin
     .replace(/\[klantnaam\]/gi, clientName)
     .replace(/\[adres\]/gi, address)
     .replace(/\[offertedatum \+ 30 dagen\]/gi, expiryStr);
+}
+
+function toWhatsAppNumber(phone: string): string {
+  const digits = phone.replace(/[^\d]/g, "");
+  if (digits.startsWith("31")) return digits;
+  if (digits.startsWith("0")) return "31" + digits.slice(1);
+  return digits;
+}
+
+function formatAcceptedDate(iso: string) {
+  return new Date(iso).toLocaleDateString("nl-NL", {
+    day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
+  });
 }
 
 function calcTotals(items: LineItem[]) {
@@ -155,6 +169,8 @@ export default function ClientHubPage() {
   const disclaimerText = resolveTokens(quote.disclaimer ?? "", clientName, clientAddress);
   const { subtotal, byTax, total } = calcTotals(lineItems);
   const quoteDate = new Date().toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+  const companyPhoneHref = company?.phone ? `tel:${company.phone}` : undefined;
+  const companyWhatsappHref = company?.phone ? `https://wa.me/${toWhatsAppNumber(company.phone)}` : undefined;
 
   const ActionPanel = (
     <div className="space-y-4">
@@ -175,9 +191,14 @@ export default function ClientHubPage() {
 
       <div className="rounded-2xl bg-card p-5 space-y-3">
         {actionTaken === "accepted" ? (
-          <div className="flex items-center gap-2 text-green-600 font-medium">
-            <Check className="h-5 w-5 flex-shrink-0" />
-            Je hebt deze offerte geaccepteerd
+          <div>
+            <div className="flex items-center gap-2 text-green-600 font-medium">
+              <Check className="h-5 w-5 flex-shrink-0" />
+              Geaccepteerd
+            </div>
+            {quote.approved_at && (
+              <p className="text-xs text-muted-foreground mt-1">{formatAcceptedDate(quote.approved_at)}</p>
+            )}
           </div>
         ) : actionTaken === "changes_requested" ? (
           <div className="flex items-center gap-2 text-muted-foreground font-medium">
@@ -200,10 +221,33 @@ export default function ClientHubPage() {
       </div>
 
       {company && (
-        <div className="rounded-2xl bg-card p-5 space-y-1">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Contact</p>
+        <div className="rounded-2xl bg-card p-5 space-y-3">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Contact</p>
           <p className="text-sm font-medium">{company.name}</p>
-          {company.phone && <p className="text-sm text-muted-foreground">{company.phone}</p>}
+          {(companyPhoneHref || companyWhatsappHref) && (
+            <div className="flex items-center gap-2">
+              {companyPhoneHref && (
+                <a
+                  href={companyPhoneHref}
+                  aria-label="Bel de aannemer"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-muted/40 transition-colors"
+                >
+                  <Phone className="h-4 w-4" />
+                </a>
+              )}
+              {companyWhatsappHref && (
+                <a
+                  href={companyWhatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Stuur WhatsApp naar de aannemer"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-border hover:bg-muted/40 transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </a>
+              )}
+            </div>
+          )}
           {company.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
         </div>
       )}
@@ -331,9 +375,14 @@ export default function ClientHubPage() {
       <div className="lg:hidden sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
           {actionTaken === "accepted" ? (
-            <div className="flex items-center justify-center gap-2 py-2 text-green-600 font-medium">
-              <Check className="h-5 w-5" />
-              Je hebt deze offerte geaccepteerd
+            <div className="text-center py-2">
+              <div className="flex items-center justify-center gap-2 text-green-600 font-medium">
+                <Check className="h-5 w-5" />
+                Geaccepteerd
+              </div>
+              {quote.approved_at && (
+                <p className="text-xs text-muted-foreground mt-1">{formatAcceptedDate(quote.approved_at)}</p>
+              )}
             </div>
           ) : actionTaken === "changes_requested" ? (
             <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground font-medium">
@@ -342,15 +391,37 @@ export default function ClientHubPage() {
             </div>
           ) : (
             <>
-              <Button className="w-full" onClick={handleAccept} disabled={submitting}>
-                {submitting ? "Bezig..." : "Offerte accepteren"}
-              </Button>
               <button
                 onClick={() => setChangesSheetOpen(true)}
                 className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
               >
                 Ik heb een vraag of wijziging
               </button>
+              <div className="flex items-center gap-2">
+                {companyPhoneHref && (
+                  <a
+                    href={companyPhoneHref}
+                    aria-label="Bel de aannemer"
+                    className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
+                  >
+                    <Phone className="h-4 w-4" />
+                  </a>
+                )}
+                {companyWhatsappHref && (
+                  <a
+                    href={companyWhatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Stuur WhatsApp naar de aannemer"
+                    className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </a>
+                )}
+                <Button className="flex-1" onClick={handleAccept} disabled={submitting}>
+                  {submitting ? "Bezig..." : "Offerte accepteren"}
+                </Button>
+              </div>
             </>
           )}
         </div>
