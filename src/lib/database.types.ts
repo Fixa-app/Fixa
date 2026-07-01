@@ -155,7 +155,9 @@ export type Database = {
           company_id: string
           created_at: string | null
           id: string
+          invoice_number_format: string | null
           last_parsed_quote_number: string | null
+          next_invoice_number: number | null
           next_quote_number: number | null
           quote_disclaimer: string | null
           quote_intro: string | null
@@ -166,7 +168,9 @@ export type Database = {
           company_id: string
           created_at?: string | null
           id?: string
+          invoice_number_format?: string | null
           last_parsed_quote_number?: string | null
+          next_invoice_number?: number | null
           next_quote_number?: number | null
           quote_disclaimer?: string | null
           quote_intro?: string | null
@@ -177,7 +181,9 @@ export type Database = {
           company_id?: string
           created_at?: string | null
           id?: string
+          invoice_number_format?: string | null
           last_parsed_quote_number?: string | null
+          next_invoice_number?: number | null
           next_quote_number?: number | null
           quote_disclaimer?: string | null
           quote_intro?: string | null
@@ -194,6 +200,53 @@ export type Database = {
           },
         ]
       }
+      invoice_line_items: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          invoice_id: string
+          quantity: number
+          rate: number
+          sort_order: number
+          tax_percentage: number
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          invoice_id: string
+          quantity?: number
+          rate?: number
+          sort_order?: number
+          tax_percentage?: number
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          rate?: number
+          sort_order?: number
+          tax_percentage?: number
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_line_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           client_id: string | null
@@ -203,6 +256,7 @@ export type Database = {
           due_date: string | null
           id: string
           intro_text: string | null
+          invoice_number: string | null
           paid_at: string | null
           quote_id: string | null
           sent_at: string | null
@@ -220,6 +274,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           intro_text?: string | null
+          invoice_number?: string | null
           paid_at?: string | null
           quote_id?: string | null
           sent_at?: string | null
@@ -237,6 +292,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           intro_text?: string | null
+          invoice_number?: string | null
           paid_at?: string | null
           quote_id?: string | null
           sent_at?: string | null

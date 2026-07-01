@@ -93,6 +93,7 @@ export const REQUEST_STATUS_BADGE: Record<RequestStatus, BadgeVariant> = {
 export const DASHBOARD_REQUEST_STATUSES: RequestStatus[] = ["created"];
 
 export const ALL_REQUEST_STATUSES: RequestStatus[] = ["created", "converted", "archived"];
+export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ["draft", "awaiting_payment", "past_due", "paid", "archived"];
 export const ALL_QUOTE_STATUSES: QuoteStatus[] = [
   "draft",
   "awaiting_response",
