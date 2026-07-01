@@ -486,15 +486,12 @@ export default function QuoteDetailPage() {
                   )}
                   <Button
                     className="flex-1"
-                    disabled
-                    aria-label="Opdrachten komen binnenkort beschikbaar"
+                    onClick={() => router.push(`/dashboard/invoices/new?quoteId=${id}`)}
+                    aria-label="Opdracht volbracht, factuur aanmaken"
                   >
-                    Opdracht aanmaken
+                    Opdracht volbracht
                   </Button>
                 </div>
-                <p className="text-xs text-center text-muted-foreground">
-                  Opdrachten komen binnenkort beschikbaar in Fixa.
-                </p>
               </>
             ) : (
               <>
