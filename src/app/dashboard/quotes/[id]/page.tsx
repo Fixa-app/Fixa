@@ -457,19 +457,59 @@ export default function QuoteDetailPage() {
 
         {/* Sticky convert bar */}
         <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-          <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-1">
-            {!canConvert && (
-              <p className="text-xs text-center text-muted-foreground">
-                Beschikbaar zodra de klant deze offerte accepteert
-              </p>
+          <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
+            {canConvert ? (
+              <>
+                <p className="text-sm text-center text-muted-foreground pb-1">
+                  Neem contact op om een datum af te spreken.
+                </p>
+                <div className="flex items-center gap-2">
+                  {data.client?.phone && (
+                    <a
+                      href={`tel:${data.client.phone}`}
+                      aria-label="Bel klant"
+                      className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
+                    >
+                      <Phone className="h-4 w-4" />
+                    </a>
+                  )}
+                  {data.client?.phone && (
+                    <a
+                      href={`https://wa.me/${data.client.phone.replace(/[^\d]/g, "").replace(/^0/, "31")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Stuur WhatsApp"
+                      className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border hover:bg-muted/40 transition-colors"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                    </a>
+                  )}
+                  <Button
+                    className="flex-1"
+                    disabled
+                    aria-label="Opdrachten komen binnenkort beschikbaar"
+                  >
+                    Opdracht aanmaken
+                  </Button>
+                </div>
+                <p className="text-xs text-center text-muted-foreground">
+                  Opdrachten komen binnenkort beschikbaar in Fixa.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-center text-muted-foreground">
+                  Beschikbaar zodra de klant deze offerte accepteert
+                </p>
+                <Button
+                  className="w-full"
+                  disabled
+                  aria-label="Offerte omzetten naar opdracht"
+                >
+                  Opdracht aanmaken
+                </Button>
+              </>
             )}
-            <Button
-              className="w-full"
-              disabled={!canConvert}
-              aria-label="Offerte omzetten naar opdracht"
-            >
-              Offerte omzetten naar opdracht
-            </Button>
           </div>
         </div>
       </div>
