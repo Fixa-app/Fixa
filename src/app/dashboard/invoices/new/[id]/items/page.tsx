@@ -68,6 +68,7 @@ export default function InvoiceItemsPage() {
 
   const [items, setItems] = useState<LineItem[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [clientName, setClientName] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -80,6 +81,7 @@ export default function InvoiceItemsPage() {
       if (!res.ok) return;
       const json = await res.json();
       setItems(json.lineItems ?? []);
+      setClientName(json.client?.name ?? "");
       setInvoiceNumber(json.invoice?.invoice_number ?? "");
       setLoading(false);
     }
@@ -170,7 +172,7 @@ export default function InvoiceItemsPage() {
         </div>
 
         <div className="space-y-1">
-          <h1 className="font-display text-2xl font-bold">Factuur samenstellen</h1>
+          <h1 className="font-display text-2xl font-bold">{clientName || "Factuur samenstellen"}</h1>
           <p className="text-sm text-muted-foreground">{invoiceNumber}</p>
         </div>
 

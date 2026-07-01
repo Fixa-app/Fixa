@@ -27,7 +27,7 @@ type InvoiceData = {
     updated_at: string;
   };
   lineItems: LineItem[];
-  client: { name: string; address: string | null } | null;
+  client: { name: string; address: string | null; phone: string | null; email: string | null } | null;
   company: {
     name: string;
     street: string | null;
@@ -128,7 +128,8 @@ export default function InvoicePreviewPage() {
         </div>
 
         <div className="space-y-1">
-          <h1 className="font-display text-2xl font-bold">{invoice.invoice_number}</h1>
+          <h1 className="font-display text-2xl font-bold">{client?.name ?? "Factuur"}</h1>
+          <p className="text-sm text-muted-foreground">{invoice.invoice_number}</p>
           <div className="flex items-center gap-2">
             <Badge variant={INVOICE_STATUS_BADGE[invoice.status as keyof typeof INVOICE_STATUS_BADGE] ?? "secondary"}>
               {INVOICE_STATUS_LABELS[invoice.status as keyof typeof INVOICE_STATUS_LABELS] ?? invoice.status}
