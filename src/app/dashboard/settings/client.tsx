@@ -342,23 +342,35 @@ export function SettingsClient({
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium" htmlFor="quote-number">Volgend offertenummer</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      id="quote-number"
-                      type="number"
-                      inputMode="numeric"
-                      value={editingQuoteNumber ? quoteNumberInput : (nextQuoteNumber ? formatQuoteNumber(initialSettings?.quote_number_format ?? "{YEAR}-{NUMBER}", nextQuoteNumber) : "")}
-                      onChange={(e) => {
-                        setQuoteNumberInput(e.target.value);
-                        setEditingQuoteNumber(true);
-                      }}
-                      placeholder="1"
-                      className="flex-1 h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                    {editingQuoteNumber && (
+                  {editingQuoteNumber ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="quote-number"
+                        type="number"
+                        inputMode="numeric"
+                        value={quoteNumberInput}
+                        onChange={(e) => setQuoteNumberInput(e.target.value)}
+                        placeholder="1"
+                        className="flex-1 h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        autoFocus
+                      />
                       <Button onClick={handleSaveQuoteNumber}>Opslaan</Button>
-                    )}
-                  </div>
+                      {nextQuoteNumber && (
+                        <Button variant="outline" onClick={() => setEditingQuoteNumber(false)}>Annuleren</Button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-4 py-3">
+                      <p className="font-bold text-lg">
+                        {nextQuoteNumber ? formatQuoteNumber(initialSettings?.quote_number_format ?? "{YEAR}-{NUMBER}", nextQuoteNumber) : "Nog niet ingesteld"}
+                      </p>
+                      <button onClick={() => { setQuoteNumberInput(String(nextQuoteNumber ?? "")); setEditingQuoteNumber(true); }}
+                        aria-label="Offertenummer aanpassen"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                   {lastUsedQuoteNumber && (
                     <p className="text-xs text-muted-foreground">
                       Laatst gebruikt: <span className="font-medium text-foreground">{lastUsedQuoteNumber}</span>
@@ -380,23 +392,35 @@ export function SettingsClient({
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium" htmlFor="invoice-number">Volgend factuurnummer</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      id="invoice-number"
-                      type="number"
-                      inputMode="numeric"
-                      value={editingInvoiceNumber ? invoiceNumberInput : (nextInvoiceNumber ? formatInvoiceNumber(initialSettings?.invoice_number_format ?? "{year}-{id}", nextInvoiceNumber) : "")}
-                      onChange={(e) => {
-                        setInvoiceNumberInput(e.target.value);
-                        setEditingInvoiceNumber(true);
-                      }}
-                      placeholder="1"
-                      className="flex-1 h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                    {editingInvoiceNumber && (
+                  {editingInvoiceNumber ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="invoice-number"
+                        type="number"
+                        inputMode="numeric"
+                        value={invoiceNumberInput}
+                        onChange={(e) => setInvoiceNumberInput(e.target.value)}
+                        placeholder="1"
+                        className="flex-1 h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        autoFocus
+                      />
                       <Button onClick={handleSaveInvoiceNumber}>Opslaan</Button>
-                    )}
-                  </div>
+                      {nextInvoiceNumber && (
+                        <Button variant="outline" onClick={() => setEditingInvoiceNumber(false)}>Annuleren</Button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-4 py-3">
+                      <p className="font-bold text-lg">
+                        {nextInvoiceNumber ? formatInvoiceNumber(initialSettings?.invoice_number_format ?? "{year}-{id}", nextInvoiceNumber) : "Nog niet ingesteld"}
+                      </p>
+                      <button onClick={() => { setInvoiceNumberInput(String(nextInvoiceNumber ?? "")); setEditingInvoiceNumber(true); }}
+                        aria-label="Factuurnummer aanpassen"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                   {lastUsedInvoiceNumber && (
                     <p className="text-xs text-muted-foreground">
                       Laatst gebruikt: <span className="font-medium text-foreground">{lastUsedInvoiceNumber}</span>
