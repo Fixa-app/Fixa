@@ -28,6 +28,7 @@ type SettingsData = {
   next_quote_number: number | null;
   next_invoice_number: number | null;
   quote_number_format: string | null;
+  invoice_number_format: string | null;
   quote_intro: string | null;
   quote_disclaimer: string | null;
   last_parsed_quote_number: string | null;
@@ -38,6 +39,14 @@ function formatQuoteNumber(format: string, num: number): string {
   return format
     .replace("{YEAR}", String(year))
     .replace("{NUMBER}", String(num).padStart(3, "0"));
+}
+
+function formatInvoiceNumber(format: string, num: number): string {
+  const year = new Date().getFullYear().toString();
+  return format
+    .replace("{year}", year)
+    .replace("{year_two_digits}", year.slice(-2))
+    .replace("{id}", String(num).padStart(4, "0"));
 }
 
 export function SettingsClient({
@@ -338,7 +347,7 @@ export function SettingsClient({
                       id="quote-number"
                       type="number"
                       inputMode="numeric"
-                      value={editingQuoteNumber ? quoteNumberInput : (nextQuoteNumber ?? "")}
+                      value={editingQuoteNumber ? quoteNumberInput : (nextQuoteNumber ? formatQuoteNumber(initialSettings?.quote_number_format ?? "{YEAR}-{NUMBER}", nextQuoteNumber) : "")}
                       onChange={(e) => {
                         setQuoteNumberInput(e.target.value);
                         setEditingQuoteNumber(true);
@@ -376,7 +385,7 @@ export function SettingsClient({
                       id="invoice-number"
                       type="number"
                       inputMode="numeric"
-                      value={editingInvoiceNumber ? invoiceNumberInput : (nextInvoiceNumber ?? "")}
+                      value={editingInvoiceNumber ? invoiceNumberInput : (nextInvoiceNumber ? formatInvoiceNumber(initialSettings?.invoice_number_format ?? "{year}-{id}", nextInvoiceNumber) : "")}
                       onChange={(e) => {
                         setInvoiceNumberInput(e.target.value);
                         setEditingInvoiceNumber(true);
