@@ -44,10 +44,14 @@ export function SettingsClient({
   companyId,
   company: initialCompany,
   settings: initialSettings,
+  lastUsedQuoteNumber,
+  lastUsedInvoiceNumber,
 }: {
   companyId: string;
   company: CompanyData | null;
   settings: SettingsData | null;
+  lastUsedQuoteNumber: string | null;
+  lastUsedInvoiceNumber: string | null;
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -346,9 +350,9 @@ export function SettingsClient({
                       <Button onClick={handleSaveQuoteNumber}>Opslaan</Button>
                     )}
                   </div>
-                  {initialSettings?.last_parsed_quote_number && (
+                  {lastUsedQuoteNumber && (
                     <p className="text-xs text-muted-foreground">
-                      Laatste geparsde offertenummer: <span className="font-medium text-foreground">{initialSettings.last_parsed_quote_number}</span>
+                      Laatst gebruikt: <span className="font-medium text-foreground">{lastUsedQuoteNumber}</span>
                     </p>
                   )}
                 </div>
@@ -384,6 +388,11 @@ export function SettingsClient({
                       <Button onClick={handleSaveInvoiceNumber}>Opslaan</Button>
                     )}
                   </div>
+                  {lastUsedInvoiceNumber && (
+                    <p className="text-xs text-muted-foreground">
+                      Laatst gebruikt: <span className="font-medium text-foreground">{lastUsedInvoiceNumber}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

@@ -10,7 +10,6 @@ export default async function SettingsPage() {
 
   if (!user) return null;
 
-  // Use service role for data queries to bypass RLS
   const service = createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -24,9 +23,31 @@ export default async function SettingsPage() {
 
   if (!companyId) return null;
 
-  const [{ data: company }, { data: settings }] = await Promise.all([
+  const [
+    { data: company },
+    { data: settings },
+    { data: lastQuote },
+    { data: lastInvoice },
+  ] = await Promise.all([
     service.from("companies").select("*").eq("id", companyId).single(),
     service.from("company_settings").select("*").eq("company_id", companyId).single(),
+    // Laatste verstuurd offerte — heeft een quote_number toegekend gekregen bij versturen
+    service.from("quotes")
+      .select("quote_number")
+      .eq("company_id", companyId)
+      .not("quote_number", "is", null)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    // Laatste verstuurd factuur
+    service.from("invoices")
+      .select("invoice_number")
+      .eq("company_id", companyId)
+      .eq("status", "awaiting_payment")
+      .not("invoice_number", "is", null)
+      .order("sent_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   return (
@@ -35,6 +56,8 @@ export default async function SettingsPage() {
         companyId={companyId}
         company={company}
         settings={settings}
+        lastUsedQuoteNumber={lastQuote?.quote_number ?? settings?.last_parsed_quote_number ?? null}
+        lastUsedInvoiceNumber={lastInvoice?.invoice_number ?? null}
       />
     </Suspense>
   );
