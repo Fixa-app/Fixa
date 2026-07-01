@@ -321,85 +321,79 @@ export function SettingsClient({
 
           {/* Templates tab */}
           {activeTab === "templates" && (
-            <div className="space-y-8">
-              {/* Offertenummering */}
+            <div className="space-y-10">
+
+              {/* Offerte */}
               <div className="space-y-4">
-                <h2 className="font-display text-2xl font-bold">Offertenummering</h2>
-                {editingQuoteNumber ? (
-                  <div className="space-y-3">
-                    <label className="text-sm font-medium" htmlFor="quote-number">Wat wordt je eerstvolgende offertenummer?</label>
-                    {initialSettings?.last_parsed_quote_number && (
-                      <p className="text-sm text-muted-foreground">
-                        Het offertenummer op de offerte die je deelde was:{" "}
-                        <span className="font-medium text-foreground">{initialSettings.last_parsed_quote_number}</span>
-                      </p>
+                <h2 className="font-display text-2xl font-bold">Offerte</h2>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="quote-number">Volgend offertenummer</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="quote-number"
+                      type="number"
+                      inputMode="numeric"
+                      value={editingQuoteNumber ? quoteNumberInput : (nextQuoteNumber ?? "")}
+                      onChange={(e) => {
+                        setQuoteNumberInput(e.target.value);
+                        setEditingQuoteNumber(true);
+                      }}
+                      placeholder="1"
+                      className="flex-1 h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    />
+                    {editingQuoteNumber && (
+                      <Button onClick={handleSaveQuoteNumber}>Opslaan</Button>
                     )}
-                    <input id="quote-number" type="number" inputMode="numeric" value={quoteNumberInput}
-                      onChange={(e) => setQuoteNumberInput(e.target.value)} placeholder=""
-                      className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      autoFocus
-                    />
-                    <div className="flex gap-2">
-                      <Button className="flex-1" onClick={handleSaveQuoteNumber}>Opslaan</Button>
-                      {nextQuoteNumber && (
-                        <Button variant="outline" className="flex-1" onClick={() => setEditingQuoteNumber(false)}>Annuleren</Button>
-                      )}
-                    </div>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-4 py-3">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Volgend offertenummer</p>
-                      <p className="font-bold text-lg">{nextQuoteNumber ?? "Nog niet ingesteld"}</p>
-                    </div>
-                    <button onClick={() => setEditingQuoteNumber(true)} aria-label="Offertenummer aanpassen"
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
+                  {initialSettings?.last_parsed_quote_number && (
+                    <p className="text-xs text-muted-foreground">
+                      Laatste geparsde offertenummer: <span className="font-medium text-foreground">{initialSettings.last_parsed_quote_number}</span>
+                    </p>
+                  )}
+                </div>
 
-              {/* Factuurnummering */}
-              <div className="space-y-4">
-                <h2 className="font-display text-2xl font-bold">Factuurnummering</h2>
-                {editingInvoiceNumber ? (
-                  <div className="space-y-3">
-                    <label className="text-sm font-medium" htmlFor="invoice-number">Wat wordt je eerstvolgende factuurnummer?</label>
-                    <input id="invoice-number" type="number" inputMode="numeric" value={invoiceNumberInput}
-                      onChange={(e) => setInvoiceNumberInput(e.target.value)} placeholder=""
-                      className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      autoFocus
-                    />
-                    <div className="flex gap-2">
-                      <Button className="flex-1" onClick={handleSaveInvoiceNumber}>Opslaan</Button>
-                      {nextInvoiceNumber && (
-                        <Button variant="outline" className="flex-1" onClick={() => setEditingInvoiceNumber(false)}>Annuleren</Button>
-                      )}
-                    </div>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Zo zien klanten je offerte:</p>
+                  <div className="rounded-xl border border-border bg-muted/30 aspect-[3/4] flex items-center justify-center">
+                    <p className="text-sm text-muted-foreground">Binnenkort beschikbaar</p>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-4 py-3">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Volgend factuurnummer</p>
-                      <p className="font-bold text-lg">{nextInvoiceNumber ?? "Nog niet ingesteld"}</p>
-                    </div>
-                    <button onClick={() => setEditingInvoiceNumber(true)} aria-label="Factuurnummer aanpassen"
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Quote template preview */}
-              <div className="space-y-4">
-                <h2 className="font-display text-2xl font-bold">Offerte template</h2>
-                <p className="text-sm text-muted-foreground">Zo zien je klanten je offerte.</p>
-                <div className="rounded-xl border border-border bg-muted/30 aspect-[3/4] flex items-center justify-center">
-                  <p className="text-sm text-muted-foreground">Binnenkort beschikbaar</p>
                 </div>
               </div>
+
+              {/* Factuur */}
+              <div className="space-y-4">
+                <h2 className="font-display text-2xl font-bold">Factuur</h2>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="invoice-number">Volgend factuurnummer</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="invoice-number"
+                      type="number"
+                      inputMode="numeric"
+                      value={editingInvoiceNumber ? invoiceNumberInput : (nextInvoiceNumber ?? "")}
+                      onChange={(e) => {
+                        setInvoiceNumberInput(e.target.value);
+                        setEditingInvoiceNumber(true);
+                      }}
+                      placeholder="1"
+                      className="flex-1 h-12 rounded-xl border border-input bg-background px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    />
+                    {editingInvoiceNumber && (
+                      <Button onClick={handleSaveInvoiceNumber}>Opslaan</Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Zo zien klanten je factuur:</p>
+                  <div className="rounded-xl border border-border bg-muted/30 aspect-[3/4] flex items-center justify-center">
+                    <p className="text-sm text-muted-foreground">Binnenkort beschikbaar</p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
 
