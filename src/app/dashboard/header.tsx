@@ -18,8 +18,7 @@ export function DashboardHeader({
   const firstName = userName.split(" ")[0] || userName;
 
   return (
-    <header className="hidden h-16 shrink-0 bg-background lg:flex">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6">
+    <header className="hidden h-16 shrink-0 items-center justify-between gap-4 bg-background px-6 lg:flex">
       {/* Company name (above the page) */}
       <div className="min-w-0">
         <CompanySwitcher
@@ -59,7 +58,6 @@ export function DashboardHeader({
         >
           {(firstName[0] ?? "?").toUpperCase()}
         </Link>
-      </div>
       </div>
     </header>
   );
