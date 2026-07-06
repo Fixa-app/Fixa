@@ -84,7 +84,7 @@ function Hero() {
 function Product() {
   return (
     <section id="product" className="px-4 pt-24 pb-12 sm:pt-32 sm:pb-16">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-8 lg:px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Eén systeem, van aanvraag tot betaling.
         </h2>
@@ -234,7 +234,7 @@ function Referrals() {
 function WhyFixa() {
   return (
     <section id="why-fixa" className="px-4 py-12 sm:py-16">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-10 lg:px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 lg:px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Waarom vakmensen kiezen voor Fixa.
         </h2>
@@ -247,7 +247,7 @@ function WhyFixa() {
 function Pricing() {
   return (
     <section id="pricing" className="px-4 py-12 sm:py-16">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-8 lg:px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:px-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Eerlijke prijzen, geen contracten.
@@ -270,7 +270,7 @@ function Pricing() {
 function FAQ() {
   return (
     <section id="faq" className="px-4 py-12 sm:py-16">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col gap-8 lg:px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:px-5">
         <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
           Veelgestelde vragen.
         </h2>
@@ -283,7 +283,7 @@ function FAQ() {
 function CTABand() {
   return (
     <section className="px-4 py-16 sm:py-24">
-      <div className="mx-auto flex w-full max-w-[1536px] flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12 lg:px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12 lg:px-5">
         <div className="flex flex-col gap-4">
           <h2 className="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-5xl">
             Start vandaag met Fixa.
