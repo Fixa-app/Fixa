@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Drawer } from "vaul";
 import { Bell, HelpCircle, Menu, Plus, Rocket, Search, X } from "lucide-react";
 import { NAV_SECTIONS } from "./nav";
 import { CREATE_ITEMS } from "./create-items";
+import { FixaMark } from "./fixa-mark";
 
 const ROLE_LABELS: Record<string, string> = {
   owner: "Eigenaar",
@@ -50,14 +50,8 @@ export function MobileNav({
           >
             <Menu className="size-5" />
           </button>
-          <Link href="/dashboard">
-            <Image
-              src="/fixa-logo.svg"
-              alt="Fixa"
-              width={80}
-              height={32}
-              className="h-7 w-auto"
-            />
+          <Link href="/dashboard" aria-label="Fixa">
+            <FixaMark className="size-9 text-base" />
           </Link>
         </div>
 
@@ -110,14 +104,12 @@ export function MobileNav({
           <Drawer.Content className="fixed inset-y-0 left-0 z-50 flex w-[80vw] flex-col bg-background shadow-xl outline-none">
             {/* Header */}
             <div className="flex h-16 items-center justify-between px-4">
-              <Link href="/dashboard" onClick={() => setOpen(false)}>
-                <Image
-                  src="/fixa-logo.svg"
-                  alt="Fixa"
-                  width={120}
-                  height={48}
-                  className="h-10 w-auto"
-                />
+              <Link
+                href="/dashboard"
+                aria-label="Fixa"
+                onClick={() => setOpen(false)}
+              >
+                <FixaMark />
               </Link>
               <button
                 onClick={() => setOpen(false)}

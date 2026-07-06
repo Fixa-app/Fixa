@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, type ReactElement } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Tooltip } from "@base-ui/react/tooltip";
+import { FixaMark } from "./fixa-mark";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { NAV_SECTIONS } from "./nav";
@@ -85,19 +85,9 @@ export function DashboardSidebar({}: {
         }`}
       >
         {/* Brand */}
-        <div
-          className={`flex h-16 items-center overflow-hidden ${
-            primaryCollapsed ? "px-3" : "px-4"
-          }`}
-        >
+        <div className="flex h-16 items-center px-3">
           <Link href="/dashboard" aria-label="Fixa">
-            <Image
-              src="/fixa-logo.svg"
-              alt="Fixa"
-              width={120}
-              height={48}
-              className={primaryCollapsed ? "h-8 w-auto max-w-none" : "h-10 w-auto"}
-            />
+            <FixaMark />
           </Link>
         </div>
 
