@@ -123,6 +123,7 @@ export default function QuoteDetailPage() {
   const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [sending, setSending] = useState(false);
   const overflowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -186,6 +187,29 @@ export default function QuoteDetailPage() {
     }
 
     setSharing(false);
+  }
+
+  async function handleSend() {
+    if (!quote) return;
+    setSending(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSending(false); return; }
+
+    const res = await fetch(`/api/quotes/${id}/preview`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id }),
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      setData(prev => prev ? {
+        ...prev,
+        quote: { ...prev.quote, status: 'awaiting_response' as QuoteStatus }
+      } : null);
+    }
+    setSending(false);
   }
 
   async function handleStatusChange(status: QuoteStatus) {
@@ -496,9 +520,10 @@ export default function QuoteDetailPage() {
             ) : quote.status === "draft" ? (
               <Button
                 className="w-full"
-                onClick={() => router.push(`/dashboard/quotes/${id}/preview`)}
+                onClick={handleSend}
+                disabled={sending}
               >
-                Offerte versturen
+                {sending ? "Versturen..." : "Offerte versturen"}
               </Button>
             ) : quote.status === "awaiting_response" ? (
               <Button className="w-full" disabled>
@@ -511,9 +536,10 @@ export default function QuoteDetailPage() {
                 </p>
                 <Button
                   className="w-full"
-                  onClick={() => router.push(`/dashboard/quotes/${id}/preview`)}
+                  onClick={handleSend}
+                  disabled={sending}
                 >
-                  Offerte opnieuw versturen
+                  {sending ? "Versturen..." : "Offerte opnieuw versturen"}
                 </Button>
               </>
             ) : (
