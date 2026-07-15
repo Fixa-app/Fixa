@@ -190,10 +190,23 @@ function NewQuoteItemsContent() {
     setSaving(true);
     const userId = await getCurrentUserId();
     if (!userId) { setSaving(false); return; }
+    // Als de offerte al verstuurd was (awaiting_response of changes_requested),
+    // zet status terug naar draft zodat de pro bewust opnieuw moet versturen.
+    const quoteRes = await fetch(`/api/quotes/${id}?userId=${userId}`);
+    const quoteData = await quoteRes.json();
+    const currentStatus = quoteData?.quote?.status;
+    const shouldResetStatus = currentStatus === "awaiting_response" || currentStatus === "changes_requested";
+
     await fetch(`/api/quotes/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, job_title: jobTitle, intro_text: introText, disclaimer }),
+      body: JSON.stringify({
+        userId,
+        job_title: jobTitle,
+        intro_text: introText,
+        disclaimer,
+        ...(shouldResetStatus ? { status: "draft" } : {}),
+      }),
     });
 
     if (fromDetail) {
