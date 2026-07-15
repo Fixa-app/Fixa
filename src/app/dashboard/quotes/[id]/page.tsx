@@ -458,7 +458,7 @@ export default function QuoteDetailPage() {
         {/* Sticky convert bar */}
         <div className="sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
           <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-2">
-            {canConvert ? (
+            {quote.status === "ready_to_schedule" ? (
               <>
                 <p className="text-sm text-center text-muted-foreground pb-1">
                   Neem contact op om een datum af te spreken.
@@ -493,19 +493,33 @@ export default function QuoteDetailPage() {
                   </Button>
                 </div>
               </>
-            ) : (
+            ) : quote.status === "draft" ? (
+              <Button
+                className="w-full"
+                onClick={() => router.push(`/dashboard/quotes/${id}/preview`)}
+              >
+                Offerte versturen
+              </Button>
+            ) : quote.status === "awaiting_response" ? (
+              <Button className="w-full" disabled>
+                Wacht op reactie van klant
+              </Button>
+            ) : quote.status === "changes_requested" ? (
               <>
                 <p className="text-xs text-center text-muted-foreground">
-                  Beschikbaar zodra de klant deze offerte accepteert
+                  Klant heeft een vraag gesteld — bekijk de notitie hierboven en stuur opnieuw.
                 </p>
                 <Button
                   className="w-full"
-                  disabled
-                  aria-label="Offerte omzetten naar opdracht"
+                  onClick={() => router.push(`/dashboard/quotes/${id}/preview`)}
                 >
-                  Opdracht aanmaken
+                  Offerte opnieuw versturen
                 </Button>
               </>
+            ) : (
+              <Button className="w-full" disabled>
+                Opdracht aanmaken
+              </Button>
             )}
           </div>
         </div>
