@@ -23,6 +23,7 @@ import { Drawer } from "vaul";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 type LineItem = {
   id: string;
@@ -124,6 +125,7 @@ export default function QuoteDetailPage() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const overflowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -203,11 +205,15 @@ export default function QuoteDetailPage() {
     });
 
     if (res.ok) {
-      const json = await res.json();
+      setSendError(null);
       setData(prev => prev ? {
         ...prev,
         quote: { ...prev.quote, status: 'awaiting_response' as QuoteStatus }
       } : null);
+      toast.success("Offerte verstuurd");
+    } else {
+      const json = await res.json().catch(() => ({}));
+      setSendError("Versturen mislukt — controleer het e-mailadres van de klant.");
     }
     setSending(false);
   }
@@ -518,13 +524,16 @@ export default function QuoteDetailPage() {
                 </div>
               </>
             ) : quote.status === "draft" ? (
-              <Button
-                className="w-full"
-                onClick={handleSend}
-                disabled={sending}
-              >
-                {sending ? "Versturen..." : "Offerte versturen"}
-              </Button>
+              <>
+                <Button
+                  className="w-full"
+                  onClick={handleSend}
+                  disabled={sending}
+                >
+                  {sending ? "Versturen..." : "Offerte versturen"}
+                </Button>
+                {sendError && <p className="text-xs text-center text-destructive">{sendError}</p>}
+              </>
             ) : quote.status === "awaiting_response" ? (
               <Button className="w-full" disabled>
                 Wacht op reactie van klant
@@ -541,6 +550,7 @@ export default function QuoteDetailPage() {
                 >
                   {sending ? "Versturen..." : "Offerte opnieuw versturen"}
                 </Button>
+                {sendError && <p className="text-xs text-center text-destructive">{sendError}</p>}
               </>
             ) : (
               <Button className="w-full" disabled>

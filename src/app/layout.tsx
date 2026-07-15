@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Sora } from "next/font/google";
 import "./globals.css";
+import { Toaster } from 'sonner';
 import { SiteHeader } from "@/components/site-header";
 
 const manrope = Manrope({
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <SiteHeader />
         {children}
+        <Toaster position="bottom-center" richColors />
       </body>
     </html>
   );

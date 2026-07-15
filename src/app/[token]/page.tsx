@@ -195,27 +195,26 @@ export default function ClientHubPage() {
       </div>
 
       <div className="rounded-2xl bg-card p-5 space-y-3">
-        <div className="flex items-center gap-2">
-          <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
-            <Check className="h-3 w-3" />
-            {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
-          </Badge>
-          {quote.approved_at && (
-            <span className="text-xs text-muted-foreground">{formatRelativeTime(quote.approved_at)}</span>
-          )}
-        </div>
+        {actionTaken && (
+          <div className="flex items-center gap-2">
+            <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
+              <Check className="h-3 w-3" />
+              {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
+            </Badge>
+            {quote.approved_at && (
+              <span className="text-xs text-muted-foreground">{formatRelativeTime(quote.approved_at)}</span>
+            )}
+          </div>
+        )}
 
         {actionTaken === null && (
           <>
             <Button className="w-full" onClick={handleAccept} disabled={submitting}>
               {submitting ? "Bezig..." : "Offerte accepteren"}
             </Button>
-            <button
-              onClick={() => setChangesSheetOpen(true)}
-              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-            >
+            <Button variant="outline" className="w-full" onClick={() => setChangesSheetOpen(true)}>
               Ik heb een vraag of wijziging
-            </button>
+            </Button>
           </>
         )}
 
@@ -364,15 +363,17 @@ export default function ClientHubPage() {
       {/* Mobiele sticky actiebar — desktop heeft de sidebar al */}
       <div className="lg:hidden sticky bottom-0 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto w-full max-w-2xl px-6 py-4 space-y-3">
-          <div className="flex items-center justify-center gap-2">
-            <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
-              <Check className="h-3 w-3" />
-              {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
-            </Badge>
-            {quote.approved_at && (
-              <span className="text-xs text-muted-foreground">{formatRelativeTime(quote.approved_at)}</span>
-            )}
-          </div>
+          {actionTaken && (
+            <div className="flex items-center justify-center gap-2">
+              <Badge variant={QUOTE_STATUS_BADGE[quote.status as keyof typeof QUOTE_STATUS_BADGE] ?? "secondary"}>
+                <Check className="h-3 w-3" />
+                {QUOTE_STATUS_LABELS[quote.status as keyof typeof QUOTE_STATUS_LABELS] ?? quote.status}
+              </Badge>
+              {quote.approved_at && (
+                <span className="text-xs text-muted-foreground">{formatRelativeTime(quote.approved_at)}</span>
+              )}
+            </div>
+          )}
 
           {actionTaken === "changes_requested" && (
             <div className="text-center space-y-1">
@@ -386,12 +387,9 @@ export default function ClientHubPage() {
           )}
 
           {actionTaken === null && (
-            <button
-              onClick={() => setChangesSheetOpen(true)}
-              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-            >
+            <Button variant="outline" className="w-full" onClick={() => setChangesSheetOpen(true)}>
               Ik heb een vraag of wijziging
-            </button>
+            </Button>
           )}
 
           {/* Contact + accepteren altijd zichtbaar, ook na acceptatie — klant kan
